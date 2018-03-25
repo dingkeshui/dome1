@@ -1,0 +1,31 @@
+<include file="Public:header"/>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/js/menu.simpla.jquery.js"></script>
+    <div id="sidebar" class="sidebar" style="overflow-y: scroll;">
+        <div class="sidebar-inner">
+            <ul class="nav nav-list" id="left-menu">
+                <li>
+                    <a href="{:U('Index/main')}" target="main"  class="nav-top-item no-submenu active">
+                        <span class="icon glyphicon glyphicon-home"></span>
+                        <span class="hidden-minibar">首页</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-shopping-cart"></span>
+                        <span class="hidden-minibar">众享商城管理</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="{:U('Product/productList')}" target="main">商品列表</a>
+                        </li>
+                        <li>
+                            <a href="{:U('Attributelist/addAttribute')}" target="main">商品属性</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

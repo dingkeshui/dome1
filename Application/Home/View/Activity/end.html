@@ -1,0 +1,76 @@
+<extend name="Public:head"/>
+
+<block name="headdiv">
+    <style type="text/css">
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        .dbg{
+            background: linear-gradient(#EDEDED,#E6E6E6);
+        }
+
+        .box{
+            height: 100vh;
+            width: 100vw;
+            line-height: 100vh;
+            text-align: center;
+        }
+       #outimg{
+        width:90%;
+        vertical-align: middle;
+       }
+    </style>
+</block>
+<block name="main">
+        <div class="box dbg">
+            <img id="outimg" src="">
+        </div>
+</block>
+<block name="footerjs">
+    <script type="text/javascript">
+<<<<<<< HEAD
+        var bgid = "{:I('get.bgid')}";
+        var c=document.createElement("canvas");
+        var outimg=document.getElementById("outimg");
+        var ctx=c.getContext("2d");
+
+        requestUrl("{:U('Api/Member/memberCenter')}",{"m_id":m_id},function(data){
+                    layer.closeAll();
+                    if(data.flag=="success"){
+                        var myname=data.data.nick_name;
+                        var myimg=new Image();
+                        myimg.src="__WEBPUBLIC__/Wechat/nowimg/"+bgid+".png"
+                        console.log(myimg.src);
+                        myimg.onload = function(){
+                            c.width=myimg.width;
+                            c.height=myimg.height;
+                            ctx.drawImage(myimg, 0, 0, myimg.width, myimg.height);
+                            var headimg=new Image();
+                            headimg.onload = function(){
+                                ctx.drawImage(headimg,110,130, 180, 180);
+                                ctx.font = "50px Courier New";
+                                ctx.fillStyle = "#828282";
+                                ctx.fillText(myname, 100, 370);
+                                var myurl =c.toDataURL("image/png");
+                                outimg.src=myurl;
+                            };
+                            headimg.src="{$img}";
+                            // ctx.font = "60px Courier New";
+                            // ctx.fillStyle = "#828282";
+                            // ctx.fillText(myname, 100, 368);
+                            // var myurl =c.toDataURL("image/png");
+                            // outimg.src=myurl;
+                        };
+                    }else{
+                        layer.msg(data.message)
+                    }
+        },"GET",true);   
+=======
+        var img_url = "{$img_url}";
+        console.log(img_url);
+        var outimg=document.getElementById("outimg");
+        $("#outimg").attr("src",img_url);
+>>>>>>> 526e498e03d4b9330f9ca0dbb45a52bf2b71548f
+    </script>       
+</block>

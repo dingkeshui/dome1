@@ -1,0 +1,274 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="headleft" linkto="{:U('Refund/refundlist')}"><img class="wh20 y3" src="__WEBPUBLIC__/Wechat/img/back2.png" style="transform:rotate(180deg);vertical-align: sub;"></div>
+                    <span>退款详情</span>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
+            </div>
+    </div>
+
+
+    <!-- 内容 -->
+    <div class="xq_container listbox pad2">
+        <div class="returninfotop">
+            <div class="status">
+                <div >待审核</div>
+                <div>还剩2天20小时自动同意</div>
+            </div>
+        </div>
+        <div class="bgfff refundmid none mgtop10 pad10">
+            <div class="ih30 after padtb10">买家发起退款申请，请审核<span class="colred return_status"></span></div>
+            <div class="textright orderbutbox midbox padtb10">
+                <div class="">同意</div>
+                <div class="">拒绝</div>
+            </div>
+        </div>
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>退款总金额</p>
+                </div>
+                <div class="weui-cell__ft colred price">
+                    
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>退款原因</p>
+                </div>
+                <div class="weui-cell__ft reason">
+                    
+                </div>
+            </div>
+            <a class="weui-cell weui-cell_access" linkto="{:U('Refund/consult')}/return_id/{$_GET['return_id']}">
+                <div class="weui-cell__bd">
+                    <p>协商历史</p>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
+            </a>
+        </div>
+        <div class="bgfff mgtop10">
+            <div class="pad10 ih30">
+                退款信息
+            </div>
+            <div class="flex corderitemshop padtb10">
+                            <div class="carshopimg">
+                                <img class="w100 pic" src="">
+                            </div>
+                            <div class="flex1 ih20 fs14">
+                                <div class="carshoptab1">
+                                    <div class="line2 title"></div>
+                                    <div class="colb6 fs12 attr_val">
+                                       
+                                    </div>
+                                </div>
+                            </div>
+            </div>
+            <div class="bgfff pad10 colb6">
+                <div>退款原因:<span class="reason"></span></div>
+                <div>退款金额:<span class="price"></span></div>
+                <div>退款编号:<span class="return_sn"></span></div>
+                <div>申请时间:<span class="ctime"></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="orderbutbox bgfff orderfoot">
+        <!-- <div>联系买家</div> -->
+        <div class="andtel" linkto="tel:022-60868499">平台客服</div>
+        <div class="andtel2 none" andtel="022-60868499">平台客服</div>
+        <!-- <div>钱款去向</div> -->
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    
+    if(isApp==1||isApp==2||isA==1||isA==2){
+        $('.orderfoot').css('bottom','0px');
+    }
+    var return_id="{$_GET['return_id']}";
+    var mydata={return_id:return_id};
+    var returntype=true;//退款方式 false为仅退款 true为退货退款
+    // 同意/ 拒绝
+    $('.midbox>div').click(function(){
+        var num=$(this).index();
+        layer.open({
+            content: '确认'+(num==0?"同意":"拒绝")+'退款？'
+            ,btn: ['确认', '取消']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+            if(num==0){
+                if(returntype){
+                    mydata.status=num+1;
+                    requestUrl("{:U('Api/ReturnOrder/backOutReturnOrder')}",mydata,function(data){
+                        if(data['flag'] == "success"){
+                           // layer.msg('已同意退款!');
+                           // setTimeout(function(){
+                           //      location.href="{:U('Refund/refundlist')}";
+                           // },1500);
+                           gothdz();
+                        }else if(data['flag'] == "error"){
+                            layer.msg(data['message']);
+                        }
+                    },"POST",true);
+                }else{
+                    requestUrl("{:U('Api/ReturnOrder/makeSureReturnOrder')}",{shop_id:shop_id,return_id:return_id,status:3},function(data){
+                        if(data['flag'] == "success"){
+                           layer.msg('退款成功！');
+                           setTimeout(function(){
+                                location.reload();
+                           },1500);
+                        }else if(data['flag'] == "error"){
+                            layer.msg(data['message']);
+                        }
+                    },"POST",true);
+                }
+            }else{
+                mydata.status=num+1;
+                requestUrl("{:U('Api/ReturnOrder/backOutReturnOrder')}",mydata,function(data){
+                    if(data['flag'] == "success"){
+                       layer.msg('已拒绝退款!');
+                       setTimeout(function(){
+                            location.href="{:U('Refund/refundlist')}";
+                       },1500);
+                    }else if(data['flag'] == "error"){
+                        layer.msg(data['message']);
+                    }
+                },"POST",true);
+            }  
+            layer.close(index);
+            }
+            ,btn2: function(index, layero){
+            //按钮【按钮二】的回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+            ,cancel: function(){ 
+            //右上角关闭回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+        });
+    });
+    //选择地址
+    function gothdz(){
+        layer.open({
+            title:'同意成功'
+            ,content: '已同意退款，是否选择退货地址？'
+            ,btn: ['确认', '取消']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+                var url="{:U('Shop/choiceaddress')}/type/1/return_id/"+return_id;
+                location.href=url;
+            layer.close(index);
+            }
+            ,btn2: function(index, layero){
+            //按钮【按钮二】的回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+            ,cancel: function(){ 
+            //右上角关闭回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+        });
+    }
+    requestUrl("{:U('Api/ReturnOrder/returnOrderDetail')}",{return_id:return_id},function(data){
+        if(data.flag="success"){
+            var shop=data.data;
+            var newstr="";
+            $('.price').html('￥'+shop.price);
+            $('.reason').html(shop.reason);
+            $('.attr_val').html((shop.attr_val&&shop.attr_val!="0")?shop.attr_val:"暂无数据");
+            $('.title').html(shop.title);
+            $('.ctime').html(shop.ctime);
+            $('.return_sn').html(shop.return_sn);
+            $('.pic').attr('src',shop.cover_pic);
+            $('.return_status').html('('+shop.return_status+')');
+            if(shop.return_status.indexOf('退货')!=-1){
+                returntype=true;
+            }else{
+                returntype=false;
+            }
+            switch(+shop.status)
+            {
+                case 0:
+                //待审核
+                    newstr="<div >待审核</div><div>还剩"+shop.residue_time+"自动同意</div>";
+                    $('.refundmid').removeClass('none');
+                    break;
+                case 1:
+                //退款中
+                    newstr="<div >退款中</div>";
+                    break;
+                case 2:
+                    //商家拒绝
+                    newstr="<div >商家拒绝</div>";
+                    break;
+                case 3:
+                    //已完成
+                    newstr="<div >已完成</div>";
+                    break;
+                case 9:
+                    //撤销
+                    newstr="<div >撤销</div>";
+                    break;
+            };
+            $('.status').html(newstr);
+        }else{
+            layer.msg(data.message);
+        };
+    },"POST");
+</script>
+<script type="text/javascript">
+    function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+        }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+        if(/android/i.test(navigator.userAgent)){
+            $('.andtel').hide();
+            $('.andtel2').removeClass('none');
+            $('.andtel2').on('click',function(){
+                var andtel=$(this).attr('andtel')
+                bridge.callHandler('andTel',{data:andtel}, function(response) {
+                    //处理oc过来的回调
+                    layer.closeAll();
+                })
+            });
+        }
+    })
+</script>
+</block>

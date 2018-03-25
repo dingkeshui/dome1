@@ -1,0 +1,189 @@
+<include file="Public:header"/>
+<link rel="stylesheet" href="__WEBPUBLIC__/Uploadify/uploadify.css" type="text/css" />
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li><a href="">会员管理</a></li>
+        <li class="active">编辑会员</li>
+    </ul>
+    <div class="page-header clearfix">
+        <h3>会员管理</h3>
+        <ul id="tabs" class="nav nav-tabs">
+            <li class="active">
+                <a href="javascript:;">编辑信息</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="tabs-content" class="content-box-content">
+        <div class="ul">
+            <form action="{:U('Member/editMember')}" method="post" class="form-horizontal" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="{$member['id']}">
+                <input type="hidden" name="id" value="{$m_id}">
+                <div class="form-group">
+                    <label for="nick_name" class="col-sm-3 control-label"><em class="prompt-red">*</em>昵称：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="nick_name" name="nick_name" value="{$member['nick_name']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="account" class="col-sm-3 control-label"><em class="prompt-red">*</em>手机号：</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" id="account" name="account" value="{$member['account']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ident" class="col-sm-3 control-label"><em class="prompt-red">*</em>身份证号：</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" id="ident" name="ident" value="{$member['ident']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="wallet" class="col-sm-3 control-label">钱包：</label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" id="wallet" name="wallet" value="{$member['wallet']}" disabled>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"></label>
+                    <div class="col-sm-9">
+                        <input type="file" name="head_pic_upload"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>所在地：</label>
+                    <div class="col-sm-9">
+                        <select onchange="getCity(this.value)"  style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="province">
+                            <option value="">省份</option>
+                            <volist name="pro" id="pr">
+                                <option <if condition="$member['province'] eq $pr['area_id']">selected</if> value="{$pr['area_id']}">{$pr['area_name']}</option>
+                            </volist>
+                        </select>
+                        <select id="city" onchange="getArea(this.value)" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="city">
+                            <option value="">市/县</option>
+                            <volist name="city" id="ci">
+                                <option <if condition="$member['city'] eq $ci['area_id']">selected</if> value="{$ci['area_id']}">{$ci['area_name']}</option>
+                            </volist>
+                        </select>
+                        <select id="area" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="area">
+                            <option value="">镇/区</option>
+                            <volist name="area" id="ar">
+                                <option <if condition="$member['area'] eq $ar['area_id']">selected</if> value="{$ar['area_id']}">{$ar['area_name']}</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                      <button type="submit" class="btn btn-default btn-primary">确认修改</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<include file="Public:footer"/>
+<!--地区的三级联动-->
+<script type="text/javascript">
+    function ajax(){
+        var filesize = this.files[0].size;
+        if (filesize > 10000*1024) {
+            alert("请上传大小在500k以下的图片");
+            return false;
+        }
+        var files = this.files;
+        var i = '';
+        $("#imgPreview").html(" ");
+        for(i=0;files.length;i++){
+            var picname = files[i].name;
+            var reader = new FileReader();
+            reader.onload = function(e){
+                var src = e.target.result;
+                $.ajax({
+                    type:"post",
+                    url:"{:U('Member/uploadPic')}",
+                    data: {"pic":src,"pic_name":picname},
+                    dataType : "json",
+                    success : function(data){
+                        var data = JSON.parse(data);
+//                        alert(data['data']['path'])
+                        if(data['flag'] == "success"){
+                            $("#imgPreview").append(" <div class='parents'><div class='one_del'>[-]</div><input type='hidden' value='"+data['data']['path']+"' name='head_pic'/>"+
+                                    "<div><img src='"+'./'+data['data']['path']+"' style='width: 150px;'></div></div>");
+                            bindClick();
+                        }
+                    }
+                });
+            };
+            reader.readAsDataURL(files[i]);
+        }
+    }
+    $("input[name='head_pic_upload']").on('change',ajax);
+    function bindClick() {
+        $(".one_del").click(function () {
+            var url = "{:U('Member/delPhoto')}";
+            var file_path = $(this).next().val();
+            $.post(url,{file_path:file_path},function(data){
+                if(data == 1){
+                    $("#imgPreview").html("");
+                }else{
+                    alert("删除失败！请重新尝试！");
+                }
+            })
+        })
+    }
+    bindClick();
+    var ajax_url = "{:U('Firm/getArea')}";
+    function loadArea(areaId,areaType) {
+        $.post(ajax_url,{'areaId':areaId},function(data){
+            if(areaType=='city'){
+                $('#'+areaType).html('<option value="-1">市/县</option>');
+                $('#district').html('<option value="-1">区/镇</option>');
+            }else if(areaType=='district'){
+                $('#'+areaType).html('<option value="-1">区/镇</option>');
+            }
+            if(areaType!='null'){
+                $.each(data,function(no,items){
+                    $('#'+areaType).append('<option value="'+items.area_id+'">'+items.area_name+'</option>');
+                });
+            }
+        });
+    }
+    function getCity(val){
+        $("#city").empty();
+        $("#area").empty();
+        var area = "<option value=''>镇/区</option>";
+        $("#area").append(area);
+        var option = "<option value=''>市/县</option>";
+        $.ajax({
+            url:"{: U('Member/ajaxCity')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    option += "<option value='"+data[i].area_id+"'>"+data[i].area_name+"</option>"
+                }
+                $("#city").append(option);
+            }
+        });
+    }
+    function getArea(val){
+        $("#area").empty();
+        var option = "<option value=''>镇/区</option>";
+        $.ajax({
+            url:"{: U('Member/ajaxArea')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    option += "<option value='"+data[i].area_id+"'>"+data[i].area_name+"</option>"
+                }
+                $("#area").append(option);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,103 @@
+<include file="Public:header"/>
+<!--时间-->
+<!-- 统计图主题 可自行开发 -->
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/laydate/laydate.js"></script>
+<script type="text/javascript" src="__WEBPUBLIC__/Common/Highcharts/exporting.js"></script>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">支付错误信息管理</a></li>
+        <li class="active">支付错误信息列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>支付错误信息管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="{:U('Error/errorList')}">支付错误信息列表</a>
+            </li>
+        </ul>
+    </div>
+    <div class="search-content">
+        <form action="{:U('Error/errorList')}" method="post" class="search-form form-inline" role="form">
+            <div class="form-group">
+                <label class="sr-only" for="shop_account">商家账号</label>
+                <input class="earch-input form-control" id="shop_account" type="text" name="shop_account" value="{$shop_account}" placeholder="商家账号"/>　
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="member_account">用户账号</label>
+                <input class="earch-input form-control" id="member_account" type="text" name="member_account" value="{$member_account}" placeholder="用户账号"/>　
+            </div>
+            <style>
+                #laydate_ys{
+                    overflow: hidden;!important;
+                }
+                .laydate_body .laydate_bottom{
+                    height: 40px;!important;
+                }
+            </style>
+            &nbsp;&nbsp;
+            <input placeholder="请输入开始日期" name="start_time" value="{$start_time}" class="laydate-icon" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="width: 180px;height:30px">
+            <input placeholder="请输入结束日期" name="end_time" value="{$end_time}" class="laydate-icon" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="width: 180px;height:30px">
+            &nbsp;&nbsp;
+            <button type="submit" class="btn derive">查询</button>
+        </form>
+    </div>
+    <div class="content-box-table content-box-content">
+        <form action="{:U('Error/deleteError')}" method="post" class="batch-form">
+            <table class="table table-striped table-framed table-hover">
+                <thead>
+                <tr>
+                    <th width="8%">
+                        <input class="check-all" type="checkbox" />&nbsp;&nbsp;编号
+                    </th>
+                    <th>支付错误信息钱数</th>
+                    <th>错误原因</th>
+                    <th>时间</th>
+                    <th>订单号</th>
+                    <th>用户名称</th>
+                    <th>用户账号</th>
+                    <th>商家名称</th>
+                    <th>商家账号</th>
+                </tr>
+                </thead>
+                <tbody class="tbody">
+                <if condition="empty($list)">
+                    <tr><td colspan="20"><span style="font-size:14px;">暂无数据</span></td></tr>
+                </if>
+                <volist name="list" id="vo">
+                    <tr>
+                        <td><input type="checkbox" value="{$vo['error_id']}" name="error_id[]"/>&nbsp;&nbsp;{$vo['error_id']}</td>
+                        <td>{$vo['price']}元</td>
+                        <td>{$vo['title']}</td>
+                        <td>{$vo['ctime']|date='Y-m-d H:i:s',###}</td>
+                        <td>{$vo['error_sn']}</td>
+                        <td>{$vo['member_name']|default="未知"}</td>
+                        <td>{$vo['member_account']|default="未知"}</td>
+                        <td>{$vo['shop_name']|default="未知"}</td>
+                        <td>{$vo['shop_account']|default="未知"}</td>
+                    </tr>
+                </volist>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="20">
+                        <div class="fr">
+                            {$page}
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+<include file="Public:footer"/>
+<script>
+    ;!function(){
+        laydate({
+            elem: '#demo'
+        })
+    }();
+</script>

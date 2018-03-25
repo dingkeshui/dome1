@@ -1,0 +1,207 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/Ding_shop.css?1=1">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/xq_slide.css">
+</block>
+<block name="main">
+		<!--头部导航-->
+		<div class="header-container colfff d_index">
+			<div class="weui-cell ih30">
+				<div class="weui-cell__hd"></div>
+				<div class="weui-cell__bd">
+					<p class="shop_name"></p>
+				</div>
+				<div class="weui-cell__ft colfff collect">收藏</div>
+			</div>
+		</div>
+		<!--头部-->
+		<div class="shop_top">
+			<div style="width: 100%;height: 10rem;margin: 0 auto;max-width: 100%;">
+	            <div class="xq_slide_out">
+	                <ul class="xq_slide_in d_shopimg">
+	                    
+	                </ul>
+	            </div>
+	        </div>
+			<div class="shop_imginfo">
+				<div class="shop_name"></div>
+				<div class="starbox d_starbox">
+					
+				</div>
+				<div class="shop_distance">
+					<span class="classspan">美食</span><span>&lt;</span><span class="distance_box"></span>
+				</div>
+				<div class="shop_address">
+					<label>地址:</label>
+					<span class="d_shopaddress"></span>
+				</div>
+			</div>
+		</div>
+		<div class="shop_info">
+			<div>
+				<img src="__WEBPUBLIC__/Wechat/img/iconzd.png" alt="" />
+				<span>电话:</span>
+				<span class="d_phone"></span>
+			</div>
+			<div class="addname" linkto="{:U('Shop/address',array('lat'=>$_REQUEST['lat'],'lnt'=>$_REQUEST['lnt'],'shop_name'=>$_REQUEST['shop_name']))}">
+				<img src="__WEBPUBLIC__/Wechat/img/custom.png" alt="" />
+				<span>地址:</span>
+				<span class="d_shopaddress"></span>
+			</div>
+			<div>
+				<img src="__WEBPUBLIC__/Wechat/img/hotel.png" alt="" />
+				<span>营业时间:</span>
+				<span class="d_shoptime"></span>
+			</div>
+			<!--<div>
+				<img src="__WEBPUBLIC__/Wechat/img/icongy.png" alt=""/>
+				<span>导航</span>
+			</div>-->
+			<div linkto="{:U('Shop/notice',array('shop_id'=>$_REQUEST['shop_id']))}">
+				<img src="__WEBPUBLIC__/Wechat/img/tzicon.png" alt="" />
+				<span>商家公告</span>
+			</div>
+			<div class="addname" linkto="{:U('Shop/round',array('lat'=>$_REQUEST['lat'],'lnt'=>$_REQUEST['lnt'],'shop_name'=>$_REQUEST['shop_name']))}">
+				<img src="__WEBPUBLIC__/Wechat/img/hotel.png" alt="" />
+				<span>周围商圈</span>
+			</div>
+		</div>
+		<!--评价-->
+		<div class="shop_evaluate" style="margin-bottom: 0px !important;">
+			<div class="evaluate_top">
+				<span>评价</span>
+				<span class="evaluate_num">0条</span>
+			</div>
+			<!--一条用户评价-->
+			<div class="d_box">
+
+			</div>
+			<div class="d_more" linkto="{:U('Member/myappraise',array('shop_id'=>$_REQUEST['shop_id']))}">
+			    查看更多
+			</div>
+		</div>
+		<div class="pad10 bgfff" style="padding-bottom: 100px">
+			<div style="border-bottom: 2px solid #FCFCFC;padding: 5px;">商家详情介绍</div>
+			<div class="content" style="padding: 5px;"></div>
+		</div>
+		<!--脚部-->
+		<div class="bgjb footer-container texcen ih50" linkto="{:U('Pay/pay',array('shop_id'=>$_REQUEST['shop_id']))}" style="bottom: 50px">
+			<img class="faceimg" src="__WEBPUBLIC__/Wechat/img/D_face.png"/>
+			<span>买单</span>
+		</div>
+</block>
+<block name="footerjs">	
+<script src="__WEBPUBLIC__/Wechat/slide/js/xq_slide.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+        var shop_id = "{$_REQUEST['shop_id']}";
+        var distance = "{$_REQUEST['distance']}";
+        var lat = "{$_REQUEST['lat']}";
+        var lnt = "{$_REQUEST['lnt']}";
+        var dataargs = {"shop_id":shop_id};
+        var latlnt = sessionStorage.getItem("latlnt");
+        if ( latlnt ) {
+        	//前一页缓存经纬度
+        	var json = JSON.parse( latlnt );
+        	dataargs.lat = json.lat;
+        	dataargs.lnt = json.lnt;
+        	// json.shop_id = shop_id;
+        	// requestUrl( "{:U('Api/Shop/getLntLat')}" , json , function ( res ) {
+        	// 	if ( res.flag == "success" ) {
+        	// 		distance = res.data.detail.distance;
+        	// 		$(".distance_box").html((distance < 1000 ? distance : Math.round(distance/100)/10+"k")+'m');
+        	// 	}
+        	// })
+        }
+        if ( lat && lnt && !distance) {
+        	dataargs.lat = lat;
+        	dataargs.lnt = lnt;
+        }
+        requestUrl("{:U('Api/Shop/shopDetail')}",dataargs,function(data){
+            layer.closeAll();
+            putGoods(data);
+        },"GET",true);
+
+        $(".collect").on('click',function ( res ) {
+        	if ( m_id && shop_id ) {
+        		requestUrl("{:U('Api/Member/collect')}",{m_id:m_id,shop_id:shop_id},function ( res ) {
+        			layer.msg( res.message );
+        		})
+        	}
+        })
+
+         //添加评论到列表
+        function putGoods(data) {
+        	//console.log(data);
+            if(data.flag == 'success'){
+                var shops = data.data.app_list;
+                var d_data=data.data.pic_arr;
+				var str ="";
+				if (shops) {
+					for(var index in shops){
+						var shop = shops[index];
+						shop.head_pic = shop.head_pic.replace('http://','https://');
+						str += '<div class="evaluate_info"><div class="evaluate_left cenimg"><img src='+shop.head_pic+'  /></div><div class="evaluate_right"><div class="evaluate_namediv"><span class=".evaluate_name">'+shop.nick_name+'</span><span class="evaluate_time">'+shop.time+'</span></div><div class="evaluate_star">'+showXing(shop.star)+'</div><div class="evaluate_text">'+shop.content+'</div></div></div>';
+					}
+					$('.d_box').append(str);
+				}
+				var d_mydata=data.data;
+				$('.d_box').html(str);
+				var d_str="";
+				for(var d=0;d<d_data.length;d++){
+					d_str+='<li><img src='+d_data[d]+' /></li>'
+				};
+				$(".d_shopimg").html(d_str);
+				$(".xq_slide_out").xq_slide({
+					type: "h", //轮播方式  h水平轮播；v垂直轮播；o透明切换
+					vatical: false, //图片描述性文本 true 显示 false不显示
+					choseBtn: false, //是否显示上下切换按钮
+					speed: 2000, //动画间隔的时间，以毫秒为单位。
+					mousestop: true, //当鼠标移上去是否停止循环,针对PC端
+					showbar: true, //是否显示轮播导航bar
+					openmb: true //是否开启移动端支持
+				});
+				console.log("yes");
+				if ( d_mydata.detail && !"{$_REQUEST['shop_name']}" && !distance) {
+					distance2 = d_mydata.detail.distance;
+					console.log(distance2);
+
+         			$(".distance_box").html((distance2 < 1000 ? distance2 : Math.round(distance2/100)/10+"k")+'m');
+					$(".addname").each(function () {
+						$(this).attr("linkto",$(this).attr("linkto")+"/lat/"+d_mydata.detail.lat+"/lnt/"+d_mydata.detail.lnt+"/shop_name/"+d_mydata.name);
+					});
+				}else{
+					$(".distance_box").html((distance < 1000 ? distance : Math.round(distance/100)/10+"k")+'m');
+				}
+				$(".shop_name").html(d_mydata.name);
+				$(".d_shopaddress").html(d_mydata.address);
+				$(".d_phone").html(+d_mydata.tel?d_mydata.tel:'暂无电话').attr("linkto","tel:"+d_mydata.tel);
+				$(".d_shoptime").html(+d_mydata.time?d_mydata.time:'09:00-17:00');
+				$(".classspan").html(d_mydata.class_name);
+				$(".evaluate_num").html(d_mydata.app_count+'条');
+				if(!+d_mydata.app_count){
+					$('.d_more').hide();
+				}
+				//console.log(d_mydata.app_count);
+				$(".content").html(d_mydata.content);
+				$(".d_starbox").html(showXing(d_mydata.star,true)+'<span>'+d_mydata.star+'</span>');
+				top_linkto();
+            }else{
+                 layer.msg(data.message);
+            }
+        }
+
+        // 星星数量
+        function showXing( num,num2 ) {
+	    	var str ="";
+	    	for (var i = 0; i < num; i++) {
+	    		str += '<img src="__WEBPUBLIC__/Wechat/img/xing.png"/>';
+	    	}
+	    	if(num2){
+	            for (var k = 0; k < 5-num; k++) {
+	    		   str += '<img src="__WEBPUBLIC__/Wechat/img/D_star2.png"/>';
+	    	    }
+	    	}
+	    	return str;
+	    }
+    </script>
+</block>

@@ -1,0 +1,310 @@
+  <extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/Ding_shop.css?1=1">
+</block>
+<block name="main">
+	<div class="header-container colfff">
+		<div class="weui-cell ih30">
+			<div class="weui-cell__hd"></div>
+			<div class="weui-cell__bd">
+				<p>附近商家</p>
+			</div>
+		</div>
+	</div>
+	<div class="weui-tab">
+		<div class="weui-navbar xq_nav ih0-8 bgfff">
+			<div class="weui-navbar__item allclass">
+				<span class="shopclass" ele="shopclass">全部分类</span>
+				<select class="opainput" forele="shopclass">
+
+				</select>
+			</div>
+			<div class="weui-navbar__item city_name">
+				全城
+			</div>
+			<div class="weui-navbar__item orderdiv">
+				智能排序
+			</div>
+		</div>
+	</div>
+	<div class="tab_main disn">
+		<div class="main_all" >
+			
+		</div>
+		<div class="main_sort">
+			<div class="main_top main_info on top_radio" order="0">智能排序 <img src="__WEBPUBLIC__/Wechat/img/on3.png"/></div>
+			<div class="main_info top_radio" order="1">好评优先 <img src="__WEBPUBLIC__/Wechat/img/on3.png"/></div>
+			<div class="main_info top_radio" order="0">离我最近 <img src="__WEBPUBLIC__/Wechat/img/on3.png"/></div>
+		</div>
+		<div class="bag"></div>
+	</div>
+	<div class="xq_container" style="padding-top: 80px;">
+		<div class="weui-cells shoplist">
+
+		</div>
+	</div>
+</block>
+<block name="footerjs">
+	<script type="text/javascript">
+		var cla_id = "{$_REQUEST['class_id']}";
+		// 点击tab外的地方隐藏
+		$("body").click(function(e){
+			$(".tab_main").hide();
+		});
+		$(".tab_main,.xq_nav").on('click',function ( e ) {
+			e.stopPropagation();
+			//e.deprentfault();
+		});
+		//头部tab点击
+		$(".allclass").on("click",function(){
+			$(".tab_main").hide();
+			console.log(1);
+		})
+		$(".city_name").on("click",function(){
+			$(".tab_main,.main_all").show();
+			$(".main_sort").hide();
+			console.log(2)
+		})
+		$(".orderdiv").on("click",function(){
+			$(".tab_main,.main_sort").show();
+			$(".main_all").hide();
+			console.log(3)
+		});
+		function putClass( arr ) {
+			var str = '<option value="">不限</option>';
+			var istrue;
+			for (var index in arr) {
+				var claitem = arr[index];
+				istrue = "";
+				if (cla_id && cla_id == claitem.class_id) {
+					$(".shopclass").text(claitem.name);
+					istrue = "selected";
+				}
+				str += '<option value="'+claitem.class_id+'" '+istrue+'>'+claitem.name+'</option>';
+			}
+			$(".opainput").html(str);
+		}
+
+
+
+		var classitem = sessionStorage.getItem("classitem");
+		if (classitem) {
+			putClass(JSON.parse(classitem));
+		}else{
+			requestUrl("{:U('Api/Shop/classList')}",{},function ( res ) {
+				if ( res.flag == "success") {
+					putClass(res.data);
+				}else{
+					layer.msg(res.message);
+				}
+			})
+		}
+	</script>
+	<script type="text/javascript">
+	    wx.config({
+	        debug: false,
+	        appId: "{$appid}",
+	        timestamp:'{$wx.timestamp}',
+	        nonceStr: '{$wx.nonceStr}',
+	        signature:'{$wx.signature}',
+	        jsApiList: [
+	            // 所有要调用的 API 都要加到这个列表中
+	            'scanQRCode',
+	            'openLocation',
+	            'getLocation',
+				"onMenuShareTimeline",
+				"onMenuShareAppMessage",
+				"onMenuShareQQ",
+				"onMenuShareWeibo",
+				"onMenuShareQZone"
+	        ]
+	    });
+	    wx.ready(function(){
+	    	wx.getLocation({
+			    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+			    success: function (res) {
+			        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+			        var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+			        var speed = res.speed; // 速度，以米/每秒计
+			        var accuracy = res.accuracy; // 位置精度
+			        //console.log(latitude,longitude);
+			        //getData();
+			        dataargs.lat = ""+latitude;
+			        dataargs.lnt = ""+longitude;
+			        getJson("shouci");
+			        <if condition="empty($_REQUEST['city_id'])">
+			        requestUrl("{:U('Api/Shop/lngLatCity')}",dataargs,getArea,"POST");
+			        </if>
+			    }
+			});
+		});
+
+	    function getArea( res ) {
+	    	if ( res.flag == "success" ) {
+	    		var data = res.data;
+	    		var city_name = data.area_name || data.city_name;
+	    		$(".city_name").text(city_name);
+	    		requestUrl("{:U('Api/Shop/region')}",{city_id:data.area_id},function ( resdata ) {
+	    			if ( resdata.flag=="success" ) {
+	    				var str = '<div class="main_top main_info top_radio" city_id="">附近 <img src="__WEBPUBLIC__/Wechat/img/on3.png" /></div>'
+							+'<div class="main_info on top_radio" city_id ="'+data.area_id+'">全城 <img src="__WEBPUBLIC__/Wechat/img/on3.png" /></div>';
+							var areadata = resdata.data;
+							for (var i in areadata) {
+								var areaobj = areadata[i];
+								str += '<div class="main_info top_radio" area_id="'+areaobj.area+'">'+areaobj.area_name+'<img src="__WEBPUBLIC__/Wechat/img/on3.png" /></div>';
+							}
+							str += '<div class="main_last" linkto="{:U('Shop/opencity')}/city_name/'+city_name+'"><img src="__WEBPUBLIC__/Wechat/img/qh.png" />切换城市</div>';
+						$(".main_all").html(str);
+						top_linkto();
+						top_check();
+	    			}
+	    		},"GET");
+	    	}else{
+	    		layer.msg(res.message);
+	    	}
+	    }
+	    var name = "{$_REQUEST['name']}";
+	    var dataargs = {p:1,name:name};
+	    <if condition="!empty($_REQUEST['city_id'])">
+	    var city_name = "{$_REQUEST['city_name']}";
+		getArea({
+			flag:"success",
+			data:{
+				city_name:city_name,
+				area_id:"{$_REQUEST['city_id']}"
+			}
+		});
+		dataargs.city_id = "{$_REQUEST['city_id']}";
+	    </if> 
+	    
+	        //添加商家到列表
+	    function selectAfter( self ) {
+			console.log(self);
+			dataargs.class_id = self.val();
+			dataargs.p = 1;
+			getJson("shouci");
+		}
+
+		if (cla_id) {
+			dataargs.class_id = cla_id;
+		}
+	    function putGoods(data,args) {
+	        if(data.flag == 'success'){
+	            var shops = data.data;
+	            if((!shops || shops.length == 0 ) && args == "shouci"){
+	                $(".xq_container").addClass('wusj');
+	            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+	            	$(".nomore").remove();
+	                $(".shoplist").append('<div class="texcen nomore">没有更多了！</div>');
+	            }
+	            if ( shops.length != 0 ){
+	            	$(".xq_container").removeClass('wusj');
+	            }
+	                var str ="";
+	                for(var index in shops){
+	                	var shop = shops[index];
+	                    str += '<div class="weui-cell shopobj" linkto="{:U('Shop/shopdetail')}/shop_id/'+shop.shop_id+'/lnt/'+shop.lnt+'/lat/'+shop.lat+'/distance/'+shop.distance+'/shop_name/'+shop.shop_name+'">'
+				+'<div class="weui-cell__hd shopimg">'
+					+'<img src="/'+shop.head_pic+'">'
+				+'</div>'
+				+'<div class="weui-cell__bd texovh ih20">'
+					+'<div class="fs1 disflex">'
+						+'<span class="flex1 texovh">'+shop.shop_name+'</span>'
+						+'<div class="fs0-8 fr"><span class="colccc">'+shop.class_name+'</span>'
+							+'<span class="colff0">&lt;'+(shop.distance < 1000 ? shop.distance : Math.round(shop.distance/100)/10+"k")+'m</span></div>'
+					+'</div>'
+					+'<div class="xing">'
+						+showXing(shop.star)
+						//+'<span class="fr fs0-8 colccc">销量:'+shop.sale+'</span>'
+					+'</div>'
+					+'<div class="fs0-8 colbbb texovh">'
+						+shop.address
+					+'</div>'
+				+'</div>'
+			+'</div>';
+	                }
+	                if (args == "fenye") {
+	                    $('.shoplist').append(str);
+	                }else{
+	                    $('.shoplist').html(str);
+	                }
+	                top_linkto();
+	        }else{
+	             layer.msg(data.message);
+	        }
+	        if (args == "shouci") {
+	            fenye();
+	        }
+	    }
+	    
+	    function showXing( num ) {
+	    	var str ="";
+	    	for (var i = 0; i < num; i++) {
+	    		str += '<img src="__WEBPUBLIC__/Wechat/img/xing.png"/>';
+	    	}
+	    	return str;
+	    }
+
+
+	    function getJson(args) {
+	        console.log(dataargs);
+	        requestUrl("{:U('Api/Shop/shopList')}",dataargs,function(data,times){
+	        	if (new Date().getTime()-500 > times) {
+	        		layer.closeAll();
+	        	}else{
+	        		setTimeout(function () {
+	        			layer.closeAll();
+	        		},500);
+	        	}
+	            putGoods(data,args);
+	        },"GET",true);
+	    }
+
+	    function radioAfter( self ) {
+	    	var order = self.attr("order");
+	    	var city_id = self.attr("city_id");
+	    	var area_id = self.attr("area_id");
+	    	if (order){
+	    		dataargs.order = order;
+	    		$(".orderdiv").text(self.text());
+	    	}
+	    	if (city_id){
+	    		dataargs.city_id = city_id;
+	    		dataargs.area_id = "";
+	    		$(".city_name").text(self.text());
+	    	}
+	    	if (area_id){
+	    		dataargs.area_id = area_id;
+	    		dataargs.city_id = "";
+	    		$(".city_name").text(self.text());
+	    	}
+			dataargs.p = 1;
+			$(".tab_main").hide();
+			getJson("shouci");
+		}
+	    
+	    function fenye(){
+	        var flag= true;//防止ajax请求期间，对此触发请求数据
+	        var $_zd = $(".shopobj").height();//获取每个单项的高度
+	        var length = 3;//定义预加载的数量，提前三个加载数据
+	        var $_par = $(".shoplist");//获取包裹容器
+	        var winheight = $(window).height();//获取窗口高度
+	        var curpage = 1;//存储当前的页数v
+	        $(function(){
+	            $(window).on("scroll",function(e){
+	                if(flag){
+	                    var self = $(this);
+	                    var scrtop = self.scrollTop() + winheight;
+	                    var docheight = $_par.height();
+	                    if(scrtop > docheight - ( length * $_zd ) ){
+	                        flag = false;
+	                        dataargs.p = dataargs.p +1;
+	                        getJson("fenye");
+	                    }
+	                }
+	            });
+	        });
+	    }
+	</script>
+</block>
+		

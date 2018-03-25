@@ -1,0 +1,395 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <!-- <div class="headleft" linkto="{:U('Order/orderindex')}"><img class="wh20 y3" src="__WEBPUBLIC__/Wechat/img/back2.png" style="transform:rotate(180deg);vertical-align: sub;"></div> -->
+                	订单管理
+                	<a linkto="{:U('Order/ordersearch')}" class="headright"><img class="headrightimg" src="__WEBPUBLIC__/Wechat/shopimg/img (85).png"></a>
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    
+    <div class="flex managenav after fs0-8 z3">
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>待发货</span>
+            </div>
+        </div>
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>待收货</span>
+            </div>
+        </div>
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>已完成</span>
+            </div>
+        </div>
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>全部</span>
+            </div>
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container padtop100">
+        <div class="list">
+            
+            <!--  <div class="corderitem mgtop10 bgfff">
+                <div class="weui-cell fs0-8">
+                    <div class="weui-cell__bd">
+                        <div>订单号:18454534846546516</div>
+                        <div class="colb6">创建时间:5489515314545</div>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <div class="colred">待付款</div>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="flex corderitemshop">
+                            <div class="carshopimg">
+                                <img class="w100" src="__WEBPUBLIC__/Wechat/img/img (86).png">
+                            </div>
+                            <div class="flex1 ih20 fs14">
+                                <div class="carshoptab1">
+                                    <div class="line2 h40">按时间段阿萨德看来就阿萨德阿萨德；阿斯达卡asdasdasd阿萨德点击我剪短发阿斯兰的接口打开</div>
+                                    <div class="colb6 fs12">
+                                        M；xxl；黑色 M；xxl
+                                    </div>
+                                    <div>
+                                        <span class="colred">￥159.02</span>
+                                        <span class="right colb6">x1</span>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="flex corderitemshop">
+                            <div class="carshopimg">
+                                <img class="w100" src="__WEBPUBLIC__/Wechat/img/img (86).png">
+                            </div>
+                            <div class="flex1 ih20 fs14">
+                                <div class="carshoptab1">
+                                    <div class="line2 h40">按时间段阿萨德看来就阿萨德阿萨德；阿斯达卡asdasdasd阿萨德点击我剪短发阿斯兰的接口打开</div>
+                                    <div class="colb6 fs12">
+                                        M；xxl；黑色 M；xxl
+                                    </div>
+                                    <div>
+                                        <span class="colred">￥159.02</span>
+                                        <span class="right colb6">x1</span>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="textright after fs12 padlr10 ih30">
+                        <span class="">共48件商品</span>
+                        合计:<span class="">￥185.05</span>
+                        <span>(含运费￥10.00)</span>
+                </div>
+                <div class="orderbutbox">
+                    <div class="">联系买家</div>
+                    <div class="allred">提醒付款</div>
+                </div>
+        </div>-->
+
+        
+    </div>
+
+
+    </div>
+    </block>
+<block name="footerjs">
+    <script type="text/javascript">
+        var status = +"{$_GET['status']}"; //进入这个页面的分类
+        $('.managenavitem').eq(status-1).addClass('on');
+        var dataargs = {shop_id:shop_id,p:1,status:status};
+        var flag= true;//防止ajax请求期间，对此触发请求数据      
+        function getJson(args) {
+            console.log(dataargs);
+            requestUrl("{:U('Api/StoreOrder/orderList')}",dataargs,function(data){
+                layer.closeAll();
+                putGoods(data,args);
+            },"POST");
+        }
+
+    getJson("shouci");
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    // 点击头部导航
+    $('.managenav>div').click(function(){
+        $('.managenavitem').removeClass('on');
+        $(this).find('.managenavitem').addClass('on');
+        if($(this).index()==3){
+            dataargs.status=0;
+        }else{
+            dataargs.status=$(this).index()+1;
+        }
+        dataargs.p=1;
+        getJson("shouci");
+    });
+
+    // 阻止事件冒泡
+    $('.xq_container').on('click','.orderbutbox>div',function(event){
+        event.stopPropagation();
+    });
+    // 点击商品
+    $('.xq_container').on('click','.corderitem',function(){
+        var url="{:U('Order/orderinfo')}/order_id/"+$(this).attr('myid');
+        window.location.href = url;
+    });
+    // 查看评价
+    $('.xq_container').on('click','.lookspan',function(){
+        var url="{:U('Order/evaluatelist')}/order_id/"+$(this).parents('.corderitem').attr('myid');
+        window.location.href = url;
+    });
+    // 删除订单
+    // $('.xq_container').on('click','.removeorder',function(){
+    //     var order_id=$(this).parents('.corderitem').attr('myid');
+    //     var that=$(this);
+    //     layer.open({
+    //           content: '确定删除该订单么'
+    //           ,btn: ['确定', '取消']
+    //           ,yes: function(index, layero){
+    //             //按钮【按钮一】的回调
+    //             requestUrl("{:U('Api/ProductOrder/delOrder')}",{order_id:order_id},function(data){
+    //                 if(data.flag="success"){
+    //                     that.parents('.corderitem').remove();
+    //                 }else{
+
+    //                 }
+    //                 layer.msg(data.message);
+    //             },"POST");
+    //             layer.close(index); //如果设定了yes回调，需进行手工关闭
+    //           }
+    //           ,btn2: function(index, layero){
+    //             //按钮【按钮二】的回调
+                
+    //             //return false 开启该代码可禁止点击该按钮关闭
+    //           }
+    //     });
+    // })
+    //发货
+    $('.list').on('click','.fhspan',function(){
+        var url="{:U('Order/choicelogistics')}/order_id/"+$(this).attr('order_id');
+        location.href=url;
+    });
+    //查看物流
+    $('.list').on('click','.skwl',function(){
+        var wlnum=$(this).attr('wlnum');
+        layer.open({
+            title:'物流单号'
+          ,content: wlnum
+          ,btn: ['确定', '取消']
+          ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+            layer.close(index); //如果设定了yes回调，需进行手工关闭
+          }
+          ,btn2: function(index, layero){
+            //按钮【按钮二】的回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+          }
+        });
+    });
+    //提醒付款
+    $('.list').on('click','.txfk',function(){
+        var order_id=$(this).attr('order_id');
+        requestUrl("{:U('Api/ProductOrder/informPushMember')}",{order_id:order_id},function(data){
+            if(data.flag=="success"){
+                layer.msg('提醒成功！');
+            }else{
+                layer.msg(data.message);
+            }
+        },"POST");
+    });
+    //添加商品到列表
+    function putGoods(data,args) {
+        console.log(data);
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $(".list").html('');
+                $(".list").addClass('wusj');
+                $(".nomore").remove();
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".list").append('<div class="texcen nomore">没有更多了！</div>');
+            }else{
+                $(".list").removeClass('wusj');
+                $(".nomore").remove();
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    //console.log(shop.cover_pic);
+                    // 判断状态
+                    var newstr={};//存储状态
+                    switch(+shop.status)
+                    {
+                    case 0:
+                        newstr.str1="创建";
+                        newstr.str2="待付款";
+                        newstr.time=shop.ctime;
+                        newstr.str3='<div order_id="'+shop.order_id+'" class="allred txfk">提醒付款</div>';
+                        break;
+                    case 1:
+                        newstr.str1="付款";
+                        newstr.str2="待发货";
+                        newstr.time=shop.pay_time;
+                        newstr.str2_2='<div class="colb6">在线支付</div>';
+                        newstr.str3='<div order_id="'+shop.order_id+'" class="allred fhspan">发货</div>';
+                        break;
+                    case 2:
+                        newstr.str1="发货";
+                        newstr.time=shop.send_time;
+                        newstr.str2="待收货";
+                        newstr.str3='<div class="mgr5 skwl" wlnum="'+shop.delivery_number+'">查看物流</div>';
+                        break;
+                    case 3:
+                        newstr.str1="成交";
+                        newstr.str2="待评价";
+                        newstr.time=shop.affirm_time;
+                        newstr.str3='<div class="mgr5 skwl" wlnum="'+shop.delivery_number+'">查看物流</div>'; 
+                        break;
+                    case 4:
+                        newstr.str1="成交";
+                        newstr.str2="已完成";
+                        newstr.time=shop.affirm_time;
+                        newstr.str3='<div class="mgr5 lookspan">查看评价</div>'; 
+                        break;
+                    case 9:
+                        newstr.str1="创建";
+                        newstr.str2="已关闭";
+                        newstr.time=shop.ctime;
+                        newstr.str3='';  
+                        break;
+                    }
+
+                    // 存储该订单的商品
+                    var shopstr='';
+                    for(var k=0;k<shop.product.length;k++){
+                        shopstr+='<div class="flex corderitemshop">'
+                            +'<div class="carshopimg">'
+                                +'<img class="" src="'+shop.product[k].cover_pic+'">'
+                            +'</div>'
+                            +'<div class="flex1 ih20 fs14">'
+                                +'<div class="carshoptab1">'
+                                    +'<div class="line2 h40">'+shop.product[k].title+'</div>'
+                                    +'<div class="colb6 fs12">'+((shop.product[k].attr&&shop.product[k].attr!="0")?shop.product[k].attr:"暂无属性")+'</div>'
+                                    +'<div>'
+                                        +'<span class="colred">￥'+shop.product[k].price+'</span>'
+                                        +'<span class="right colb6">x'+shop.product[k].num+'</span>'
+                                    +'</div>'
+                                +'</div>'
+                            +'</div>'
+                    +'</div>';
+                    }
+
+
+                    str +=  '<div class="corderitem mgtop10 bgfff" myid='+shop.order_id+'>'
+                                +'<div class="weui-cell fs0-8">'
+                                    +'<div class="weui-cell__bd">'
+                                        +'<div>订单号:'+shop.order_sn+'</div>'
+                                        +'<div class="colb6">'+newstr.str1+'时间:'+newstr.time+'</div>'
+                                    +'</div>'
+                                    +'<div class="weui-cell__ft">'
+                                        +'<div class="colred">'+newstr.str2+'</div>'
+                                        +(newstr.str2_2?newstr.str2_2:'')
+                                    +'</div>'
+                                +'</div>'
+                                +'<div class="">'+shopstr+'</div>'
+                                +'<div class="textright after fs12 padlr10 ih30">'
+                                        +'<span class="">共'+shop.total_num+'件商品</span>'
+                                        +'合计:<span class="">￥'+shop.total+'</span>'
+                                        +'<span>(含运费￥'+shop.postage+')</span>'
+                                +'</div>'
+                                +'<div class="orderbutbox">'+newstr.str3+'</div>'
+                            +'</div>';
+                }
+                if (args == "fenye") {
+                    $('.list').append(str);
+                }else{
+                    $('.list').html(str);
+                }
+                flag=true;
+            }
+        }else{
+            if(data.message=="数据为空"&&args == "shouci"){
+                $(".list").html('').addClass('wusj');
+            }else{
+                layer.msg(data.message);
+            }
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    function fenye(){
+        var $_zd = $(".corderitem").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".list");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $('.xq_container').on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+
+    </script>
+    <script type="text/javascript">
+        function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+        }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+        if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+            $('.back').off('click');
+            $('.back').on('click',function(){
+                bridge.callHandler('iosBack',{}, function(response) {
+                    //处理oc过来的回调
+                    layer.closeAll();
+                })
+            });
+        }
+    })
+    </script>
+</block>

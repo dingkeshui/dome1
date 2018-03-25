@@ -1,0 +1,118 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                    退款/售后
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    
+    <div class="flex managenav after fs0-8 z3">
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>待审核</span>
+            </div>
+        </div>
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>退款中</span>
+            </div>
+        </div>
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>已完成</span>
+            </div>
+        </div>
+        <div class="flex1">
+            <div class="managenavitem on">
+                <span>全部</span>
+            </div>
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container padtop100">
+        <div class="corderitem mgtop10 bgfff">
+                <div class="weui-cell fs0-8">
+                    <div class="weui-cell__bd">
+                        <div>退款编号:18454534846546516</div>
+                        <div class="colb6">创建时间:5489515314545</div>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="flex corderitemshop">
+                            <div class="carshopimg">
+                                <img class="w100" src="../img/img (86).png">
+                            </div>
+                            <div class="flex1 ih20 fs14">
+                                <div class="carshoptab1">
+                                    <div class="line2 h40">按时间段阿萨德看来就阿萨德阿萨德；阿斯达卡asdasdasd阿萨德点击我剪短发阿斯兰的接口打开</div>
+                                    <div class="colb6 fs12">
+                                        M；xxl；黑色 M；xxl
+                                    </div>
+                                    <div>
+                                        <span class="">x1</span>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="flex corderitemshop">
+                            <div class="carshopimg">
+                                <img class="w100" src="../img/img (86).png">
+                            </div>
+                            <div class="flex1 ih20 fs14">
+                                <div class="carshoptab1">
+                                    <div class="line2 h40">按时间段阿萨德看来就阿萨德阿萨德；阿斯达卡asdasdasd阿萨德点击我剪短发阿斯兰的接口打开</div>
+                                    <div class="colb6 fs12">
+                                        M；xxl；黑色 M；xxl
+                                    </div>
+                                    <div>
+                                        <span class="">x1</span>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="after fs12 blue padlr10 ih30">
+                        <span>仅退款</span>
+                        <span>待审核</span>
+                       <!--  <span>退款中</span>
+                        <span>退款成功</span>
+                        <span>退货退款</span>
+                        <span>退款关闭</span> -->
+                </div>
+                <div class="orderbutbox">
+                    <div class="allred">查看详情</div>
+                </div>
+        </div>
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+       var order_id = "{:I('get.i_o_id')}";
+        function feedBack() {
+            var reason = $(".content").val();
+            dataargs = {"order_id":order_id,"reason":reason};
+            requestUrl("{:U('Api/Order/returnOrder')}",dataargs,function(data){
+                if(data['flag'] == "success"){
+                    layer.msg("申请成功！");
+                    setTimeout(function () {
+                        var url = "{:U('Order/orderlist')}";
+                        window.location.href = url;
+                    },1000);
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+            },"POST",true);
+        }
+
+    </script>
+</block>

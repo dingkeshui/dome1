@@ -1,0 +1,261 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <div class="content-box">
+        <ul class="breadcrumb">
+            <li><a href="{:U('Index/main')}">首页</a></li>
+            <li><a href="{:U('Member/memberList')}">会员管理</a></li>
+            <li class="active">添加会员</li>
+        </ul>
+        <div class="page-header clearfix">
+            <h3>会员管理</h3>
+            <ul class="nav nav-tabs">
+                <li>
+                    <a href="{:U('Member/memberList')}">会员列表</a>
+                </li>
+                <li class="active">
+                    <a href="{:U('Member/addMember')}">添加会员</a>
+                </li>
+            </ul>
+        </div>
+
+        <!--表格内容-->
+        <div class="content-box-content">
+            <!--表单 start-->
+            <form action="{:U('Member/addMember')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="account" class="col-sm-3 control-label"><em class="prompt-red">*</em>手机号：</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" id="account" name="account" placeholder="手机号">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-3 control-label"><em class="prompt-red">*</em>密码：</label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control" id="password" name="password"  placeholder="密码">
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="legal_pernm" class="col-sm-3 control-label"><em class="prompt-red">*</em>法人姓名：</label>
+                    <div class="col-sm-9">
+                            <input type="text" class="form-control" id="legal_pernm" name="legal_pernm" placeholder="法人姓名">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>身份证照片：</label>
+                    <script>
+                        function PreviewImage1(imgFile)
+                        {
+                            var filextension=imgFile.value.substring(imgFile.value.lastIndexOf("."),imgFile.value.length);
+                            filextension=filextension.toLowerCase();
+                            if ((filextension!='.jpg')&&(filextension!='.gif')&&(filextension!='.jpeg')&&(filextension!='.png')&&(filextension!='.bmp'))
+                            {
+                                alert("对不起，系统仅支持标准格式的照片，请您调整格式后重新上传，谢谢 !");
+                                imgFile.focus();
+                            }
+                            else
+                            {
+                                var path;
+                                if(document.all)//IE
+                                {
+                                    imgFile.select();
+                                    path = document.selection.createRange().text;
+                                    document.getElementById("imgPreview1").innerHTML="";
+                                    document.getElementById("imgPreview1").style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled='true',sizingMethod='scale',src=\"" + path + "\")";//使用滤镜效果
+                                }
+                                else//FF
+                                {
+                                    path=window.URL.createObjectURL(imgFile.files[0]);// FF 7.0以上
+                                    //path = imgFile.files[0].getAsDataURL();// FF 3.0
+                                    document.getElementById("imgPreview1").innerHTML = "<img id='img1'src='"+path+"' style='width:100px;height:100px'/>";
+                                    //document.getElementById("img1").src = path;
+                                }
+                            }
+                        }
+                    </script>
+                    <div class="uplode-pic fl">
+                        <div id="imgPreview1"></div>
+                        <input type="file"  name="photo1" onchange="PreviewImage1(this)"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="business_license_no" class="col-sm-3 control-label"><em class="prompt-red">*</em>营业执照号：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="business_license_no" name="business_license_no" placeholder="营业执照号">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="col-sm-3 control-label"><em class="prompt-red">*</em>身份证照片：</label>
+                    <script>
+                        function PreviewImage2(imgFile)
+                        {
+                            var filextension=imgFile.value.substring(imgFile.value.lastIndexOf("."),imgFile.value.length);
+                            filextension=filextension.toLowerCase();
+                            if ((filextension!='.jpg')&&(filextension!='.gif')&&(filextension!='.jpeg')&&(filextension!='.png')&&(filextension!='.bmp'))
+                            {
+                                alert("对不起，系统仅支持标准格式的照片，请您调整格式后重新上传，谢谢 !");
+                                imgFile.focus();
+                            }
+                            else
+                            {
+                                var path;
+                                if(document.all)//IE
+                                {
+                                    imgFile.select();
+                                    path = document.selection.createRange().text;
+                                    document.getElementById("imgPreview2").innerHTML="";
+                                    document.getElementById("imgPreview2").style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled='true',sizingMethod='scale',src=\"" + path + "\")";//使用滤镜效果
+                                }
+                                else//FF
+                                {
+                                    path=window.URL.createObjectURL(imgFile.files[0]);// FF 7.0以上
+                                    //path = imgFile.files[0].getAsDataURL();// FF 3.0
+                                    document.getElementById("imgPreview2").innerHTML = "<img id='img2'src='"+path+"'style='width:100px;height:100px'/>";
+                                    //document.getElementById("img1").src = path;
+                                }
+                            }
+                        }
+                    </script>
+                    <div class="uplode-pic fl">
+                        <div id="imgPreview2"></div>
+                        <input type="file"  name="photo2" onchange="PreviewImage2(this)"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="shop_address" class="col-sm-3 control-label">店铺地址：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="shop_address" name="shop_address" placeholder="店铺地址">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sort" class="col-sm-3 control-label"><em class="prompt-red">*</em>所在地区：</label>
+                    <div class="col-sm-9">
+                        <select name="province" id="p_province" onchange="loadArea(this.value,'city')">
+                            <if condition="$supply_info.province eq ''">
+                                <option value="-1" selected>省份/直辖市</option>
+                                <else/>
+                                <option value="{$supply_info.province}">{$supply_info.province_name}</option>
+                            </if>
+                            <volist name="province" id="one">
+                                <option value="{$one.area_id}">{$one.area_name}</option>
+                            </volist>
+                        </select>
+                        <select name="city" id="city" onchange="loadArea(this.value,'district')">
+                            <if condition="$supply_info.city eq ''">
+                                <option value="-1">市/县</option>
+                                <else/>
+                                <option value="{$supply_info.city}">{$supply_info.city_name}</option>
+                            </if>
+                        </select>
+                        <select name="district" id="district">
+                            <if condition="$supply_info.district eq ''">
+                                <option value="-1">区/镇</option>
+                                <else/>
+                                <option value="{$supply_info.district}">{$supply_info.city_name}</option>
+                            </if>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">邮箱：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="email" name="email" placeholder="邮箱">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">推荐人：</label>
+                    <div class="col-sm-9">
+                        <select name="referral" id="referral">
+                            <option value="-1">请选择</option>
+                            <option value="0">无</option>
+                            <volist name="Referral" id="vo">
+                                <option value="{$vo['referral_id']}">{$vo['referral_name']}</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="col-sm-3 control-label">状态：</label>
+                    <div class="checkbox">
+                        <input type="radio" name="status" value="0" checked>&nbsp;&nbsp;待审核&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="status" value="1" >&nbsp;&nbsp;审核未通过
+                        <input type="radio" name="status" value="2" >&nbsp;&nbsp;审核通过
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <input type="hidden" value="" id="form_pan"/>
+                        <input type="submit" class="btn" value="确认添加" style="width:100px;height:40px;background-color: #428BCA;border-radius:5px;" >
+                    </div>
+                </div>
+            </form>
+            <!--表单 end-->
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>
+<!--地区的三级联动-->
+<script type="text/javascript">
+    var ajax_url = "{:U('Firm/getArea')}";
+    function loadArea(areaId,areaType) {
+        $.post(ajax_url,{'areaId':areaId},function(data){
+            if(areaType=='city'){
+                $('#'+areaType).html('<option value="-1">市/县</option>');
+                $('#district').html('<option value="-1">区/镇</option>');
+            }else if(areaType=='district'){
+                $('#'+areaType).html('<option value="-1">区/镇</option>');
+            }
+            if(areaType!='null'){
+                $.each(data,function(no,items){
+                    $('#'+areaType).append('<option value="'+items.area_id+'">'+items.area_name+'</option>');
+                });
+            }
+        });
+    }
+</script>
+<script>
+    var url = "{:U('Member/oneMember')}";
+    $(document).ready(function(){
+        $("#account").change(function(){
+            var numbers =$("#account").val();
+            $.post(url,{'numbers':numbers},function(data) {
+                if(data){
+                    alert("会员账号存在");
+
+                }else{
+
+                }
+            });
+        });
+
+
+    });
+</script>
+<!--判断手机的格式-->
+<script>
+//    $(document).ready(function(){
+//        $("#account").blur(function(){
+//            var phone = $("#account").val();
+//            if(checkMobile(phone)){
+//
+//            }else{
+//                alert("手机格式错误");
+//            }
+//
+//        });
+//        function checkMobile(str) {
+//            var re = /^1\d{10}$/;
+//            if (re.test(str)) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        }
+//        $(".btn").click(function(){
+//            if(checkMobile(phone)){
+//                $(".form").submit();
+//            }
+//        });
+//    });
+</script>

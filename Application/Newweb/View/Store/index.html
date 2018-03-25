@@ -1,0 +1,297 @@
+<extend name="Public:header"/>
+<block name="main">
+	<div class="header-container bgfff">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd searchimgbox">
+            	<img class="searchimg" src="__WEBPUBLIC__/Wechat/img/search.png">
+				<form action="/index.php/Newweb/Store/productlist" method="get" id="subform">
+					<input placeholder="输入商品名称搜索" type="search" autocomplete="off" name="name" class="search_input" value="" />
+				</form>
+            	<!-- <span class="fr tc">退出</span> -->
+            </div>
+            <!--<div class="weui-cell__ft">
+                <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+            </div>-->
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+    	<div style="width: 100%;height: 12rem;margin: 0 auto;max-width: 100%;">
+			<div class="xq_slide_out">
+				<ul class="xq_slide_in">	
+
+				</ul>
+			</div>
+		</div>
+		<div id="test"></div>
+
+		<div class="navbox">
+			<div class="nav">
+				
+			</div>
+		</div>
+
+		<div class="ladder_list">
+
+			<!--<div class="pad10 mgtop10 bgfff">
+				<div class="ih30"><span class="mgr5">商城必买</span><span class="colred">SELECTD</span></div>
+				<div class="flex">
+					<div class="mgr5 fs0">
+						<img class="w100" src="__WEBPUBLIC__/newp/img/mid3.png">
+					</div>
+					<div class="selectdbox">
+						<div class="fs0 padb5 box">
+							<img class="w100" src="__WEBPUBLIC__/newp/img/mid1.png">
+						</div>
+						<div class="fs0">
+							<img class="w100" src="__WEBPUBLIC__/newp/img/mid2.png">
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="pad10 mgtop10 bgfff">
+				<div class="ih30"><span class="mgr5">品牌精选</span><span class="coljx">SHOWTIME</span></div>
+				<div class="fs0"><img class="w100" src="__WEBPUBLIC__/newp/img/mid4.png"></div>
+				<table>
+					<tr>
+						<td><img class="w100" src="__WEBPUBLIC__/newp/img/mid5.png"></td>
+						<td><img class="w100" src="__WEBPUBLIC__/newp/img/mid5.png"></td>
+						<td><img class="w100" src="__WEBPUBLIC__/newp/img/mid5.png"></td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="pad10 mgtop10 bgfff">
+				<div class="ih30"><span class="mgr5">吃货必囤</span><span class="colch">TASTY</span></div>
+				<div class="fs0"><img class="w100" src="__WEBPUBLIC__/newp/img/mid4.png"></div>
+				<table>
+					<tr>
+						<td><img class="w100" src="__WEBPUBLIC__/newp/img/mid5.png"></td>
+						<td><img class="w100" src="__WEBPUBLIC__/newp/img/mid5.png"></td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="pad10 mgtop10 bgfff">
+				<div class="ih30"><span class="mgr5">爱美之心</span><span class="colam">BEAUTY</span></div>
+				<div class="fs0"><img class="w100" src="__WEBPUBLIC__/newp/img/mid4.png"></div>
+				<table>
+					<tr>
+						<td><img class="w100" src="__WEBPUBLIC__/newp/img/mid5.png"></td>
+						<td><img class="w100" src="__WEBPUBLIC__/newp/img/mid5.png"></td>
+						<td><img class="w100" src="__WEBPUBLIC__/newp/img/mid5.png"></td>
+					</tr>
+				</table>
+			</div>-->
+
+		</div>
+    </div>
+    <div class="togley" linkto="{:U('Newweb/Car/car')}">
+
+        <img src="/Public/Wechat/img/img (136).png"/>
+    </div>
+    
+</block>
+<block name="footerjs">
+	<script type="text/javascript" src="__WEBPUBLIC__/Wechat/js/xq_slide.js"></script>
+	<script type="text/javascript">
+		//如果是ios
+	    if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+	    	if(!"{$_GET['iosAd']}"){
+	    		$('.header-container .weui-cell__hd').hide();
+	    	}
+	    }
+	    var dataargs = {p:1};
+	    requestUrl("{:U('Api/StoreIndex/index')}",dataargs,function ( res ) {
+	    	if ( res.flag == "success" ) {
+	    		var advert_list = res.data.advert_list;
+	    		var class_list = res.data.class_list;
+	    		var ladder_list = res.data.ladder_list;
+	    		if (advert_list && dataargs.p == 1) {
+	    			showAdv( advert_list );
+	    		}
+	    		if (class_list && dataargs.p == 1) {
+	    			showClass( class_list );
+	    		}
+	    		if (ladder_list) {
+	    			showLadder( ladder_list );
+	    		}
+	    	}else{
+	    		layer.msg( res.message );
+	    	}
+	    },"post",true);
+
+	    function showAdv( shops ) {
+	    	var str ="";
+	    	for(var index in shops){
+		    	var shop = shops[index];
+		    	var url = shop.url ? 'href="'+shop.url+'"' : '';
+		    	//如果是ios
+	    		if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+	        		shop.url=shop.url?shop.url+'/iosin/1':"";
+	    		}
+		        str += '<li>'
+							+'<a a_id="'+shop.a_id+'" goto="'+shop.url+'"><img src="'+shop.pic+'"/></a>'
+						+'</li>';
+		    }
+		    $('.xq_slide_in').html(str);
+		    $(".xq_slide_out").xq_slide({
+				type: "h", //轮播方式  h水平轮播；v垂直轮播；o透明切换
+				vatical: false, //图片描述性文本 true 显示 false不显示
+				choseBtn: false, //是否显示上下切换按钮
+				speed: 2000, //动画间隔的时间，以毫秒为单位。
+				mousestop: true, //当鼠标移上去是否停止循环,针对PC端
+				showbar: true, //是否显示轮播导航bar
+				openmb: true //是否开启移动端支持
+			});
+	    }
+	    //统计广告点击
+	    var godata={m_id:m_id,port:'yd'};
+	    var u = navigator.userAgent;
+		var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+		var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+	    if(isAndroid&&(isApp)){
+	    	godata.port='Android';
+	    }
+	    if(isiOS&&(isApp)){
+	    	godata.port='ios';
+	    }
+	    $('.xq_slide_in').on('click','a',function(){
+	    	var url=$(this).attr('goto');
+	    	godata.a_id=$(this).attr('a_id');
+	    	godata.type=6;
+	    	clicknum(godata,url);
+	    });
+	    $('.ladder_list').on('click','a',function(){
+	    	var url=$(this).attr('goto');
+	    	godata.a_id=$(this).attr('a_id');
+	    	godata.type=5;
+	    	clicknum(godata,url);
+	    });
+	    function clicknum(data,url){
+	    	requestUrl("{:U('Api/Advert/clickAdvert')}",data,function ( res ) {
+	    	if ( res.flag == "success" ) {
+	    		if(url){
+	    			location.href=url;
+	    		}
+	    	}else{
+	    		layer.msg( res.message );
+	    	}
+	    	},"post");
+	    }
+	    function showClass( class_list ){
+	    	var str = '';
+	    	for (var i = 0; i < class_list.length; i++) {
+	    		var claobj = class_list[i];
+	    		str += '<div>'
+					+'<div linkto="{:U('Store/productlist')}/cate_id/'+claobj.cate_id+'"><img src="'+claobj.pic+'"  ></div>'
+					+'<div>'+claobj.category+'</div>'
+				+'</div>';
+	    	}
+	    	$(".nav").html(str);
+	    	top_linkto();
+	    }
+
+	    function showLadder( ladder_list){
+			console.log(ladder_list);
+	    	var str = '';
+	    	for (var i = 0; i < ladder_list.length; i++) {
+	    		var ladobj = ladder_list[i];
+	    		if ( dataargs.p == 1 && (i == 1 || i == 0)) {
+	    			if ( i == 1 ) {
+	    				str += '<div class="pad10 mgtop10 bgfff">'
+							+'<div class="adtitle"><span class="mgr5">'+ladobj.name+'</span><span class="colam"><img src="'+ladobj.pic+'"></span></div>'
+							+'<div class="fs0"><a a_id="'+ladobj.a_id+'" goto="'+(ladobj.down_advert[0] ? ladobj.down_advert[0]['link_url'] : "")+'"><img class="w100" src="'+(ladobj.down_advert[0] ? ladobj.down_advert[0]['pic'] : "")+'"  ></div>'
+							+'<table>'
+								+'<tr>'
+									+'<td><a a_id="'+ladobj.down_advert[1]['a_id']+'" goto="'+ladobj.down_advert[1]['link_url']+'"><img class="w100" src="'+ladobj.down_advert[1]['pic']+'"  ></td>'
+									+'<td><a a_id="'+ladobj.down_advert[2]['a_id']+'" goto="'+ladobj.down_advert[2]['link_url']+'"><img class="w100" src="'+ladobj.down_advert[2]['pic']+'"  ></td>'
+									+'<td><a a_id="'+ladobj.down_advert[3]['a_id']+'" goto="'+ladobj.down_advert[3]['link_url']+'"><img class="w100" src="'+ladobj.down_advert[3]['pic']+'"  ></td>'
+								+'</tr>'
+							+'</table>'
+						+'</div>';
+	    			}else{
+	    				str += '<div class="pad10 mgtop10 bgfff">'
+								+'<div class="adtitle"><span class="mgr5">'+ladobj.name+'</span><span class="colred"><img src="'+ladobj.pic+'"></span></div>'
+								+'<div class="flex">'
+									+'<div class="mgr5 fs0">'
+										+'<a class="colblack" a_id="'+ladobj.down_advert[0]['a_id']+'" goto="'+(ladobj.down_advert[0] ? ladobj.down_advert[0]['link_url'] : "")+'"><img class="w100" src="'+(ladobj.down_advert[0] ? ladobj.down_advert[0]['pic'] : "")+'"  >'
+									+'</div>'
+									+'<div class="selectdbox">'
+										+'<div class="fs0 padb5 box">'
+											+'<a class="colblack" a_id="'+ladobj.down_advert[1]['a_id']+'" goto="'+(ladobj.down_advert[1] ? ladobj.down_advert[1]['link_url'] : "")+'"><img class="w100" src="'+(ladobj.down_advert[1] ? ladobj.down_advert[1]['pic'] : "")+'"  >'
+										+'</div>'
+										+'<div class="fs0">'
+											+'<a class="colblack" a_id="'+ladobj.down_advert[2]['a_id']+'" goto="'+(ladobj.down_advert[2] ? ladobj.down_advert[2]['link_url'] : "")+'"><img class="w100" src="'+(ladobj.down_advert[2] ? ladobj.down_advert[2]['pic'] : "")+'"  >'
+										+'</div>'
+									+'</div>'
+								+'</div>'
+							+'</div>';
+	    			}
+		    	}else{
+		    		str += '<div class="pad10 mgtop10 bgfff">'
+							+'<div class="adtitle"><span class="mgr5">'+ladobj.name+'</span><span class="colam"><img src="'+ladobj.pic+'"></span></div>'
+							+'<div class="fs0"><a class="colblack" a_id="'+ladobj.down_advert[0]['a_id']+'" goto="'+(ladobj.down_advert[0] ? ladobj.down_advert[0]['link_url'] : "")+'"><img class="w100" src="'+(ladobj.down_advert[0] ? ladobj.down_advert[0]['pic'] : "")+'"  ></div>'
+							+'<table>'
+								+'<tr>'
+									+'<td><a class="colblack" a_id="'+ladobj.down_advert[1]['a_id']+'" goto="'+(ladobj.down_advert[1] ? ladobj.down_advert[1]['link_url'] : "")+'"><img class="w100" src="'+(ladobj.down_advert[1] ? ladobj.down_advert[1]['pic'] : "")+'"  ></td>'
+									+'<td><a class="colblack" a_id="'+ladobj.down_advert[2]['a_id']+'" goto="'+(ladobj.down_advert[2] ? ladobj.down_advert[2]['link_url'] : "")+'"><img class="w100" src="'+(ladobj.down_advert[2] ? ladobj.down_advert[2]['pic'] : "")+'"  ></td>'
+								+'</tr>'
+							+'</table>'
+						+'</div>';
+		    	}
+	    	}
+	    	$(".ladder_list").html(str);
+	    }
+	    $("#subform").on('submit',function () {
+	    	var name = $('.search_input').val();
+	    	var URL = "{:U('Newweb/Store/productlist')}/name/"+name;
+	    	// alert(URL);
+	    	window.location.href = URL;
+	        return false;
+	    })
+	//loadimg();
+	</script>
+	<script type="text/javascript">
+		function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    	}
+
+    	setupWebViewJavascriptBridge(function(bridge) {
+            if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+	            $('.togley').removeAttr('linkto');
+	            $('.togley').click(function(){
+	            	location.href="{:U('Car/car')}/iosin/1";
+	            });
+	            $('.back').off('click');
+	            $('.back').on('click',function(){
+	            	bridge.callHandler('iosBack',{}, function(response) {
+	                    //处理oc过来的回调
+	                    layer.closeAll();
+                	})
+	            });
+        	}
+        });
+	</script>
+</block>

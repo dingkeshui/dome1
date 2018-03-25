@@ -1,0 +1,156 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" type="text/css" href="__WEBPUBLIC__/Wechat/css/oldtop.css">
+</block>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__bd">
+                <p>开户信息</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        
+       <div class="weui-cells bgfff">
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    名称
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input userName" type="text" placeholder="真实姓名"/>
+                </div>
+            </div>
+            
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    手机号
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input account" type="tel" placeholder="手机号"/>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    证件号
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input identityNo" type="text" placeholder="身份证号"/>
+                </div>
+            </div>
+            <!--<div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    证件号
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input mobiePhone" type="text" placeholder="身份证"/>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    图形码
+                </div>
+
+                <div class="weui-cell__bd">
+                    <input class="weui-input verify_code" type="text" placeholder="请输入图形码"/>
+                </div>
+                <div class="weui-cell__ft">
+                    <img class="changevirify" src="{:U('Api/Login/verify')}" style="height:30px"/>
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    验证码
+                </div>
+
+                <div class="weui-cell__bd">
+                    <input class="weui-input vc" type="text" placeholder="请输入验证码"/>
+                </div>
+                <div class="weui-cell__ft colff0 getcode">获取验证码</div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    推荐码
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="填写推荐人手机号，没有可不填"/>
+                </div>
+            </div>-->
+        </div>
+
+        <div class="pad10 colred">
+            注意：请填写真实的个人信息，否则将导致提现失败。如信息有所变更，请前往个人中心更改。实名认证通过姓名，和身份证等主要信息不能修改！
+        </div>
+        
+        <div class="weui-btn-area">
+            <a class="weui-btn bgjb nobor bindclick" href="javascript:">完成</a>
+        </div>
+        
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+        getCode("{:U('Api/Login/sendVerify')}","bind",0);
+        var curind = 0;
+        var url = "{:U('Api/Login/verify')}";
+        $(".changevirify").on('click',function () {
+            curind++;
+            $(this).attr("src",url+"/"+curind);
+        });
+
+        // $(".bindclick").on('click',function () {
+        //     var type = 0;
+        //     var account = $(".account").val();
+        //     var mixture_id = m_id;
+        //     var vc=$(".vc").val();
+        //     if (!(/^1{1}[3|5|7|8|4]{1}[0-9]{9}$/.test(account)) || !mixture_id || !vc) {
+        //         layer.msg("数据填写错误！");
+        //         return;
+        //     }
+        //     requestUrl("{:U('Api/Login/bindTel')}",{type:type,account:account,mixture_id:mixture_id,"vc":vc},function ( res ) {
+        //         layer.msg(res.message);
+        //         if (res.flag == "success") {
+        //             setTimeout(function () {
+        //               location.href = "{:U('Member/configMember')}";
+        //             },500);
+        //         }
+        //     })
+        // });
+        $(".bindclick").on('click',function () {
+            var type = 0;//0标示用户，1表示商家
+            var userName = $(".userName").val();
+            var mobiePhone = $(".account").val();
+            var identityNo = $(".identityNo").val();
+            var mix_id = m_id;
+            if (!(/^1{1}[3|5|7|8|4]{1}[0-9]{9}$/.test(mobiePhone)) || !mix_id || !userName) {
+                layer.msg("数据填写错误！");
+                return;
+            }
+            if(!/\d{17}[\d|X|x]{1}/.test(identityNo)){
+                layer.msg("请核对身份证号！");
+                return;
+            }
+            var args = {identityNo:identityNo,type:type,userName:userName,mix_id:mix_id,mobiePhone:mobiePhone,identityType:1};
+            var inself = "{$_REQUEST['inself']}";
+            if ( inself == 1) {
+                args.inself = 1;
+            }
+            requestUrl("{:U('Api/HxUser/openUser')}", args ,function ( res ) {
+                layer.msg(res.message);
+                if (res.flag == "success") {
+                    console.log(res.data);
+                    var form = '<form id="submitform" action="https://ebp.ips.com.cn/fpms-access/action/user/open" method="post">'
+                        +'<input name="ipsRequest" value="'+res.data.ipsRequest+'" type="hidden"/>'
+                    '</form>';
+                    $("body").html(form);
+                    $("#submitform").submit();
+                }
+            })
+        });
+    </script>
+</block>

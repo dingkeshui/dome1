@@ -1,0 +1,127 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/Ding_shop.css">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/xq_slide.css">
+</block>
+<block name="main">
+		<!--头部导航-->
+		<div class="header-container colfff">
+			<div class="weui-cell ih30">
+				<div class="weui-cell__hd"></div>
+				<div class="weui-cell__bd">
+					<p>我的评价</p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="texcen" style="padding:70px 20px;">
+			<img src="__WEBPUBLIC__/Wechat/img/pingimg.png" style="width:10rem"/>
+
+			<div class="pad0-10" style="line-height:20px;">已有<span class="colff0 pingcount"></span>条评价</div>
+		</div>
+		<!--评价-->
+		<div class="shop_evaluate">
+			<!--一条用户评价-->
+			<div class="d_box">
+			</div>
+		</div>
+		<!--脚部-->
+		<div class="bgjb footer-container texcen ih50" linkto="{:U('Pay/pay')}">
+			<img class="faceimg" src="__WEBPUBLIC__/Wechat/img/D_face.png"/>
+			<span>买单</span>
+		</div>
+</block>
+<block name="footerjs">	
+<script src="__WEBPUBLIC__/Wechat/slide/js/xq_slide.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+        
+
+        var flag= true;//防止ajax请求期间，对此触发请求数据
+        var shop_id = shop_id;
+        var dataargs = {"p":1};
+        if (shop_id) {
+            dataargs.shop_id = shop_id;
+        }
+   	    getJson("shouci");
+
+        function getJson(args) {
+            console.log(dataargs);
+            requestUrl("{:U('Api/Member/myAppraise')}",dataargs,function(data){
+                layer.closeAll();
+                putGoods(data,args);
+            },"GET",true);
+        }
+
+         //添加评论到列表
+        function putGoods(data,args) {
+        	console.log(data);
+            if(data.flag == 'success'){
+                var shops = data.data;
+                if((!shops || shops.length == 0 ) && args == "shouci"){
+                    $(".xq_container").addClass('wusj');
+                }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                    $(".d_box").append('<div class="texcen">没有更多了！</div>');
+                }else{
+                    var str ="";
+                    for(var index in shops){
+                    	var shop = shops[index];
+                    	if (index == "count") {
+                    		$(".pingcount").text(shop);
+                    	}else{
+                        	str +='<div class="evaluate_info"><div class="evaluate_left cenimg"><img src='+shop.head_pic+'  /></div><div class="evaluate_right"><div class="evaluate_namediv"><span class=".evaluate_name">'+shop.mem_name+'</span><span class="evaluate_time">'+shop.time+'</span></div><div class="evaluate_star">'+showXing(shop.star)+'</div><div class="evaluate_text">'+shop.content+'</div>'+(shop.list ? ('<div class="colff0 pad0-10">'+shop.shop_name+'回复：'+shop.list[0]['content']+'</div>') : '' )+'</div></div>';	
+                    	}
+                    }
+                    if (args == "fenye") {
+                        $('.d_box').append(str);
+                    }else{
+                        $('.d_box').html(str);
+                    }
+                    top_linkto();
+                }
+            }else{
+                 layer.msg(data.message);
+            }
+
+            if (args == "shouci") {
+                fenye();
+            }
+        }
+
+        // 星星数量
+        function showXing( num,num2 ) {
+    	var str ="";
+    	for (var i = 0; i < num; i++) {
+    		str += '<img src="__WEBPUBLIC__/Wechat/img/xing.png"/>';
+    	}
+    	if(num2){
+            for (var k = 0; k < 5-num; k++) {
+    		   str += '<img src="__WEBPUBLIC__/Wechat/img/D_star2.png"/>';
+    	    }
+    	}
+    	return str;
+    }
+    //分页
+    function fenye(){
+        var $_zd = $(".evaluate_info").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".d_box");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+    </script>
+</block>

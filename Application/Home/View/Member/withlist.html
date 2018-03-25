@@ -1,0 +1,156 @@
+<extend name="Public:header"/>
+<block name="main">
+	<div class="header-container colfff">
+		<div class="weui-cell ih30">
+			<div class="weui-cell__hd"></div>
+			<div class="weui-cell__bd">
+				<p>转出记录</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="xq_container">
+		<div class="weui-cells fs0-8 mat0 billList">
+			
+		</div>
+	</div>
+
+    <div class="disn texcen imgarea" style="padding: 10px">
+        <div>修改支付宝</div>
+        <div class="weui-cells bgfff">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <input class="weui-input account1" type="text" placeholder="请填写支付宝账号">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <input class="weui-input name1" type="text" placeholder="请填写真实姓名">
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+	<script>
+
+    var dataargs = {p:1,mix_id:m_id,type:1};
+    //添加转出记录到列表
+    function putGoods(data,args) {
+    	console.log(data);
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".billList").append('<div class="texcen">没有更多了！</div>');
+            }else{
+                //+(shop.status == 0 ? '待打款' : (shop.status == 1 ? '已打款' : '已驳回'))+
+                var str ="";
+                for(var index in shops){
+                	var shop = shops[index];
+                    str += '<div class="weui-cell bill weui-cell_access">'
+					+'<div class="weui-cell__hd texcen">'
+						+'<div class="colbbb">'+showTime( shop.ctime )+'</div>'
+						+'<div class="borad4 bgjb colfff">已转出</div>'
+					+'</div>'
+					+'<div class="weui-cell__hd pad0-10">'
+						+'<img class="slimg" src="'+(shop.pay_type == 3 ? '/Public/Wechat/img/d_douzi.png' : '/Public/Wechat/img/zhifubao.png')+'"/>'
+					+'</div>'
+					+'<div class="weui-cell__bd">'
+						+'<div>'+shop.total_price+'</div>'
+						//+'<div class="colbbb">'+shop.name+'-'+shop.account+'</div>'
+					+'</div>'
+					+'<div class="weui-cell__ft" w_id="'+shop.w_id+'" status="'+shop.status+'" name="'+shop.name+'" account="'+shop.account+'">'
+						+(shop.status == 9 ? '处理' : '')
+					+'</div>'
+				+'</div>';
+                }
+                if (args == "fenye") {
+                    $('.billList').append(str);
+                }else{
+                    $('.billList').html(str);
+                }
+                top_linkto();
+            }
+        }else{
+            layer.msg(data.message);
+        }
+
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    $(".billList").on('click','[w_id]',function () {
+        var status = $(this).attr("status");
+        if (status != 9) {
+            return;
+        }
+        var w_id = $(this).attr("w_id");
+        var name = $(this).attr("name");
+        var account = $(this).attr("account");
+        $(".account1").val(account);
+        $(".name1").val(name);
+        layer.open({
+            "title":false,
+            "type":1,
+            "area":["250px","200px"],
+            "btn":["确定"],
+            "content":$(".imgarea"),
+            "yes":function () {
+                name = $(".name1").val();
+                account = $(".account1").val();
+                console.log("hello",name,account);
+                requestUrl('{:U('Api/Pool/editWith')}',{w_id:w_id,account:account,name:name},function ( res ) {
+                    layer.closeAll();
+                    layer.msg( res.message );
+                    if ( res.flag == "success" ) {
+                        window.location.reload();
+                    }
+                })
+            }
+        });
+    });
+    
+    function showTime( timestamp ) {
+        var time = new Date(+(timestamp+"000"));
+        var str = (time.getMonth()+1)+"/"+time.getDate();
+        return str;
+    }
+
+
+    function getJson(args) {
+        console.log(dataargs);
+        requestUrl("{:U('Api/Pool/withList')}",dataargs,function(data){
+        	layer.closeAll();
+            putGoods(data,args);
+        },"GET",true);
+    }
+
+    getJson("shouci");
+    
+    function fenye(){
+        var flag= true;//防止ajax请求期间，对此触发请求数据
+        var $_zd = $(".bill").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".billList");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).off("scroll");
+            $(window).on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+</script>
+</block>

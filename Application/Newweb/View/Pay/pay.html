@@ -1,0 +1,875 @@
+<extend name="Public:head"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	买单
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+    	<div class="bgfff paytop">
+            <div class="textcenter fs0">
+                <img class="w100px" src="{:C('API_URL')}/{$res['head_pic']}">
+            </div>
+            <div class="fontw textcenter padlr10 mgtop20 shopname">
+                {$res['name']}
+            </div>
+            <div class="textcenter colb6 none">
+                <span>{$res['tel']}</span>
+            </div>
+            <div class="padlr10 fs14 mgtop20">
+                买单金额
+            </div>   
+            <div class="padlr10 flex">
+                <div class="fs35">￥</div>
+                <div class="flex1 flex flexvcenter">
+                    <input class="weui-input h30 fs16 after money" step="0.01" type="number" placeholder="请输入金额"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-cells weui-cells_checkbox bgfff">
+            <label class="weui-cell weui-check__label zxd">
+                <div class="weui-cell__hd mgr5">
+                    <img src="__WEBPUBLIC__/Wechat/cusimg/img (24).png" alt="" style="width:20px;margin-right:5px;display:block">
+                </div>
+                <div class="weui-cell__bd">
+                    <div>众享豆抵用￥<span class="paywallet">0</span></div>
+                    <div class="fs0-8 colb6">剩余<span class="wallet">0</span>众享豆</div>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="checkbox" checked class="weui-check doudi" name="checkbox1" id="s11" value="1">
+                    <i class="weui-icon-checked"></i>
+                </div>
+            </label>
+            <div class="weui-cell weui-cell_access choosecoupon none">
+                <div class="weui-cell__hd">
+                    <img src="__WEBPUBLIC__/Wechat/cusimg/img (102).png" alt="" style="width:20px;margin-right:5px;display:block">
+                </div>
+                <div class="weui-cell__bd">
+                    <p class="ih30">选择优惠券 <span class="couponname right fs12"></span></p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </div>
+        </div>
+        <div class="weui-cells__title">选择支付方式</div>
+        <div class="weui-cells mgtop0 weui-cells_radio">
+            <label class="weui-cell weui-check__label bgfff">
+                    <div class="weui-cell__hd">
+                        <img src="__WEBPUBLIC__/Wechat/cusimg/img (99).png" alt="" style="width:20px;margin-right:5px;display:block">
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>微信支付</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input type="radio" class="weui-check paytype" checked name="radio1" id="x11" value="wechat">
+                        <span class="weui-icon-checked"></span>
+                    </div>
+            </label>
+        </div>
+        <label for="weuiAgree" class="weui-agree">
+            <input id="weuiAgree" type="checkbox" checked class="weui-agree__checkbox">
+            <span class="weui-agree__text">
+                阅读并同意<a class="colblue" href="{:U('Member/memberprotocol')}">《相关条款》</a>
+            </span>
+        </label>
+        <div class="but2 fs14 colfff bgblue mgtop20 needpay">
+            需支付￥<span>0</span>
+        </div>
+        <div id="actionSheet_wrap2" style="display:none;">
+            <div class="weui-mask_transparent actionsheet__mask bg0-6"  style="opacity: 1" id="mask2"></div>
+            <div class="weui-actionsheet weui-actionsheet_toggle" id="weui-actionsheet2">
+                <div class="weui-actionsheet__menu myweuilq pad10">
+                    <div class="myweuilqtop">
+                        <div class="myweuilqname fs14">{$res['name']}</div>
+                        <div><b class="colblack">使用优惠券</b></div>
+                    </div>
+                    <div class="myweuilqmain">
+                        <div></div>
+                        <!-- <div class="flex lqbox lqbox1">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    ￥ <span class="fs35">10</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>优惠券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                        </div>
+                        <div class="flex lqbox lqbox2">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    % <span class="fs35">90</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>打折券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                        </div>
+                        <div class="flex lqbox lqbox3">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    ￥ <span class="fs35">10</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>现金券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                        </div>
+                        <div class="flex lqbox lqbox4">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    ￥ <span class="fs35">免</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>现金券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                        </div> -->
+                    </div>
+
+                </div>
+                <div class="weui-actionsheet__action">
+                    <div class="weui-actionsheet__cell myweuiok2" id="actionsheet_cancel2">关闭</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+    <script type="text/javascript">
+        var shop_id  = "{$_GET['shop_id']}";   //商家id
+        var flag =true;
+        var jsApiParameters;
+        var summoney = 0;   //用户今日消费额
+        var coupon = "";//优惠券
+        var max_price = +"{$res['max_price']}";
+        if(wallet<=0){
+            $('.zxd').hide();
+            $('.paytype').attr('checked',true);
+        }else{
+            $('.wallet').text(wallet);
+        }
+        $('.money').change(function(){
+            var money = +$(this).val();
+            var reg = /^\d{1,}(.\d{1,2}){0,1}$/;
+            if ( !reg.test(money) || money < 0.03 ) {
+                layer.msg("金额不合法，请重新输入！");
+                return false;
+            }
+            if(coupon){
+                if(coupon.type==1){
+                    if(money<=coupon.money){
+                        money=0;
+                    }else{
+                       money=(money-coupon.money).toFixed(2);
+                    }
+                }else if(coupon.type==2){
+                    if(money>=coupon.max_price){
+                        money=(money*coupon.money).toFixed(2);
+                    }
+                }else if(coupon.type==3){
+                    if(money>=coupon.max_price){
+                        money=(money-coupon.money).toFixed(2);
+                    }
+                }
+            }
+            if(wallet>=money){
+                $('.paywallet').text(money);
+                $('.wallet').text((wallet-money).toFixed(2));
+                if($('.doudi')[0].checked){
+                    $('.needpay').find('span').text(0);
+                }else{
+                    $('.needpay').find('span').text(money);
+                }
+            }else{
+                $('.paywallet').text(wallet);
+                $('.paymoney').text(wallet);
+                $('.wallet').text(0);
+                if($('.doudi')[0].checked){
+                    $('.needpay').find('span').text((money-wallet).toFixed(2));
+                }else{
+                    $('.needpay').find('span').text(money);
+                }
+            }
+        });
+        $('.money').keyup(function(){
+            shownum();
+        });
+        //计算与显示数量
+        function shownum(){
+            var money = +$('.money').val();
+            if(coupon){
+                if(coupon.type==1){
+                    if(money<=coupon.money){
+                        money=0;
+                    }else{
+                       money=(money-coupon.money).toFixed(2);
+                    }
+                }else if(coupon.type==2){
+                    if(money>=coupon.max_price){
+                        money=(money*coupon.money).toFixed(2);
+                    }
+                }else if(coupon.type==3){
+                    if(money>=coupon.max_price){
+                        money=(money-coupon.money).toFixed(2);
+                    }
+                }
+            }
+            if(wallet>=money){
+                $('.paywallet').text(money);
+                $('.wallet').text((wallet-money).toFixed(2));
+                if($('.doudi')[0].checked){
+                    $('.needpay').find('span').text(0);
+                }else{
+                    $('.needpay').find('span').text(money);
+                }
+            }else{
+                $('.paywallet').text(wallet);
+                $('.paymoney').text(wallet);
+                $('.wallet').text(0);
+                if($('.doudi')[0].checked){
+                    $('.needpay').find('span').text((money-wallet).toFixed(2));
+                }else{
+                    $('.needpay').find('span').text(money);
+                }
+            }
+        }
+        // 是否选择豆抵扣
+        $('.doudi').change(function(){
+            var money= +$('.money').val();
+            if(coupon){
+                if(coupon.type==1){
+                    if(money<=coupon.money){
+                        money=0;
+                    }else{
+                       money=(money-coupon.money).toFixed(2);
+                    }
+                }else if(coupon.type==2){
+                    if(money>=coupon.max_price){
+                        money=(money*coupon.money).toFixed(2);
+                    }
+                }else if(coupon.type==3){
+                    if(money>=coupon.max_price){
+                        money=(money-coupon.money).toFixed(2);
+                    }
+                }
+            }
+            var $span=$('.needpay').find('span');
+            if($('.doudi')[0].checked){
+                if(money>wallet){
+                    $span.text((money-wallet).toFixed(2));
+                }else{
+                    $span.text(0);
+                }
+            }else{
+                $span.text(money);
+            }
+        });
+        requestUrl("{:U('Api/Member/memberTotal')}",{"m_id":m_id,shop_id:shop_id}, function (res) {
+            layer.closeAll();
+            if(res['flag'] == "error"){
+                layer.closeAll();
+                layer.msg(res['message']);
+            }else{
+                summoney= +res.data.total;
+            }
+        },"GET");
+        //去支付
+        $('.needpay').on('click',function(){
+            payfun(1);
+            // var money = +$('.money').val();
+            // var reg = /^\d{1,}(.\d{1,2}){0,1}$/;
+            // if ( !reg.test(money) || money < 0.03 ) {
+            //     layer.msg("金额不合法，请重新输入！");
+            //     return false;
+            // }
+            // var weuiAgree = $("#weuiAgree")[0].checked;
+            // if(!weuiAgree){
+            //     layer.msg("请阅读相关条款！");
+            //     return false;
+            // }
+            // var pay_type = $(".doudi:checked").val();
+            // if(pay_type && wallet >= money){
+            //     if (!flag) {
+            //         return;
+            //     }
+            //     flag = false;
+
+            //     dataargs = {price:money,shop_id:shop_id,m_id:m_id,is_wallet:1};
+            //     if(coupon){
+            //         dataargs.c_m_id = coupon.c_m_id;
+            //     }
+            //     requestUrl("{:U('Api/Order/payBill')}",dataargs,function(data){
+            //         flag =true;
+            //         if(data['flag'] == "success"){
+            //             if(coupon){
+            //                 sessionStorage.removeItem("coupon");
+            //             }
+            //             layer.msg("支付成功！");
+            //             setTimeout(function () {
+            //                 var url = "{:U('Bill/billList')}";
+            //                 window.location.href = url;
+            //             },1000);
+            //         }else if(data['flag'] == "error"){
+            //             layer.msg(data['message']);
+            //         }
+            //     },"POST",'');
+            // }else{
+            //     var money = +$(".money").val();
+            //     var shop_name = "{$res['name']}";
+            //     dataargs = {order_price:money,m_id:m_id,shop_id:shop_id,shop_name:shop_name};
+            //     if(coupon){
+            //         dataargs.c_m_id = coupon.c_m_id;
+            //     }
+            //     if ( pay_type ) {
+            //         dataargs.is_wallet = 1;
+            //         if ( money - wallet > 3000 ) {
+            //             layer.msg("大于3000请分多次支付！");
+            //             return;
+            //         }
+            //     }else if ( money > 3000 ){
+            //         layer.msg("大于3000请分多次支付！");
+            //         return;
+            //     }
+
+            //     if ( money+summoney > max_price ) {
+            //         var istrue = confirm("您每日消费最多可获"+max_price+"麦穗，是否继续交易！");
+            //         layer.closeAll();
+            //         if (!istrue) {
+            //             return;
+            //         }
+            //     }
+            //     if (!flag) {
+            //         return;
+            //     }
+            //     flag = false;
+            //     requestUrl("{:U('Pay/getHxApi')}", dataargs, function (data) {
+            //         flag =true;
+            //         document.getElementsByTagName("body")[0].innerHTML = data.data;
+            //         document.forms['ipspaysubmit'].submit()
+            //     },"POST",true);
+            // }
+
+        });
+
+        function payfun(mydata,bridge){
+            var money2 = +$('.money').val();
+            money=money2;
+            var reg = /^\d{1,}(.\d{1,2}){0,1}$/;
+            if ( !reg.test(money) || money < 0.03 ) {
+                layer.msg("金额不合法，请重新输入！");
+                return false;
+            }
+            var weuiAgree = $("#weuiAgree")[0].checked;
+            if(!weuiAgree){
+                layer.msg("请阅读相关条款！");
+                return false;
+            }
+            var pay_type = $(".doudi:checked").val();
+            if(coupon){
+                coupon.isok=false;
+                if(coupon.type==1){
+                    if(money<=coupon.money){
+                        money=0;
+                    }else{
+                       money=(money-coupon.money).toFixed(2);
+                    }
+                    coupon.isok=true;
+                }else if(coupon.type==2){
+                    if(money>=coupon.max_price){
+                        money=(money*coupon.money).toFixed(2);
+                        coupon.isok=true;
+                    }
+                }else if(coupon.type==3){
+                    if(money>=coupon.max_price){
+                        money=(money-coupon.money).toFixed(2);
+                        coupon.isok=true;
+                    }
+                }
+            }
+            if(coupon.isok){
+
+            }else{
+                coupon="";
+            }
+            if(pay_type && wallet >= money){
+                if (!flag) {
+                    return;
+                }
+                flag = false;
+
+                dataargs = {price:money2,shop_id:shop_id,m_id:m_id,is_wallet:1};
+                if(coupon){
+                    dataargs.c_m_id = coupon.id;
+                }
+                requestUrl("{:U('Api/Order/payBill')}",dataargs,function(data){
+                    flag =true;
+                    if(data['flag'] == "success"){
+                        if(coupon){
+                            sessionStorage.removeItem("couponarr");
+                        }
+                        layer.msg("支付成功！");
+                        setTimeout(function () {
+                            var url = "{:U('Bill/billList')}";
+                            window.location.href = url;
+                        },1000);
+                    }else if(data['flag'] == "error"){
+                        layer.msg(data['message']);
+                    }
+                },"POST",'');
+            }else{
+                // var money = +$(".money").val();
+                var shop_name = "{$res['name']}";
+                dataargs = {order_price:money2,m_id:m_id,shop_id:shop_id,shop_name:shop_name};
+                if(coupon){
+                    dataargs.c_m_id = coupon.id;
+                }
+                if ( pay_type ) {
+                    dataargs.is_wallet = 1;
+                    if ( money - wallet > 30000 ) {
+                        layer.msg("大于30000请分多次支付！");
+                        return;
+                    }
+                }else if ( money > 30000 ){
+                    layer.msg("大于30000请分多次支付！");
+                    return;
+                }
+
+                if ( money+summoney > max_price ) {
+                    var istrue = confirm("您每日消费最多可获"+max_price+"麦穗，是否继续交易！");
+                    layer.closeAll();
+                    if (!istrue) {
+                        return;
+                    }
+                }
+                if (!flag) {
+                    return;
+                }
+                flag = false;
+                console.log('mydata='+mydata);
+                if(mydata==1){
+                    requestUrl("{:U('Pay/getHxApi')}", dataargs, function (data) {
+                        flag =true;
+                        if(data.flag="success"){
+                            if(coupon){
+                                sessionStorage.removeItem("couponarr");
+                            }
+                            document.getElementsByTagName("body")[0].innerHTML = data.data;
+                            document.forms['ipspaysubmit'].submit();
+                        }else{
+                            layer.msg(data.message);
+                        }
+                        
+                    },"POST",true);
+                }else{
+                    layer.msg("正在唤起微信！");
+                    bridge.callHandler('loginAction', dataargs, function(response) {
+                        //处理oc过来的回调
+                        if(coupon){
+                            sessionStorage.removeItem("couponarr");
+                        }
+                        layer.closeAll();
+                    })
+                }
+            }
+        }
+//        $('.choosecoupon').click(function(){
+//            if($('#actionSheet_wrap2').hasClass('none')){
+//                $('#actionSheet_wrap2').removeClass('none');
+//            }else{
+//                $('#actionSheet_wrap2').addClass('none');
+//            }
+//        });
+    //显示优惠券
+        $('.choosecoupon').click(function(){
+            if(havenum==0){
+                layer.msg('无其他可用优惠券');
+                return;
+            }
+            $('#actionSheet_wrap2').show();
+        });
+        //关闭
+        $('#mask2,#actionsheet_cancel2').click(function(){
+            $('#actionSheet_wrap2').hide();
+        });
+    //使用优惠券
+    var havenum=0;//剩几个优惠券
+    $('.myweuilqmain').on('click','.lqright',function(){
+        var c_m_id=$(this).attr('c_m_id');
+        var $that=$(this);
+        layer.open({
+            content: '确定使用该优惠券？'
+            ,btn: ['确定', '取消']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+                if($that.attr('type')==4){
+                    requestUrl("{:U('Api/Coupon/useCoupon')}",{c_m_id:c_m_id},function(data){
+                        if(data.flag=="success"){
+                            layer.msg('使用成功！');
+                        }else{
+                            layer.msg(data.message);
+                        }
+                    },'POST',true);
+                }else{  
+                        $('.couponname').html($that.attr('myname'));
+                        $that.closest('.lqbox').remove();
+                        if($('.lqbox').length==0){
+                            havenum=0;
+                        }
+                        if($that.attr('type')==1){
+                            coupon={'id':c_m_id,'name':$that.attr('myname'),'money':$that.attr('money'),'type':1};
+                            // couponarr.push(coupon);
+                            // sessionStorage.setItem("couponarr",JSON.stringify(couponarr));
+                        }else if($that.attr('type')==2){
+                            coupon={'id':c_m_id,'name':$that.attr('myname'),'money':$that.attr('money'),'max_price':$that.attr('max_price'),'type':2};
+                            // couponarr.push(coupon);
+                            // sessionStorage.setItem("couponarr",JSON.stringify(couponarr));
+                        }else if($that.attr('type')==3){
+                            coupon={'id':c_m_id,'name':$that.attr('myname'),'money':$that.attr('money'),'max_price':$that.attr('max_price'),'type':3};
+                            // couponarr.push(coupon);
+                            // sessionStorage.setItem("couponarr",JSON.stringify(couponarr));
+                        }
+                        shownum();
+                }
+                layer.close(index);
+                $('#actionSheet_wrap2').hide();
+            }
+            ,btn2: function(index, layero){
+                // location.href="{:U('Order/myorder')}/type/1";
+            }
+            ,cancel: function(){ 
+                // location.href="{:U('Order/myorder')}/type/1";
+            }
+        });
+    })
+    //优惠券分页
+    var dataargs2={m_id:m_id,status:1,p:1};
+    getJson("shouci");
+    function getJson(args) {
+        console.log(dataargs2);
+        requestUrl("{:U('Api/Coupon/couponList')}",dataargs2,function(data){
+            layer.closeAll();
+            putGoods(data,args);
+        },"POST");
+    };
+    // var couponarr=[];//优惠券使用数组
+    // if(sessionStorage.getItem("couponarr")){
+    //         // if(JSON.parse(sessionStorage.getItem("coupon")).shop_id==shop_id){
+    //             couponarr=JSON.parse(sessionStorage.getItem("couponarr"));
+    //             if(couponarr.length){
+    //                 $('.choosecoupon').removeClass('none');
+    //                 coupon=couponarr[couponarr.length-1];
+    //                 $('.couponname').text(coupon.name);
+                    
+    //             }
+    //         // }
+    // } 
+    //添加商品到列表
+    function putGoods(data,args) {
+        console.log(data);
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $(".myweuilqmain>div").html('');
+                $(".nomore").remove();
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".myweuilqmain>div").append('<div class="texcen nomore">没有更多了！</div>');
+            }else{
+                havenum=1;
+                $('.choosecoupon').removeClass('none');
+                $(".nomore").remove();
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    if( +shop.status==0){
+                        // 判断状态
+                        var newstr="";//存储状态
+                        switch(+shop.type)
+                        {
+                        case 1:
+                            newstr='<div class="flex lqbox lqbox3">'
+                                        +'<div class="flex1 flex lqleft textovh">'
+                                            +'<div class="flex flexcenter mgr5">'
+                                                +'￥ <span class="fs35">'+shop.min_price+'</span>'
+                                            +'</div>'
+                                            +'<div class="flex1 textovh fs14">'
+                                                +'<div>'+shop.title+'</div>'
+                                                +'<div class="textovh">'+shop.desc+'</div>'
+                                                +'<div class="fs12 textovh">(<span>'+shop.start_time+'-'+shop.end_time+'</span><span></span>)</div>'
+                                            +'</div>'
+                                        +'</div>'
+                                        +'<div class="lqright flex flexcenter" money="'+shop.min_price+'" type="'+shop.type+'" myname="'+shop.title+'" c_m_id='+shop.c_m_id+'>'
+                                            +'<span class="">点击使用</span>'
+                                        +'</div>'
+                                    +'</div>'
+                            break;
+                        case 2:
+                            newstr='<div class="flex lqbox lqbox2">'
+                                        +'<div class="flex1 flex lqleft textovh">'
+                                            +'<div class="flex flexcenter mgr5">'
+                                                +'<span class="fs35">'+shop.money+'</span>'
+                                                +'<span class="y3">折</span>'
+                                            +'</div>'
+                                            +'<div class="flex1 textovh fs14">'
+                                                +'<div>'+shop.title+'</div>'
+                                                +'<div class="textovh">'+shop.desc+'</div>'
+                                                +'<div class="fs12 textovh">(<span>'+shop.start_time+'-'+shop.end_time+'</span><span></span>)</div>'
+                                            +'</div>'
+                                        +'</div>'
+                                        +'<div class="lqright flex flexcenter" max_price="'+(shop.max_price?shop.max_price:0)+'" money="'+shop.money/10+'" type="'+shop.type+'" myname="'+shop.title+'" c_m_id='+shop.c_m_id+'>'
+                                            +'<span class="">点击使用</span>'
+                                        +'</div>'
+                                    +'</div>'
+                            break;
+
+                        case 3:
+                            newstr='<div class="flex lqbox lqbox1">'
+                                        +'<div class="flex1 flex lqleft textovh">'
+                                            +'<div class="flex flexcenter mgr5">'
+                                                +'￥ <span class="fs35">'+shop.min_price+'</span>'
+                                            +'</div>'
+                                            +'<div class="flex1 textovh fs14">'
+                                                +'<div>'+shop.title+'</div>'
+                                                +'<div class="textovh">'+shop.desc+'</div>'
+                                                +'<div class="fs12 textovh">(<span>'+shop.start_time+'-'+shop.end_time+'</span><span></span>)</div>'
+                                            +'</div>'
+                                        +'</div>'
+                                        +'<div class="lqright flex flexcenter" max_price="'+shop.max_price+'" type="'+shop.type+'" money="'+shop.min_price+'" myname="'+shop.title+'" c_m_id='+shop.c_m_id+'>'
+                                            +'<span class="">点击使用</span>'
+                                        +'</div>'
+                                    +'</div>'
+                            break;
+
+                        case 4:
+                            newstr='<div class="flex lqbox lqbox4">'
+                                        +'<div class="flex1 flex lqleft textovh">'
+                                            +'<div class="flex flexcenter mgr5">'
+                                                +'￥ <span class="fs35">免</span>'
+                                            +'</div>'
+                                            +'<div class="flex1 textovh fs14">'
+                                                +'<div>'+shop.title+'</div>'
+                                                +'<div class="textovh">'+shop.desc+'</div>'
+                                                +'<div class="fs12 textovh">(<span>'+shop.start_time+'-'+shop.end_time+'</span><span></span>)</div>'
+                                            +'</div>'
+                                        +'</div>'
+                                        +'<div class="lqright flex flexcenter" type="'+shop.type+'" myname="'+shop.title+'" c_m_id='+shop.c_m_id+'>'
+                                            +'<span class="">点击使用</span>'
+                                        +'</div>'
+                                    +'</div>'
+                            break;
+
+                        }
+                        str +=newstr;
+                    }
+                }
+                if (args == "fenye") {
+                    $('.myweuilqmain>div').append(str);
+                }else{
+                    $('.myweuilqmain>div').html(str);
+                }
+                flag2=true;
+                top_linkto();
+            }
+        }else{
+            layer.msg(data.message);
+            $(".myweuilqmain>div").html('').addClass('wusj');
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    var flag2=true;
+    function fenye(){
+        var $_zd = $(".lqbox").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".myweuilqmain>div");//获取包裹容器
+        var winheight = 250;//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $('.myweuilqmain').on("scroll",function(e){
+                if(flag2){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag2 = false;
+                        dataargs2.p = dataargs2.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+    </script>
+    <script type="text/javascript">
+
+        function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+        }
+
+        setupWebViewJavascriptBridge(function(bridge) {
+            $(".needpay").off('click');
+            $(".needpay").on('click',function ( e ) {
+                e.preventDefault();
+                // payfun(bridge);
+                var pay_type = $(".doudi:checked").val();
+                var weuiAgree = $("#weuiAgree")[0].checked;
+                var money2 = +$(".money").val();
+                money=money2;
+                if ( !weuiAgree ) {
+                    layer.msg("请阅读相关条款！");
+                    return false;
+                }
+                var reg = /^\d{1,}(.\d{1,2}){0,1}$/;
+                if ( !reg.test(money) || money < 0.03 ) {
+                    layer.msg("金额不合法，请重新输入！");
+                    return false;
+                }
+                if(coupon){
+                    coupon.isok=false;
+                    if(coupon.type==1){
+                        if(money<=coupon.money){
+                            money=0;
+                        }else{
+                           money=(money-coupon.money).toFixed(2);
+                        }
+                        coupon.isok=true;
+                    }else if(coupon.type==2){
+                        if(money>=coupon.max_price){
+                            money=(money*coupon.money).toFixed(2);
+                            coupon.isok=true;
+                        }
+                    }else if(coupon.type==3){
+                        if(money>=coupon.max_price){
+                            money=(money-coupon.money).toFixed(2);
+                            coupon.isok=true;
+                        }
+                    }
+                }
+                if(coupon.isok){
+
+                }else{
+                    coupon="";
+                }
+                if(pay_type && wallet >= money){
+                    if (!flag) {
+                        return;
+                    }
+                    flag = false;
+                    dataargs = {price:money2,shop_id:shop_id,m_id:m_id,is_wallet:1};
+                    if(coupon){
+                        dataargs.c_m_id=coupon.id;
+                    }
+                    requestUrl("{:U('Api/Order/payBill')}",dataargs,function(data){
+                        flag =true;
+                        if(data['flag'] == "success"){
+                            if(coupon){
+                                sessionStorage.removeItem("coupon");
+                            }
+                            layer.msg("支付成功！");
+                            setTimeout(function () {
+                                // var url = "{:U('Bill/billList')}";
+                                // window.location.href = url;
+                                bridge.callHandler('drawAction', {}, function(response) {
+                                    console.log("yes");
+                                });
+                            },1000);
+                        }else if(data['flag'] == "error"){
+                            layer.msg(data['message']);
+                        }
+                    });
+                }else{
+                    var shop_name = "{$res['name']}";
+                    dataargs = {order_price:money2,m_id:m_id,shop_id:shop_id,shop_name:shop_name};
+                    if(coupon){
+                        dataargs.c_m_id=coupon.id;
+                    }else{
+                        dataargs.c_m_id="";
+                    }
+
+                    if ( pay_type ) {
+                        dataargs.is_wallet = 1;
+                        if ( money - wallet > 30000 ) {
+                            layer.msg("大于30000请分多次支付！");
+                            return;
+                        }
+                    }else{
+                        dataargs.is_wallet = 0;
+                        if ( money > 30000 ) {
+                            layer.msg("大于30000请分多次支付！");
+                            return;
+                        }
+                    }
+
+                    if ( money+summoney > max_price ) {
+                        var istrue = confirm("您每日消费最多可获"+max_price+"麦穗，是否继续交易！");
+                        layer.closeAll();
+                        if (!istrue) {
+                            return;
+                        }
+                    }
+
+
+                    layer.msg("正在唤起微信！");
+                    bridge.callHandler('loginAction', dataargs, function(response) {
+                        //处理oc过来的回调
+                        if(coupon){
+                                sessionStorage.removeItem("coupon");
+                        }
+                        layer.closeAll();
+                    })
+                }
+            })
+        })
+
+    </script>
+</block>

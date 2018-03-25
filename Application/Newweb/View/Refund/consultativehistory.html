@@ -1,0 +1,326 @@
+<extend name="Public:head"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                    <!-- <div class="addressback" linkto="{:U('Refund/refundinfo',array('return_id'=>$_GET['return_id']))}"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div> -->
+                	协商历史
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+    	<div class="bgfff mgb10">
+    		<div class="weui-cell">
+                <div class="weui-cell__hd carshopimg fs0 mgr5">
+                	<img class="head_pic1" src="">
+                </div>
+                <div class="weui-cell__bd">
+                	<div class="name1"></div>
+                	<div class="colb3 time1"></div>
+                </div>
+            </div>
+            <div class="after padb10 padlr10 colblue">申请退款</div>
+            <div class="pad10">
+            	<div><span class="return_status"></span></div>
+            	<div><span class="price"></span></div>
+            	<div><span class="reason"></span></div>
+            	<div><span class="remark"></span></div>
+                <div class="pjimgbox none"></div>
+            </div>
+    	</div>
+    	<div class="bgfff div2 none mgb10">
+    		<div class="weui-cell">
+                <div class="weui-cell__hd carshopimg fs0 mgr5">
+                	<img class="head_pic2" src="">
+                </div>
+                <div class="weui-cell__bd">
+                	<div class="name2"></div>
+                	<div class="colb3 time2"></div>
+                </div>
+            </div>
+            <div class="after padb10 padlr10 colblue type2"></div>
+            <div class="pad10 info2">
+            	
+            </div>
+    	</div>
+    	<div class="bgfff div3 none mgb10">
+    		<div class="weui-cell">
+                <div class="weui-cell__hd carshopimg fs0 mgr5">
+                	<img class="head_pic3" src="">
+                </div>
+                <div class="weui-cell__bd">
+                	<div class="name3"></div>
+                	<div class="colb3 time3"></div>
+                </div>
+            </div>
+            <div class="after padb10 padlr10 colblue type3"></div>
+            <div class="pad10">
+            	<div><span class="other_two"></span></div>
+            	<div><span class="other_three"></span></div>
+            	<div><span class="other_four"></span></div>
+            </div>
+    	</div>
+    	<div class="bgfff div4 none mgb10">
+    		<div class="weui-cell">
+                <div class="weui-cell__hd carshopimg fs0 mgr5">
+                	<img class="head_pic4" src="">
+                </div>
+                <div class="weui-cell__bd">
+                	<div class="name4"></div>
+                	<div class="colb3 time4"></div>
+                </div>
+            </div>
+            <div class="after padb10 padlr10 colblue type4">买家已退货</div>
+            <div class="pad10">
+            	<div>快递公司: <span class="other_one"></span></div>
+            	<div>快递单号: <span class="other_two"></span></div>
+            </div>
+    	</div>
+    	<div class="bgfff div5 none mgb10">
+    		<div class="weui-cell">
+                <div class="weui-cell__hd carshopimg fs0 mgr5">
+                	<img class="head_pic5" src="">
+                </div>
+                <div class="weui-cell__bd">
+                	<div class="name5"></div>
+                	<div class="colb3 time5"></div>
+                </div>
+            </div>
+            <div class="after padb10 padlr10 colblue type5"></div>
+    	</div>
+    	<div class="bgfff div6 none mgb10">
+    		<div class="weui-cell">
+                <div class="weui-cell__hd carshopimg fs0 mgr5">
+                	<img class="head_pic6" src="">
+                </div>
+                <div class="weui-cell__bd">
+                	<div class="name6"></div>
+                	<div class="colb3 time6"></div>
+                </div>
+            </div>
+            <div class="after padb10 padlr10 colblue type6"></div>
+    	</div>
+    </div>
+
+    <div class="returnfootbox bgfff">
+        <span class="but showtel">联系商家</span>
+        <span class="but qxsq">撤销申请</span>
+        <span class="but none qkqx">钱款去向</span>
+        <span class="but thbut none">退货</span>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    //如果是ios
+    if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    var return_id="{$_GET['return_id']}";
+    var shop_id="{$_GET['shop_id']}";
+    requestUrl("{:U('Api/ReturnOrder/returnOrderHistoryDetail')}",{return_id:return_id},function(data){
+                if(data['flag'] == "success"){
+                    var shops=data.data;
+                    $('.head_pic1').attr('src',shops.application_mess.head_pic);
+                    $('.name1').html(shops.application_mess.name);
+                    $('.time1').html(shops.application_mess.time);
+                    $('.return_status').html(shops.application_mess.return_status);
+                    $('.price').html(shops.application_mess.price);
+                    $('.reason').html(shops.application_mess.reason);
+                    $('.remark').html(shops.application_mess.remark);
+                    if(shops.application_mess.pic.length){
+                        var mstr="";
+                        for(var k in shops.application_mess.pic){
+                            mstr+='<div><img class="w100" src="'+shops.application_mess.pic[k]+'"></div>';
+                        };
+                        $('.pjimgbox').removeClass('none').html(mstr);
+                    };
+                    if(shops.shop_agree_mess&&shops.shop_agree_mess.time){
+                        $('.div2').removeClass('none');
+                        $('.head_pic2').attr('src',shops.shop_agree_mess.head_pic);
+                        $('.name2').html(shops.shop_agree_mess.name);
+                        $('.time2').html(shops.shop_agree_mess.time);
+                        $('.type2').html(shops.shop_agree_mess.other_one);
+                        $('.info2').html(shops.shop_agree_mess.other_two);
+                        if(shops.shop_agree_mess.other_one.indexOf('拒绝')){
+                            $('.qxsq').addClass('none');
+                        }
+                    };
+                    if(shops.shop_logistics_address&&shops.shop_logistics_address.time){
+                        $('.div3').removeClass('none');
+                        $('.name3').html(shops.shop_logistics_address.name);
+                        $('.head_pic3').attr('src',shops.shop_logistics_address.head_pic);
+                        $('.time3').html(shops.shop_logistics_address.time);
+                        $('.type3').html(shops.shop_logistics_address.other_one);
+                        $('.div3 .other_two').html(shops.shop_logistics_address.other_two);
+                        $('.div3 .other_three').html(shops.shop_logistics_address.other_three);
+                        $('.div3 .other_four').html(shops.shop_logistics_address.other_four);
+                        if(shops.shop_logistics_address.status==1){
+                            $('.thbut').removeClass('none');
+                        };
+                    };
+                    if(shops.express&&shops.express.time){
+                        $('.div4').removeClass('none');
+                        $('.head_pic4').attr('src',shops.express.head_pic);
+                        $('.name4').html(shops.express.name);
+                        $('.time4').html(shops.express.time);
+                        // $('.type4').html(shops.express.other_one);
+                        $('.div4 .other_one').html(shops.express.other_one);
+                        $('.div4 .other_two').html(shops.express.other_two);
+                        $('.thbut,.qxsq').addClass('none');
+                    };
+                    if(shops.sign_mess&&shops.sign_mess.time){
+                        $('.head_pic5').attr('src',shops.sign_mess.head_pic);
+                        $('.name5').html(shops.sign_mess.name);
+                        $('.div5').removeClass('none');
+                        $('.qxsq').addClass('none');
+                        $('.time5').html(shops.sign_mess.time);
+                        $('.div5 .type5').html(shops.sign_mess.other_one);
+                    };
+                    if(shops.price_mess&&shops.price_mess.time){
+                        $('.div6').removeClass('none');
+                        $('.name6').html(shops.price_mess.name);
+                        $('.head_pic6').attr('src',shops.price_mess.head_pic);
+                        $('.qxsq').addClass('none');
+                        $('.time6').html(shops.price_mess.time);
+                        $('.div6 .type6').html(shops.price_mess.other_one);
+                    };
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                };
+    },"POST",true);
+    //钱款去向
+    $('.qkqx').click(function(){
+        layer.msg('退款已到您的账户');
+    }); 
+    //撤销申请
+    $('.qxsq').click(function(){
+        layer.open({
+            content: '确认取消申请？'
+            ,btn: ['确认', '取消']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+                requestUrl("{:U('Api/ReturnOrder/backOutReturnOrder')}",{return_id:return_id,status:9},function(data){
+                    if(data['flag'] == "success"){
+                       layer.msg('撤销成功！');
+                       setTimeout(function(){
+                            var url="{:U('Refund/refundinfo')}/return_id/"+return_id;
+                            location.href=url;
+                       },1500)
+                    }else if(data['flag'] == "error"){
+                        layer.msg(data['message']);
+                    }
+                },"POST",true);
+                layer.close(index);
+            }
+            ,btn2: function(index, layero){
+            //按钮【按钮二】的回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+            ,cancel: function(){ 
+            //右上角关闭回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+        });
+    });
+
+    // 选择地址
+    $('.thbut').click(function(){
+        location.href="{:U('Refund/returnlogistics')}/return_id/"+return_id+"/shop_id/"+shop_id;
+    });
+
+     // 客服电话
+    var telstr="";
+    $('.showtel').on('click',function(){
+        layer.open({
+          type: 1,
+          title: false,
+          closeBtn: 0,
+          shadeClose: true,
+          // skin: 'yourclass',
+          content: telstr
+        });
+        top_linkto();
+    });
+    // 获取客服电话
+    gettel(shop_id);
+    function gettel(e){
+        requestUrl("{:U('Api/Store/shopTel')}",{shop_id:e},function(data){
+                if(data['flag'] == "success"){
+                   var datas=data.data;
+                   telstr="<div class='bgfff telbox ih30'>"+
+                    "<div class='fw padtb10 after'>拨打电话</div>"+
+                    "<div class='telmain'>";
+                    if(datas.length!=0||datas!=''){
+                        if(datas.tel_one!=""){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_one+'"><span class="mgr5">客服1</span><span>'+datas.tel_one+'</span></div>';
+                        }
+                        if(datas.tel_two!=""){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_two+'"><span class="mgr5">客服2</span><span>'+datas.tel_two+'</span></div>';
+                        }
+                        if(datas.tel_three!=""){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_three+'"><span class="mgr5">客服3</span><span>'+datas.tel_three+'</span></div>';
+                        }
+                        if(datas.tel_four!=""){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_four+'"><span class="mgr5">客服4</span><span>'+datas.tel_four+'</span></div>';
+                        }
+                        if(datas.tel_five!=""){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_five+'"><span class="mgr5">客服5</span><span>'+datas.tel_five+'</span></div>';
+                        }
+//                        for(var i in datas){
+//                            telstr+="<div class='padtb10 after'><span class='mgr5'>客服"+i+1+"</span><a href='/'>"+datas[i]+"</a></div>";
+//                        };
+                    }else{
+                        telstr+="<div class='padtb10'>暂无客服电话</div>";
+                    }
+                   telstr+="</div></div>";
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+        },"POST",true);
+    };
+</script>
+<script type="text/javascript">
+    function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+        $('.showtel').off('click');
+        $('.showtel').on('click',function(){
+            bridge.callHandler('chartShop',{shop_id:shop_id}, function(response) {
+                        //处理oc过来的回调
+                        layer.closeAll();
+            });
+        });
+    })
+</script>
+</block>

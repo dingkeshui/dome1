@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no" name="format-detection">
+    <title>众享通赢</title>
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/weui.min.css">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/oldtop.css?s=1">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/new.css">
+
+    <block name="headdiv"></block>
+</head>
+<body class="bgeee">
+<block name="main"></block>
+<!-- 脚部
+<div class="weui-tab footer-container">
+    <div class="weui-tabbar bgfff">
+        <a href="{:U('Index/index')}" class='weui-tabbar__item <if condition="__CONTROLLER__ eq 'Index'"> weui-bar__item_on</if>'>
+            <img src='__WEBPUBLIC__/Wechat/img/pay<if condition="__CONTROLLER__ eq 'Index'">on</if>.png' alt="" class="weui-tabbar__icon">
+            <p class="weui-tabbar__label">我要支付</p>
+        </a>
+        <a href="{:U('Shop/shopindex')}" class='weui-tabbar__item <if condition="__CONTROLLER__ eq 'Shop'"> weui-bar__item_on</if>'>
+            <img src='__WEBPUBLIC__/Wechat/img/shop<if condition="__CONTROLLER__ eq 'Shop'">on</if>.png' alt="" class="weui-tabbar__icon">
+            <p class="weui-tabbar__label">附近商家</p>
+        </a>
+        <a href="{:U('Goods/goodslist')}" class='weui-tabbar__item <if condition="__CONTROLLER__ eq 'Goods'"> weui-bar__item_on</if>'>
+            <img src='__WEBPUBLIC__/Wechat/img/sy<if condition="__CONTROLLER__ eq 'Goods'">on</if>.png' alt="" class="weui-tabbar__icon">
+            <p class="weui-tabbar__label">众享商城</p>
+        </a>
+        <a href="{:U('Member/membercenter')}" class='weui-tabbar__item <if condition="__CONTROLLER__ eq 'Member'"> weui-bar__item_on</if>'>
+            <img src='__WEBPUBLIC__/Wechat/img/self<if condition="__CONTROLLER__ eq 'Member'">on</if>.png' alt="" class="weui-tabbar__icon">
+            <p class="weui-tabbar__label">个人中心</p>
+        </a>
+    </div>
+</div>
+ -->
+<div class="weui-tab footer-container">
+    <div class="weui-tabbar bgfff">
+        <a href="{:U('Index/index')}" class='weui-tabbar__item <if condition="__CONTROLLER__ eq 'Index'"> weui-bar__item_on</if>'>
+            <img src='__WEBPUBLIC__/Wechat/img/zf<if condition="__CONTROLLER__ eq 'Index'">on</if>.png' alt="" class="weui-tabbar__icon">
+            <p class="weui-tabbar__label">首页</p>
+        </a>
+        <a href="{:U('Order/order')}" class='weui-tabbar__item <if condition="__CONTROLLER__ eq 'Order'"> weui-bar__item_on</if>'>
+            <img src='__WEBPUBLIC__/Wechat/img/dd<if condition="__CONTROLLER__ eq 'Order'">on</if>.png' alt="" class="weui-tabbar__icon">
+            <p class="weui-tabbar__label">订单</p>
+        </a>
+        <a href="{:U('Listshop/shop')}" class='weui-tabbar__item <if condition="__CONTROLLER__ eq 'Listshop'"> weui-bar__item_on</if>'>
+            <img src='__WEBPUBLIC__/Wechat/img/shop<if condition="__CONTROLLER__ eq 'Listshop'">on</if>.png' alt="" class="weui-tabbar__icon">
+            <p class="weui-tabbar__label">商家</p>
+        </a>
+    </div>
+<div class="xq_loadding">
+    
+</div>
+<script>
+    var m_id = "{$m_id}";
+    var is_bind = "{$is_bind}";
+    var e_id = "{$e_id}";
+</script>
+<script src="__WEBPUBLIC__/Wechat/js/jquery.js"></script>
+<script src="__WEBPUBLIC__/Wechat/js/zepto.min.js"></script>
+<script src="__WEBPUBLIC__/Wechat/js/layer/layer.js"></script>
+<script src="__WEBPUBLIC__/Wechat/js/public.js?s=7"></script>
+
+<script>
+    
+</script>
+
+<block name="footerjs"></block>
+
+</body>
+</html>

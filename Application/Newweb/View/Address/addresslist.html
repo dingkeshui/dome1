@@ -1,0 +1,225 @@
+<extend name="Public:head"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="addressback"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div>
+                	<span>管理收货地址</span>
+                    <!-- <span class="colon addressgl">管理</span> -->
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+    	<div class="addresslist mgtop10">
+
+    	</div>
+    </div>
+
+    <div class="maddressfoot newaddr">
+        <img class="w15 mgr5 y2" src="__WEBPUBLIC__/Wechat/img/img (36).png">
+        <span>新增收货地址</span>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    //如果是ios
+    if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    var dataargs={
+        "mix_id":m_id,
+        "type":0,
+        "p" : 1
+    };
+    var type = "{$_GET['type']}";
+    var g_id = '';
+    var linkurl = "{:U('Address/newaddress')}/type/"+type;
+    var bjurl = "{:U('Address/editaddress')}/type/"+type;
+    if(type==1){
+        g_id = "{$_GET['g_id']}";
+        linkurl += "/g_id/"+g_id;
+        bjurl += "/g_id/"+g_id;
+    }else if(type==2){
+        linkurl += "/cart_id/{$_GET['cart_id']}";
+        bjurl += "/cart_id/{$_GET['cart_id']}";
+    }
+    //新增收货地址
+    $('.newaddr').click(function(){
+        location.href = linkurl;
+    });
+
+    var from_type = "{$_GET['from']}";//判断进入当前页面的来源,1从个人设置页面进入，2从选择收货地址页面进入
+    var back_url = "{:U('Member/configmember')}";
+    if(from_type==1){
+        $('.addressback').hide();
+    }
+    //点击返回按钮
+    $('.addressback').click(function(){
+        location.href = back_url;
+    });
+
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+    function getJson(args) {
+        requestUrl("{:U('Api/Address/addressList')}",dataargs,function(data){
+            layer.closeAll();
+            putGoods(data,args);
+        });
+    }
+
+    $(function(){
+        getJson("shouci");
+    });
+
+    //添加商品到列表
+    function putGoods(data,args) {
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $(".addresslist").addClass('wusj');
+                $(".nulldata").remove();
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".nulldata").remove();
+                $(".addresslist").append('<div class="nulldata textcenter" style="">没有更多了！</div>');
+            }else{
+                $(".nulldata").remove();
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    str += '<div class="addressitem mgb10 bgfff padlr10">\
+                                <div class="addressitemtop padtb10 after">\
+                                    <div><span class="mgr5">'+shop.name+'</span><span>'+shop.phone+'</span></div>\
+                                    <div class="fs14"><span>'+shop.province+shop.city+shop.area+shop.address+'</span></div>\
+                                </div>\
+                                <div class="addressitemfoot ih30">\
+                                    <div class="inblock re">';
+                    if(shop.is_default==1){
+                        str +=      '<div class="inblock addressradio on" data-id="'+shop.addr_id+'">'
+                                    +'<span class="y2 addressimgspan mgr5"></span>'
+                                    +'<span class="fs14 addresstext">默认地址</span>'
+                                    +'</div>';
+                    }else{
+                        str +=    '<div class="inblock addressradio" data-id="'+shop.addr_id+'">'
+                                +'<span class="y2 addressimgspan mgr5"></span>'
+                                +'<span class="fs14 addresstext">设为默认</span>'
+                                +'</div>';
+                    }
+
+                    str +=     '</div>'
+                            +'<div class="inblock flex right">'
+                            +'<div class="flex w30 h30 flexcenter bjaddressimg" linkto="'+bjurl+'/addr_id/'+shop.addr_id+'"><img class="w15" src="__WEBPUBLIC__/Wechat/img/img (177).png"></div>'
+                            +'<div class="flex w30 h30 flexcenter removeadress" data-id="'+shop.addr_id+'"><img class="w15" src="__WEBPUBLIC__/Wechat/img/img (61).png"></div>'
+                            +'</div>'
+                            +'</div>'
+                            +'</div>';
+                }
+                if (args == "fenye") {
+                    $('.addresslist').append(str);
+                }else{
+                    $('.addresslist').html(str);
+                }
+                flag=true;
+                top_linkto();
+            }
+        }else{
+            layer.msg(data.message);
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    function fenye(){
+        var $_zd = $(".addressitem").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".addresslist");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+
+    //将地址设置为默认
+    $('.addresslist').on("click",'.addressradio',function(){
+        var self = $(this);
+        var a_id = self.attr('data-id');
+        requestUrl("{:U('Api/Address/setDefault')}",{mix_id:m_id,type:0,addr_id:a_id},function(res){
+            if(res.flag=="success"){
+//                $('.addressradio.on').removeClass("on").find('.addresstext').html('设为默认');
+//                self.addClass("on");
+//                self.find('.addresstext').html('默认地址');
+                setTimeout(function(){
+                    location.reload();
+                },1000);
+                layer.msg("设置成功");
+            }else{
+                layer.msg(res.message);
+            }
+        })
+    });
+
+    //删除地址
+    $('.addresslist').on("click",".removeadress",function(){
+        var self = $(this);
+        var a_id  = self.attr('data-id');
+        layer.open({
+            content: '确认删除该地址？'
+            ,btn: ['确认', '取消']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+                requestUrl("{:U('Api/Address/delAddress')}",{addr_id:a_id},function(res){
+                      if(res.flag=="success"){
+                          layer.msg("删除成功");
+                          self.parent().parent().parent().remove();
+                      }  else{
+                          layer.msg(res.message);
+                      }
+                })
+                layer.close(index);
+            }
+            ,btn2: function(index, layero){
+            //按钮【按钮二】的回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+            ,cancel: function(){ 
+            //右上角关闭回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+        });
+        // if(confirm("确定要删除吗？")){
+        //     requestUrl("{:U('Api/Address/delAddress')}",{addr_id:a_id},function(res){
+        //       if(res.flag=="success"){
+        //           layer.msg("删除成功");
+        //           self.parent().parent().parent().remove();
+        //       }  else{
+        //           layer.msg(res.message);
+        //       }
+        //     })
+        // }
+    });
+
+</script>
+</block>

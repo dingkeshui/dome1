@@ -1,0 +1,207 @@
+<extend name="Public:header"/>
+<block name="main">
+<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="headleft none"><img class="wh20 y3" src="__WEBPUBLIC__/Wechat/img/back2.png" style="transform:rotate(180deg);vertical-align: sub;"></div>
+                    <span>编辑收货地址</span>
+                    <span class="colon headright saveAddr">保存</span>
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="xqnewaddrss">
+            <div class="mgtop10 bgfff">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd w65"><label class="weui-label">收货人</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input name" type="text" placeholder="请输入收货人姓名"/>
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label w65">手机号</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input tel" type="tel" placeholder="请输入手机号">
+                    </div>
+                </div>
+            </div>
+            <div class="bgfff mgtop10">
+                <a class="weui-cell weui-cell_access goaddressbox1" href="javascript:;">
+                    <div class="weui-cell__bd">
+                        <p>所在地区</p>
+                    </div>
+                    <div class="weui-cell__ft areas">请选择</div>
+                </a>
+                <!--<div class="weui-cell weui-cell_select weui-cell_select-after">-->
+                    <!--<div class="weui-cell__hd">-->
+                        <!--<label for="" class="weui-label">街道</label>-->
+                    <!--</div>-->
+                    <!--<div class="weui-cell__bd">-->
+                        <!--<select class="weui-select" name="select2">-->
+                            <!--<option value="1">中国</option>-->
+                            <!--<option value="2">美国</option>-->
+                            <!--<option value="3">英国</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <textarea class="weui-textarea address" placeholder="详细地址" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="weui-cell bgfff mgtop20 weui-cell_switch">
+                    <div class="weui-cell__bd">设为默认地址</div>
+                    <div class="weui-cell__ft">
+                        <input id="is_default" class="weui-switch is_default" type="checkbox"/>
+                    </div>
+            </div> 
+
+            <div class="pad10 colb3">
+                若您超时未处理买家退货退款申请，将默认视作同意买家诉求，系统自动给买家发送您填写的退货地址信息。请确保地址的准确性，若因地址不准确导致的资损，由商家自行承担。
+            </div>        
+        </div>
+         <!-- 省市区 -->
+        <div class="addressbox">
+            <div class="weui-cells bgfff body2list">
+                <!--<div class="weui-cell">-->
+                    <!--<div class="weui-cell__bd">-->
+                        <!--<p>天津市</p>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script>
+    var type = "{$_GET['type']}";
+    var link_url = "{:U('Shop/returnaddress')}";
+    if(type==1){
+        var return_id = "{$_GET['return_id']}";
+        link_url = "{:U('Shop/choiceaddress')}/type/1/return_id/"+return_id;
+    }
+    /*显示地址信息*/
+    var addr_id = "{$_GET['addr_id']}";
+    requestUrl("{:U('Api/Address/addressInfo')}",{addr_id:addr_id},function(res){
+        if(res.flag=="success"){
+            var info = res.data;
+            $('.name').val(info.name);
+            $('.tel').val(info.phone);
+            $('.areas').html(info.pro_name+'>>'+info.city_name+'>>'+info.area_name);
+            $('.address').val(info.address);
+            if(info.is_default==1){
+                $('.is_default').attr('checked',true);
+            }
+        }
+    },'GET');
+    var getarr=[];
+    var newget=[];
+    // 显示省
+    $('.goaddressbox1').click(function () {
+        $('.xqnewaddrss').addClass('none');
+        $('.headleft').removeClass('none');
+        getsheng(1);
+    });
+
+    $('.headleft').click(function(){
+        $('.xqnewaddrss').removeClass('none');
+        $(this).addClass('none');
+    })
+
+    // 点击省市区
+    $('.body2list').on('click','.weui-cell',function(){
+        if(getarr.length==0){
+            getsheng(2,{'province':$(this).attr('area_id')});
+            getarr.push({'name':$(this).attr('area_name'),'id':$(this).attr('area_id')});
+        }else if(getarr.length==1){
+            getsheng(3,{'city':$(this).attr('area_id')});
+            getarr.push({'name':$(this).attr('area_name'),'id':$(this).attr('area_id')});
+        }else if(getarr.length==2){
+            getarr.push({'name':$(this).attr('area_name'),'id':$(this).attr('area_id')});
+            $('.xqnewaddrss').removeClass('none');
+            $('.headleft').addClass('none');
+            $('.goaddressbox1 .weui-cell__ft').html(getarr[0].name+'>>'+getarr[1].name+'>>'+getarr[2].name);
+            newget=getarr;
+            getarr=[];
+        }
+    });
+    // 获取省级num:1省2市3区
+    function getsheng(num,fundata){
+        var urldata=(num==1?'getProvince':(num==2?'getCity':'getArea'));
+        requestUrl("{:U('Api/Merchant/"+urldata+"')}",fundata,function(res) {
+            if (res.flag == "success") {
+                var info=res.data;
+                var str="";
+                for(var i=0;i<info.length;i++){
+                    str+='<div area_id='+info[i].area_id+' area_name='+info[i].area_name+' class="weui-cell '+(num==3?'weui-cell_access':'')+'">'+
+                            '<div class="weui-cell__bd">'+
+                            '<p>'+info[i].area_name+'</p>'+
+                            '</div>'+
+                            '</div>';
+                }
+                $(".body2list").html(str);
+            }else{
+                layer.msg(res.message);
+            }
+        },num==1?"GET":"POST");
+    }
+
+    /**保存地址*/
+    $('.saveAddr').click(function(){
+        var subData = {};
+        subData.mix_id = shop_id;
+        subData.type = 1;
+        subData.addr_id = addr_id;
+        var name = $('.name').val().trim();
+        var tel = $('.tel').val().trim();
+        var address = $('.address').val().trim();
+        if(name==""){
+            layer.msg("请填写姓名");return;
+        }
+        subData.name = name;
+        if(tel==""){
+            layer.msg("请填写手机号");return;
+        }else if(!(/^1[3|4|5|7|8]\d{9}$/.test(tel))){
+            layer.msg("手机号格式不正确");return;
+        }
+        subData.phone = tel;
+        if(newget.length>0){
+            subData.province = newget[0].id;
+            subData.city = newget[1].id;
+            subData.area = newget[2].id;
+        }
+        if(address==""){
+            layer.msg("请填写详细地址");return;
+        }
+        subData.address = address;
+        var is_set = 0;
+        if($('.is_default')[0].checked){
+            is_set = 1;
+        }
+        subData.is_default = is_set;
+        requestUrl("{:U('Api/Address/editAddress')}",subData,function(res){
+            if(res.flag=="success"){
+                layer.msg('保存成功');
+                setTimeout(function(){
+                    location.href = link_url;
+                },1200);
+            }else{
+                layer.msg(res.message);
+            }
+        })
+    });
+</script>
+</block>

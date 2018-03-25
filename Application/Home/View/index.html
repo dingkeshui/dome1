@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no" name="format-detection">
+    <title>众享通赢</title>
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/top.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/zepto.min.js"></script>
+</head>
+<body class="bgeee">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>众享通赢</p>
+            </div>
+            <div class="weui-cell__ft">
+                <img src="../img/fenx.png" class="iconfenx"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container indexbg">
+        <div class="weui-flex texcen pad20-0">
+            <div class="weui-flex__item">
+                <div class="colff0 fs1-2">昨日收益</div>
+                <div class="fs2 d_earnings">0.30</div>
+            </div>
+            <div class="weui-flex__item">
+                <div class="colff0 fs1-2">昨日估价</div>
+                <div class="fs2 d_shares">0.30</div>
+            </div>
+        </div>
+
+        <div class="weui-flex texcen pad20-0 indexicon">
+            <div class="weui-flex__item ">
+                <div class="">
+                    <img src="../img/zz.png"/>
+                </div>
+                <div class="">转账</div>
+            </div>
+            <div class="weui-flex__item">
+                <div class="">
+                    <img src="../img/mx.png"/>
+                </div>
+                <div class="">明细</div>
+            </div>
+            <div class="weui-flex__item">
+                <div class="">
+                    <img style="" src="../img/tix.png"/>
+                </div>
+                <div class="">提现</div>
+            </div>
+
+        </div>
+
+        <div class="saocon">
+            <img src="../img/sao.png"/>
+        </div>
+
+    </div>
+
+    <div class="weui-tab footer-container">
+        <div class="weui-tabbar bgfff">
+            <a href="javascript:;" class="weui-tabbar__item weui-bar__item_on">
+                <img src="../img/payon.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">我要支付</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item">
+                <img src="../img/shop.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">附近商家</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item">
+                <img src="../img/sy.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">我的收益</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item">
+                <img src="../img/self.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">个人中心</p>
+            </a>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var d_user={
+            "m_id":m_id
+        };
+        requestUrl("{:U('Api/Index/index')}",d_user,ding_callback,"GET",true);
+        function ding_callback(data){
+             $(".d_earnings").html(data.data);
+             $(".d_shares").html(data.shares);
+        }
+    </script>
+</body>
+</html>

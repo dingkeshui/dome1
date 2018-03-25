@@ -1,0 +1,129 @@
+<extend name="Public:header"/>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>众享通赢</p>
+            </div>
+        </div>
+    </div>
+    <div class="bgjb pad80-0-50 disfl colfff texcen" style="height: 200px;">
+        <div class="fs2 d_last"></div>
+        <div class="fs0-8">昨日收益(众享豆)</div>
+        <div class="fs1">累计收益<span class="d_sum"></span>众享豆</div>
+    </div>
+
+    <div class="colccc d_listbox" style="padding-bottom: 50px">
+        <!--<div class="weui-cells fs0-8 d_list">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <div>收益金额(众享币)</div>
+                        <div><span class="colff0 fs1">40.00</span><span class="fr">2017-05-12</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weui-cells fs0-8 d_list">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <div>收益金额(众享币)</div>
+                        <div><span class="colff0 fs1">40.00</span><span class="fr">2017-05-12</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weui-cells fs0-8 d_list">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <div>收益金额(众享币)</div>
+                        <div><span class="colff0 fs1">40.00</span><span class="fr">2017-05-12</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weui-cells fs0-8 d_list">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <div>收益金额(众享币)</div>
+                        <div><span class="colff0 fs1">40.00</span><span class="fr">2017-05-12</span></div>
+                    </div>
+                </div>
+            </div>-->
+    </div>
+</block>
+<block name="footerjs">
+<script>
+   $(function(){
+      getJson("shouci");
+   })
+
+   var dataargs={"m_id":m_id,p:1};
+
+   function getJson(args) {
+        console.log(dataargs);
+        requestUrl("{:U('Api/Bill/myEarnList')}",dataargs,function(data){
+            layer.closeAll();
+            putGoods(data,args);
+        },"GET",true);
+    }
+
+    //添加商品到列表
+    function putGoods(data,args) {
+        console.log(data);
+        if(data.flag == 'success'){
+
+            var d_data=data.data;
+          var d_price=d_data.price;
+          var d_lastspan=d_price[0]+'<span class="fs1">.'+d_price[1]+'</span>';
+            $(".d_last").html(d_lastspan);
+            $(".d_sum").html(d_data.count_price?d_data.count_price:0.00);
+            var shops = d_data.list; 
+            if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".d_listbox").append('<div class="texcen">没有更多了！</div>');
+            }else{
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    str += '<div class="weui-cells fs0-8 d_list"><div class="weui-cell"><div class="weui-cell__bd"><div>收益金额(众享豆)</div><div><span class="colff0 fs1">'+shop.price+'</span><span class="fr">'+shop.ctime+'</span></div></div></div></div>';
+                }
+                if (args == "fenye") {
+                    $('.d_listbox').append(str);
+                }else{
+                    $('.d_listbox').html(str);
+                }
+                top_linkto();
+            }
+        }else{
+             layer.msg(data.message);
+        }
+
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+function fenye(){
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+    var $_zd = $(".d_list").height();//获取每个单项的高度
+    var length = 3;//定义预加载的数量，提前三个加载数据
+    var $_par = $(".d_listbox");//获取包裹容器
+    var winheight = $(window).height();//获取窗口高度
+    var curpage = 1;//存储当前的页数v
+    $(function(){
+        $(window).on("scroll",function(e){
+            if(flag){
+                var self = $(this);
+                var scrtop = self.scrollTop() + winheight;
+                var docheight = $_par.height();
+                if(scrtop > docheight - ( length * $_zd ) ){
+                    flag = false;
+                    dataargs.p = dataargs.p +1;
+                    getJson("fenye");
+                }
+            }
+        });
+    });
+}
+</script>
+</block>

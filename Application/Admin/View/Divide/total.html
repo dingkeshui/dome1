@@ -1,0 +1,64 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <div class="content-box">
+        <ul class="breadcrumb">
+            <li><a href="{:U('Index/main')}">首页</a></li>
+            <li><a href="#">资金池管理</a></li>
+            <li class="active">资金池详情</li>
+        </ul>
+        <style>
+            table tr td {
+                padding: 2px;
+                border: 1px solid #CCCCCC;
+                text-align: center;
+            }
+        </style>
+        <!--表格内容-->
+        <div class="content-box-content;">
+            <table style="width:98%;height:150px;margin:30px 20px;border:1px solid #CCCCCC;font: 微软雅黑">
+                <tr>
+                    <td>资金池总额</td>
+                    <td>昨天金额</td>
+                    <td>累加差额</td>
+                    <td>创建时间</td>
+                    <td>用户领取的钱数</td>
+                </tr>
+                <tr>
+                    <td>{$res['price']}/元</td>
+                    <td>{$res['last_price']}/元</td>
+                    <td>{$res['interval']}/元</td>
+                    <td>{$res['ctime']|date="Y-m-d H:i:s",###}</td>
+                    <td>{$res['mem_price']}/元</td>
+                </tr>
+            </table>
+            <div>
+                <div class="col-sm-9" style="color: red;font-size: 16px">
+                    <p>资金池总额为：未分配完毕的总额，包含用户未领金额+剩余金额</p>
+                    <p>昨天金额为：未计算今天分成的金额</p>
+                    <p>累加差额：昨天和今天的差额</p>
+                    <p>创建时间：修改时间</p>
+                    <p>用户领取的钱数：用户每天签到领取的钱数</p>
+                </div>
+            </div>
+        </div>
+        <br/><br/>
+        <div class="content-box-content;">
+            <table style="width:98%;height:150px;margin:30px 20px;border:1px solid #CCCCCC;font: 微软雅黑">
+                <tr>
+                    <td>备用资金池金额</td>
+                </tr>
+                <tr>
+                    <td>{$total['price']}/元</td>
+                </tr>
+            </table>
+            <div>
+                <div class="col-sm-9" style="color: red;font-size: 16px">
+                    <p>备用资金池金额：消费提取的比例超过每天最高领取钱数的剩余之和</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>

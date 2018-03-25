@@ -1,0 +1,325 @@
+<extend name="Public:head"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd colon textovh textcenter">
+					<!-- <div class="addressback" linkto="{:U('Goods/goodslist')}"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div> -->
+                	商品详情
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+    	<div class="lbbox">
+    		<div style="width: 100%;height: 100%;margin: 0 auto;max-width: 100%;position: absolute;top: 0px;left: 0px;">
+				<div class="xq_slide_out">
+					<ul class="xq_slide_in">	
+
+					</ul>
+				</div>
+			</div>
+			<div id="test"></div>
+    	</div>
+		<div class="pad10 bgfff">
+			<div class="line2 ih20 mgb5 goodname"></div>
+			<div class="flex shopinfonamebox">
+				<div class="flex1">
+					<div class="ih30 flex flexvcenter">
+						<img class="w20 mgr5" src="__WEBPUBLIC__/Wechat/img/img (143).png">
+						<span class="colred mgr5 price">0.0</span>
+						<span class="fs12">运费￥<span class="yunfei">0.0</span></span>
+					</div>
+					<div class="ih30 colfff fs0-8">
+						<span class="yhspan">已兑换<span class="colfff goodnum">0</span>件</span>
+					</div>
+				</div>
+				<div class="scbut">
+					<div class="fs0"><img class="right w40" src="__WEBPUBLIC__/Wechat/img/img(151).png"></div>
+					<div class="colred ih20 scbuttext fs0-8">+收藏</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="shopinfopjbox flex flexcenter">
+			<div>
+				<img  class="mgr5" src="__WEBPUBLIC__/Wechat/img/img (49).png">
+			</div>
+			<span>评价</span>
+		</div>
+		<div class="bgfff">
+			<div class="pjtop">
+				<a class="weui-cell weui-cell_access" href="javascript:;">
+			        <div class="weui-cell__bd">
+			            <p><img class="w20 y3" src="__WEBPUBLIC__/Wechat/img/img (54).png">用户评价(<span class="pj_num">0</span>)</p>
+			        </div>
+			        <div class="weui-cell__ft seeall" style="display:none;">
+			        	<span class="colb6">查看全部</span>
+			        </div>
+    			</a>
+			</div>
+			<div class="pjmain">
+				<!--<div class="pjbox flex">-->
+					<!--<div class="pjheadimg">-->
+						<!--<img src="../img/img (127).png">-->
+					<!--</div>-->
+					<!--<div class="flex1">-->
+						<!--<div class="textovh">兰博的海</div>-->
+						<!--<div class="startbox">-->
+							<!--<div class="startboxtop">-->
+								<!--<img class="w15" src="../img/img (104).png">-->
+								<!--<img class="w15" src="../img/img (104).png">-->
+								<!--<img class="w15" src="../img/img (104).png">-->
+								<!--<img class="w15" src="../img/img (105).png">-->
+								<!--<img class="w15" src="../img/img (105).png">-->
+							<!--</div>-->
+							<!--<div class="right colb6 startboxtime">2017-12-15</div>-->
+						<!--</div>-->
+						<!--<div class="pjtext">-->
+							<!--黄江浩阿萨德骷髅精灵啊圣诞节快乐安咯是大陆上课看到啦开始了卡拉啥来看待拉拉是空的拉上课了；精灵啊圣诞节快乐安咯是大陆上课看到啦开始了卡拉啥来看待拉拉是空的拉上课了；精灵啊圣诞节快乐安咯是大陆上课看到啦开始了卡拉啥来看待拉拉是空的拉上课了；-->
+						<!--</div>-->
+						<!--<div class="pjimgbox">-->
+							<!--<div>-->
+								<!--<img class="w100" src="../img/img (160).png">-->
+							<!--</div>-->
+							<!--<div>-->
+								<!--<img class="w100" src="../img/img (160).png">-->
+							<!--</div>-->
+							<!--<div>-->
+								<!--<img class="w100" src="../img/img (160).png">-->
+							<!--</div>-->
+						<!--</div>-->
+					<!--</div>-->
+				<!--</div>-->
+			</div>
+		</div>
+
+		<div class="shopinfopjbox flex flexcenter">
+			<div>
+				<img  class="mgr5" src="__WEBPUBLIC__/Wechat/img/img (87).png">
+			</div>
+			<span>详情</span>
+		</div>
+		<div class="shopimginfobox">
+			<img src="../img/img (86).png">
+			<img src="../img/img (86).png">
+		</div>
+
+		<div class="infofoot flex">
+			<div class="flex1 flex fs0-8">
+				<!--<div class="flex1 flex2 flexcenter">-->
+					<!--<img class="w20" src="__WEBPUBLIC__/Wechat/img/img (43).png">-->
+					<!--<span>客服</span>-->
+				<!--</div>-->
+				<div class="flex1 flex2 flexcenter scfoot">
+					<img class="w20" src="__WEBPUBLIC__/Wechat/img/img (77).png">
+					<span>+收藏</span>
+				</div>
+			</div>
+			<div class="textcenter infofootright2 colfff exchange">立即兑换</div>
+		</div>
+
+
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript" src="__WEBPUBLIC__/Wechat/js/xq_slide.js"></script>
+<script type="text/javascript">
+	var g_id = "{$_GET['g_id']}";
+	var subdata = {m_id:m_id,g_id:g_id};
+	var type = '';
+	var c_id = 0;
+	requestUrl("{:U('Api/Goods/goodsDetail')}",subdata,function(res){
+		console.log(res);
+		if(res.flag=="success"){
+			var data = res.data;
+			var pics = res.data.pic;
+			showBanner(pics);
+			$('.pj_num').text(data.app_count);
+			if(data.app_count>5){
+				$('.seeall').attr('linkto',"{:U('Goods/appraise')}/g_id/"+g_id);
+				$('.seeall').show();
+			}
+			putpj(data.app_list);
+			type = data.type;
+			$('.goodname').text(data.name);
+            obj.title = data.name;
+            obj.desc = data.name;
+			$('.price').text(data.price);
+			$('.yunfei').text(data.freight);
+			$('.goodnum').text(data.sales);
+			$('.shopimginfobox').html(data.desc);
+			if(data.is_collect>0){
+				c_id = data.is_collect;
+				$('.scbut,.scfoot').addClass('on');
+				$('.scbut').find('img').attr('src','__WEBPUBLIC__/Wechat/img/img(140).png');
+				$('.scbut').find('.scbuttext').html('已收藏').removeClass('colred').addClass('colb6');
+				$('.scfoot').find('img').attr('src','__WEBPUBLIC__/Wechat/img/img (78).png');
+				$('.scfoot').find('span').html('已收藏').addClass('colb6');
+			}
+			top_linkto();
+		}
+	},'GET');
+//	var shops=[{pic:'../img/01.png'},{pic:'../img/01.png'}];
+		function showBanner(shops){
+            obj.imgUrl = shops[0];
+			var str ="";
+			for(var index in shops){
+				var shop = shops[index];
+				var img="";
+				if(shop.indexOf("{:C('API_URL')}/")!=-1){
+					img =shop;
+				}else{
+					img = "{:C('API_URL')}/"+shop;
+				}
+				str += '<li>'
+						+'<img src="'+img+'"/>'
+						+'</li>';
+			}
+			$(".xq_slide_out").html('<ul class="xq_slide_in"></ul>');
+			$('.xq_slide_in').html(str);
+			$(".xq_slide_out").xq_slide({
+				type: "h", //轮播方式  h水平轮播；v垂直轮播；o透明切换
+				vatical: false, //图片描述性文本 true 显示 false不显示
+				choseBtn: false, //是否显示上下切换按钮
+				speed: 2000, //动画间隔的时间，以毫秒为单位。
+				mousestop: true, //当鼠标移上去是否停止循环,针对PC端
+				showbar: true, //是否显示轮播导航bar
+				openmb: true //是否开启移动端支持
+			});
+		}
+
+//点击收藏
+$('.scbut,.scfoot').click(function(){
+	var self = $(this);
+	if(self.hasClass('on')){
+		//取消收藏
+		var ids = [c_id];
+
+		requestUrl("{:U('Api/Product/cancelCollect')}",{c_id:JSON.stringify(ids),type:0},function(res){
+			if(res.flag=="success"){
+				layer.msg('取消收藏成功');
+				$(".scbut,.scfoot").removeClass('on');
+				$(".scbut").find('img').attr('src','__WEBPUBLIC__/Wechat/img/img(151).png');
+				$(".scbut").find('.scbuttext').html('+收藏').removeClass('colb6').addClass('colred');
+				$('.scfoot').find('img').attr('src','__WEBPUBLIC__/Wechat/img/img (77).png');
+				$('.scfoot').find('span').html('+收藏').removeClass('colb6');
+			}else{
+				layer.msg("取消收藏失败");
+			}
+		});
+	}else{
+		//点击收藏
+		requestUrl("{:U('Api/Product/collect')}",{m_id:m_id,p_id:g_id,type:1},function(res){
+			if(res.flag=="success"){
+				c_id = res.data;
+				layer.msg("收藏成功");
+				$(".scbut,.scfoot").addClass('on');
+				$(".scbut").find('img').attr('src','__WEBPUBLIC__/Wechat/img/img(140).png');
+				$(".scbut").find('.scbuttext').html('已收藏').removeClass('colred').addClass('colb6');
+				$('.scfoot').find('img').attr('src','__WEBPUBLIC__/Wechat/img/img (78).png');
+				$('.scfoot').find('span').html('已收藏').addClass('colb6');
+			}else{
+				layer.msg("收藏失败");
+			}
+
+		});
+
+	}	
+})
+
+	function putpj(shops){
+		var str = '';
+		for (var index in shops){
+			var item = shops[index];
+			str += '<div class="pjbox flex">\
+						<div class="pjheadimg headimgbg" style="background-image:url('+item.head_pic+')">\
+						</div>\
+						<div class="flex1">\
+							<div class="textovh">'+item.nick_name+'</div>\
+							<div class="startbox">\
+								<div class="startboxtop">'+showStar(item.star)+'</div>\
+								<div class="right colb6 startboxtime">'+item.ctime+'</div>\
+							</div>\
+							<div class="pjtext">'+item.content+'</div>\
+							<div class="pjimgbox">';
+			if(item.pics){
+				for(var i in item.pics){
+					var pic = item.pics[i];
+					str += '<div><img class="w100" src="'+pic+'"></div>';
+				}
+			}
+			str +=	'</div>\
+					</div>\
+				</div>';
+		}
+		$('.pjmain').append(str);
+	}
+
+	/**点击立即兑换*/
+	$('.exchange').click(function(){
+		var subinfo = {g_id:g_id,mix_id:m_id,"type":0,"exchange_type":type};
+		requestUrl("{:U('Api/Goods/isTrue')}",subinfo,function(data){
+			layer.closeAll();
+			if(data['flag'] == "success"){
+				location.href = "{:U('Goods/confirmorder')}/g_id/"+g_id;
+			}else if(data['flag'] == "error"){
+				layer.msg(data['message']);
+			}
+		},"POST",true);
+	});
+
+	//显示星数
+	function showStar(num){
+		var str = '';
+		for (var i=0;i<num;i++){
+			str += '<img class="w15" src="__WEBPUBLIC__/Wechat/img/img (104).png">';
+		}
+		for (var j=5;j>num;j--){
+			str += '<img class="w15" src="__WEBPUBLIC__/Wechat/img/img (105).png">';
+		}
+		return str;
+	}
+</script>
+<script type="text/javascript">
+	function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+    		if("{$_GET['iosin']}"==1){
+    			$('.back').off('click');
+	            $('.back').on('click',function(){
+	                bridge.callHandler('iosBack',{data:"click iosback"}, function(response) {
+	                    //处理oc过来的回调
+	                    layer.closeAll();
+	                })
+	            });
+    		}
+    });
+</script>
+</block>

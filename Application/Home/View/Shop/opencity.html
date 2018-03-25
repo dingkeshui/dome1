@@ -1,0 +1,57 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+	<link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/Ding_shop.css?1=1">
+</block>
+<block name="main">
+		<div class="header-container colfff">
+			<div class="weui-cell ih30">
+				<div class="weui-cell__hd"></div>
+				<div class="weui-cell__bd">
+					<p>选择城市</p>
+				</div>
+			</div>
+		</div>
+		<div class="searchdiv">
+			<div class="searchtop">
+				<form action="/index.php/Shop/openCity/city_name/{$_REQUEST['city_name']}" method="get">
+					<img class="search2" src="__WEBPUBLIC__/Wechat/img/search2.png"/>
+					<input placeholder="输入城市搜索" class="search_input2" type="text" name="area_name" value="{$_REQUEST['area_name']}"/>
+				</form>
+			</div>
+			<div class="searchfoot">
+				<span>当前定位</span>
+				<span class="city_span">{$_REQUEST['city_name']}</span>
+			</div>
+		</div>
+		<!--已开通城市文本-->
+		<div class="citytext">
+			已开通城市
+		</div>
+		<!--城市div-->
+		<div class="citydiv">
+			
+		</div>
+</block>
+<block name="footerjs">
+	<script>
+	var dataargs = {};
+	dataargs.area_name = "{$_REQUEST['area_name']}";
+	requestUrl("{:U('Api/Shop/openCity')}",dataargs,function ( res ) {
+		if (res.flag == "success") {
+			var str = "",citylist = res.data;
+			for(var index in citylist){
+				var city = citylist[index];
+				str += '<div class="citybox" city_id="'+city.city+'">'+city.city_name+'</div>';
+			}
+			$(".citydiv").html(str);
+			$(".citybox").on('click',function () {
+				var city_name = $(this).text();
+				var city_id = $(this).attr("city_id");
+				window.location.href = "{:U('Shop/shoplist')}/city_id/"+city_id+"/city_name/"+city_name;
+			});
+		}else{
+			layer.msg(res.message);
+		}
+	},"GET",true);
+	</script>
+</block>

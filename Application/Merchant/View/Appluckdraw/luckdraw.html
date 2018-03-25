@@ -1,0 +1,216 @@
+<extend name="Public:head"/>
+<block name="main">
+
+    <!-- <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>积分抽奖</p>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="xq_container bgyellow">
+        <div class="d_imgbox">
+            <img src="/Public/Wechat/img/d_luck.png">
+        </div>
+        <div class="d_box">
+             <div class="d_lucktext colbbb"><img src="/Public/Wechat/img/d_laba.png"><marquee style="position: absolute;height: 30px;" id="marquee" direction="up" behavior="scroll" loop="-1" scrollamount="1"></marquee></div>
+        </div>
+        <div class="d_box bgimg">
+            <img src="/Public/Wechat/img/box.gif">
+            <div class="gridbox">
+                <div class="gridmain">
+                    <div class="weui-grid on" did="1">
+                       <img src="">
+                       <div>
+                          <div>
+                              <span class="fs0-8"></span>
+                          </div>
+                       </div>
+                    </div>  
+                    <div class="weui-grid" did="2">
+                       <img src="">
+                       <div>
+                          <div>
+                              <span class="fs0-8"></span>
+                          </div>
+                       </div>
+                    </div>  
+                    <div class="weui-grid" did="3">
+                       <img src="">
+                       <div>
+                          <div>
+                              <span class="fs0-8"></span>
+                          </div>
+                       </div>
+                    </div>  
+                    <div class="weui-grid" did="8">
+                        <img src="">
+                        <div>
+                          <div>
+                              <span class="fs0-8"></span>
+                          </div>
+                       </div>
+                    </div>  
+                    <div class="weui-grid come">
+                      
+                    </div>  
+                    <div class="weui-grid" did="4">
+                       <img src="">
+                       <div>
+                          <div>
+                              <span class="fs0-8"></span>
+                          </div>
+                       </div>
+                    </div>  
+                    <div class="weui-grid" did="7">
+                       <img src="">
+                       <div>
+                          <div>
+                              <span class="fs0-8"></span>
+                          </div>
+                       </div>
+                    </div>  
+                    <div class="weui-grid" did="6">
+                        <img src="">
+                        <div>
+                          <div>
+                              <span class="fs0-8"></span>
+                          </div>
+                       </div>
+                    </div>  
+                    <div class="weui-grid" did="5">
+                        <img src="">
+                        <div>
+                          <div>
+                              <span class="fs0-8"></span>
+                          </div>
+                       </div>
+                    </div>  
+                </div>
+            </div>
+                   
+        </div>
+        <div class="d_box bgFFEF99 pd15">
+            <div class="d_titel fs0-8">活动说明</div>
+            <div class="colbbb">
+                <p>1.活动时间:2017年08月02日—2018年12月31日</p>
+                <p>2.活动规则:活动期间，用户可凭账户麦穗进行抽奖，每次抽奖消耗5麦穗，按照100%中奖概率100%中奖，奖品内容包括麦穗、众享豆等</p>
+                <p>3.本活动用户可持续参与。</p>
+                <p>4.奖品使用规则依各项奖品说明为准！</p>
+                <p>5.本活动最终解释权归众享通赢(天津)网络科技有限公司所有！</p>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+    <script>
+        var num=1;//当前在第几号
+        var miao=80;//速度
+        var index;//停在第几号
+        var isok=true;//是否转动
+        var addtime=0;//每次增加的秒数
+        var arr=[1,2,3,8,4,7,6,5]//奖品排列顺序
+        var is_draw=false;//能否抽奖
+
+        function myajax(){
+          star();
+          var times = new Date().getTime();
+          requestUrl("{:U('Api/Roll/raffle')}",{"type":1,"mix_id":shop_id},function ( res ) {
+            layer.closeAll();
+                // layer.msg(res.message);
+                if (res.flag == "success") {
+                    if (new Date().getTime() <= (times+500)) {
+                      setTimeout(function(){
+                        var shops=res.data.data;
+                        isok=false;
+                        index=shops.d_id*1;
+                      },500);
+                    }else{
+                      var shops=res.data.data;
+                      isok=false;
+                      index=shops.d_id*1;
+                    }
+                    if(res.data.data.is_draw==1){
+                      is_draw=true;
+                    }
+                }else{
+                    layer.msg(res.message);
+                }
+            });
+        }
+
+        $(".gridmain").on("click",".dok",function(){
+         var is_readonly ="{$_REQUEST['is_readonly']}"*1;
+          if(sessionStorage.getItem("is_readonly")*1 || +is_readonly ){
+            layer.msg("无操作权限！");
+          }else{
+            $(".come").removeClass("dok");
+            myajax();
+          }
+        });
+
+      var star=function(){
+        setTimeout(function () {
+          if(num==8){
+            num=1;
+          }else{
+            num++;
+          }
+          $("[did]").removeClass("on");
+          $("[did="+num+"]").addClass("on");
+
+          if(!isok){
+            if(num==((index-4)>0?(index-4):(index+4))){
+              addtime=parseInt((800-miao)/4);
+            }
+          }
+
+          miao+=addtime;
+         
+          if(num==index&&!isok&&addtime!=0){
+              miao=80;
+              isok=true;
+              addtime=0;
+              if(is_draw){
+                $(".come").addClass("dok"); 
+                is_draw=false;               
+              }
+              layer.msg("恭喜抽中"+$("[did="+index+"]").find("span").html()+"!")
+          }else{
+             star();
+          }
+         
+       },miao);
+      }
+
+      //抽奖奖品
+      requestUrl("{:U('Api/Roll/drawList')}",{"type":1,"mix_id":shop_id},function ( res ) {
+            layer.closeAll();
+                // layer.msg(res.message);
+                if (res.flag == "success") {
+                    var shops=res.data.list;
+                    var infos=res.data.other_draw.log_list;
+                    for(var i=0;i<shops.length;i++){
+                      var shop=shops[i];
+                      var $this=$("[did="+shop.d_id+"]");
+                      $this.find("img").attr("src","/Uploads/"+shop.img);
+                      $this.find("span").html(shop.name);
+                    }
+                    for(var k =0;k<infos.length;k++){
+                      var info=infos[k];
+                      var str='<div>恭喜会员<span class="pdlr5">'+info.mix_name+'</span>抽中<span class="colred pdlr5">'+info.name+'</span></div>';
+                      $("#marquee").append(str);
+                    }
+                    if(res.data.other_draw.is_draw==1){
+                        $(".come").addClass("dok");
+                    }
+                }else{
+                    layer.msg(res.message);
+                }
+            })
+
+      
+    </script>
+</block>

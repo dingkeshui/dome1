@@ -1,0 +1,101 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd textcenter">
+                身份验证
+            </div>
+            <!--<div class="weui-cell__ft">
+                <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+            </div>-->
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cells bgfff">
+            <div class="weui-cell">
+                <div class="weui-cell__hd mgr10">
+                    验证码
+                </div>
+                <div class="weui-cell__bd fs14">
+                    <input class="weui-input img_code" type="tel" placeholder="输入图形码">
+                </div>
+                <div class="weui-cell__ft" style="font-size: 0px;">
+                    <img src="{:U('Api/Login/verify')}" class="changevirify" style="height: 30px;">
+                </div>
+            </div>
+            <div class="weui-cell weui-cell_vcode">
+                <div class="weui-cell__hd mgr10">
+                    验证码
+                </div>
+                <div class="weui-cell__bd fs14">
+                    <input class="weui-input verify_code" type="tel" placeholder="请输入验证码">
+                </div>
+                <div class="weui-cell__ft">
+                    <a href="javascript:;" class="weui-vcode-btn">获取验证码</a>
+                </div>
+            </div>
+        </div>
+        <div class="addbut">
+            <a class="w100 h100 inblock colfff">确认</a>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+    <script type="text/javascript">
+        var curind = 0;
+        var url = "{:U('Api/Login/verify')}";
+        $(".changevirify").on('click',function () {
+            curind++;
+            $(this).attr("src",url+"/"+curind);
+        });
+        var account = '';
+        //获取商家账号
+        requestUrl("{:U('Api/Store/getPass')}",{shop_id:shop_id},function(data){
+            if(data.flag=="success"){
+                account = data.data.account;
+            }
+        },'GET');
+        /**点击获取验证码*/
+        $('.weui-vcode-btn').click(function(){
+            var self = $(this);
+            if(self.attr('disabled')) return;
+            var code = $('.img_code').val().trim();
+            if(code==""){
+                layer.msg('请输入图形码');return;
+            }
+            requestUrl("{:U('Api/Login/sendVerify')}",{verify_code:code,tel:account,type:'edit_pass',port:1},function(res){
+                if (res.flag == "success") {
+                    var i = 60;
+                    var time = setInterval(function(){
+                        self.text(i+"秒").attr("disabled","true");
+                        --i;
+                        if (i == 0) {
+                            clearInterval(time);
+                            self.text("获取验证码").removeAttr("disabled");
+                        }
+                    },1000);
+                }else{
+                    layer.msg(res.message);
+                }
+            })
+        });
+        /**点击确认，验证验证码*/
+        $('.addbut').click(function(){
+            var vc = $('.verify_code').val().trim();
+            if(vc==""){
+                layer.msg('请输入验证码');return;
+            }
+            requestUrl("{:U('Api/Login/isSureCode')}",{account:account,vc:vc,port:1,type:'edit_pass'},function(res){
+                if(res.flag=="success"){
+                    location.href = "{:U('Shop/lookpassword')}";
+                }else{
+                    layer.msg(res.message);
+                }
+            });
+        });
+    </script>
+</block>

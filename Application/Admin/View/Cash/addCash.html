@@ -1,0 +1,251 @@
+<include file="Public:header"/>
+<link rel="stylesheet" href="__WEBPUBLIC__/Uploadify/uploadify.css" type="text/css" />
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active"><a href="">加盟商管理</a></li>
+        <li class="active">添加加盟商</li>
+    </ul>
+
+    <div class="page-header clearfix">
+        <h3>添加加盟商</h3>
+        <ul class="nav nav-tabs">
+            <li  class="">
+                <a href="{:U('Cash/cashList')}">加盟商列表</a>
+            </li>
+            <li  class="active">
+                <a href="{:U('Cash/addCash')}">添加加盟商</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="tabs-content" class="content-box-content">
+        <div class="ul">
+            <form action="{:U('Cash/addCash')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="account" class="col-sm-3 control-label"><em class="prompt-red">*</em>加盟商登录账号：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="account" name="account" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-3 control-label"><em class="prompt-red">*</em>加盟商登录密码：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="password" name="password" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>所在地：</label>
+                    <div class="col-sm-9">
+                        <select onchange="getCity(this.value)"  style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="province">
+                            <option value="">省份</option>
+                            <volist name="pro" id="pr">
+                                <option {$list['provincial_id']==$pr['area_id']?'selected':''} value="{$pr['area_id']}">{$pr['area_name']}</option>
+                            </volist>
+                        </select>
+                        <select id="city" onchange="getArea(this.value)" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="city">
+                            <option value="">市/县</option>
+                            <volist name="city" id="ci">
+                                <option {$list['city_id']==$ci['area_id']?'selected':''} value="{$ci['area_id']}">{$ci['area_name']}</option>
+                            </volist>
+                        </select>
+                        <select id="area" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="area">
+                            <option value="">镇/区</option>
+                            <volist name="area" id="ar">
+                                <option {$list['area_id']==$ar['area_id']?'selected':''} value="{$ar['area_id']}">{$ar['area_name']}</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>加盟商类型：</label>
+                    <div class="col-sm-9">
+                        <div class="f-left" style="width:498px;padding:5px;">
+                            <select name="type" id="type" style="width: 240px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc">
+                                <option value="">请选择加盟商的类型...</option>
+                                <option value="1">市级代理</option>
+                                <option value="2">区（县）代理</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>是否为行业模块：</label>
+                    <div class="col-sm-9">
+                        <div class="f-left" style="width:498px;padding:5px;">
+                            是 : <input type="radio" name="module" id="" value="1"> &nbsp;
+                            否 : <input type="radio" name="module" id="" value="0"> &nbsp;
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">行业模块：</label>
+                    <div class="col-sm-9">
+                        <div class="f-left" style="width:600px;padding:5px;">
+                           <volist name="type" id="vo">
+                               {$vo['name']} : <input type="checkbox" name="cash_type[]" value="{$vo['class_id']}" /> &nbsp;
+                           </volist>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="scale" class="col-sm-3 control-label">提成比例（千分之）：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="scale" name="scale" />
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="cash_price" class="col-sm-3 control-label">支付保证金金额：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="cash_price" name="cash_price" />
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="cash_price" class="col-sm-3 control-label">地区支付的账期时间：</label>
+                    <div class="col-sm-9">
+                        <select name="payment_days" id="payment_days" style="width: 240px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc">
+                            <option value="">请选账期...</option>
+                            <volist name="period" id="vo">
+                                <option value="{$vo}">{$vo}号</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" class="btn btn-default btn-primary add-to-here make_sure">确认添加</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<include file="Public:footer"/>
+<!--加盟商的头像和加盟商的展示图的上传-->
+<script>
+
+    $(".make_sure").click(function () {
+        var account = $('input[name="account"]').val();
+        var password = $('input[name="password"]').val();
+        if(!account){
+            alert("加盟商账号不能为空!");return false;
+        }
+        if(!password){
+            alert("加盟商密码不能为空!");return false;
+        }
+        $(".form").submit();
+    })
+
+    /**判断手机号是否被注册*/
+    $("#account").blur(function () {
+        var account = $("#account").val();
+        var url = "{:U('Cash/isRegister')}";
+        $.post(url,{account:account},function (data) {
+            if(data == 1){
+                alert("账号已经被注册了！");
+            }
+        });
+    })
+
+</script>
+
+<!--地区的三级联动-->
+<script type="text/javascript">
+    function getCity(val){
+        $("#city").empty();
+        $("#area").empty();
+        var area = "<option value=''>镇/区</option>";
+        $("#area").append(area);
+        var option = "<option value=''>市/县</option>";
+        $.ajax({
+            url:"{: U('Cash/ajaxCity')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    option += "<option value='"+data[i].area_id+"'>"+data[i].area_name+"</option>"
+                }
+                $("#city").append(option);
+            }
+        });
+    }
+    function getArea(val){
+        $("#area").empty();
+        var option = "<option value=''>镇/区</option>";
+        $.ajax({
+            url:"{:U('Cash/ajaxArea')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    option += "<option value='"+data[i].area_id+"'>"+data[i].area_name+"</option>"
+                }
+                $("#area").append(option);
+            }
+        });
+    }
+
+    /**高德地图*/
+    var map = new AMap.Map("container", {
+        resizeEnable: true
+    });
+    //为地图注册click事件获取鼠标点击出的经纬度坐标
+    var clickEventListener = map.on('click', function(e) {
+        document.getElementById("lng").value = e.lnglat.getLng();
+        document.getElementById("lat").value = e.lnglat.getLat();
+    });
+    var auto = new AMap.Autocomplete({
+        input: "tipinput"
+    });
+    AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+    function select(e) {
+        if (e.poi && e.poi.location) {
+            map.setZoom(15);
+            map.setCenter(e.poi.location);
+        }
+    }
+    //点击关闭
+    $(".close").click(function(){
+        $("#map").hide();
+    });
+    /*点击使用该经纬度将值传给表单*/
+    $("#sure").click(function(){
+        var lng = $("#lng").val();
+        var lat = $("#lat").val();
+        $("#jd").val(lng);
+        $("#wd").val(lat);
+        if($("#jd").val(lng)){
+            $(".close").click();
+        }
+    });
+    //显示地图
+    $("#test").click(function(){
+        $(".modal-dialog").show();
+    });
+</script>
+<!--富文本-->
+<script  src="__WEBPUBLIC__/Common/kindeditor/kindeditor-min.js"></script>
+<script  src="__WEBPUBLIC__/Common/kindeditor/lang/zh_CN.js"></script>
+<script>
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('textarea[name="content"]', {
+            resizeType : 1,
+            uploadJson : '__WEBPUBLIC__/Common/kindeditor/php/upload_json.php',
+            fileManagerJson :
+                    '__WEBPUBLIC__/Common/kindeditor/php/file_manager_json.php',
+            allowPreviewEmoticons : false,
+            items:[
+                'source', '|', 'undo', 'redo', '|', 'cut', 'copy','|', 'justifyleft',
+                'justifycenter', 'justifyright',
+                'justifyfull', 'clearhtml', 'selectall', '|', 'formatblock',
+                'fontname', 'fontsize', '|', 'forecolor',
+                'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough','image'
+            ],
+            afterBlur:function(){this.sync();}
+        });
+    });
+</script>

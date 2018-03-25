@@ -1,0 +1,54 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" type="text/css" href="__WEBPUBLIC__/Wechat/css/oldtop.css">
+    <link rel="stylesheet" type="text/css" href="__WEBPUBLIC__/Wechat/css/xq_slide.css">
+</block>
+
+<block name="main">
+     <!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                    消息详情
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container bgfff mh100">
+        <article class="weui-article">
+            <h1 class="title"></h1>
+            <section>
+                <!--<h2 class="title">章标题</h2>-->
+                <section>
+                    <p class="content">
+                        
+                    </p>
+                </section>
+            </section>
+        </article>
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+        var mess_id = "{:I('get.mess_id')}";
+        var dataargs = {mess_id:mess_id,m_id:m_id};
+        requestUrl("{:U('Api/Message/messageDetail')}",dataargs,function(data){
+            //console.log(data);
+            var res = data.data;
+            if(data['flag'] == "success"){
+                $(".title").html(res.title);
+                $(".content").html(res.content);
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+            }
+        },"GET",true);
+        layer.closeAll();
+    </script>
+</block>

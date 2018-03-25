@@ -1,0 +1,130 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z5">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                	<span>填写退货物流</span>
+                    <!-- <span class="colon addressgl">管理</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="body1">
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>快递方式</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        快递
+                    </div>
+                </div>
+                <a class="weui-cell weui-cell_access" href="javascript:;">
+                    <div class="weui-cell__bd">
+                        <p>物流公司</p>
+                    </div>
+                    <div class="weui-cell__ft name">
+                        请选择
+                    </div>
+                </a>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd mgr5">物流单号</div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input num" type="text" placeholder="请输入物流单号"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="but2 colfff mgtop20">确认</div>
+        </div>
+    	
+        <div class="body2">
+            <div class="weui-cells">
+               <!--  <div class="weui-cell">
+                    <div class="weui-cell__hd"></div>
+                    <div class="weui-cell__bd">
+                        <div>中通快递</div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    //如果是ios
+    if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    };
+    var return_id="{$_GET['return_id']}";
+    var shop_id="{$_GET['shop_id']}";
+    var mydata={status:2,m_id:m_id,return_id:return_id};
+	$('.body1 .weui-cell_access').click(function () {
+        $('.body1').addClass('none');
+    });
+
+    $('.body2').on('click','.weui-cell',function(){
+        $('.body1').removeClass('none');
+        mydata.company_name=$(this).attr('company_name');
+        mydata.delivery_code=$(this).attr('delivery_code');
+        $('.name').html(mydata.company_name);
+    });
+
+    requestUrl("{:U('Api/StoreOrder/deliveryCompanyList')}",{},function(data){
+                if(data['flag'] == "success"){
+                    var shops=data.data.list;
+                    var str="";
+                    for(var i in shops){
+                        var shop=shops[i];
+                        str+='<div company_name="'+shop.company_name+'" delivery_code="'+shop.delivery_code+'" class="weui-cell">'
+                                +'<div class="weui-cell__hd"></div>'
+                                +'<div class="weui-cell__bd">'
+                                    +'<div>'+shop.company_name+'</div>'
+                                +'</div>'
+                            +'</div>';
+                    };
+                    $('.body2 .weui-cells').html(str);
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+    },"GET",true); 
+
+    $('.but2').click(function(){
+        var num=$.trim($('.num').val());
+        if(!num){
+            layer.msg('输入物流单号');
+            return;
+        };
+        var pattern=/^[a-zA-Z0-9]{1,}$/;
+        if(!pattern.test(num)){
+            layer.msg('物流单号不正确！');
+            return;
+        };
+        if(!mydata.company_name){
+            layer.msg('请选择物流公司');
+            return;
+        }
+        mydata.logistic_number=num;
+        requestUrl("{:U('Api/ReturnOrder/makeSureReturnOrder')}",mydata,function(data){
+                if(data['flag'] == "success"){
+                    layer.msg('填写物流成功');
+                    setTimeout(function(){
+                        var url="{:U('Refund/consultativehistory')}/return_id/"+return_id+"/shop_id/"+shop_id;
+                        location.href=url;
+                    },1500);           
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+        },"POST",true); 
+    });
+</script>
+</block>

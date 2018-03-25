@@ -1,0 +1,85 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z5">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+
+                    <!-- <div class="addressback" linkto="{:U('Order/orderdetails',array('order_id'=>$_GET['order_id']))}"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div> -->
+                	<span class="headname">申请退款</span>
+                    <!-- <span class="colon addressgl">管理</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+    	<div class="pad10 flex bgfff">
+            <div class="returnimgbox mgr5"><img class="img" src=""></div>   
+            <div class="flex1">
+                <div class="line2 name"></div>
+                <div class="colb6 attrname"></div>
+            </div>   
+        </div>
+        <div class="weui-cells returnmoneynav">
+            <a class="weui-cell weui-cell_access">
+                <div class="weui-cell__hd"><img src="/Public/Wechat/cusimg/img (91).png" alt="" style="width:20px;margin-right:5px;display:block"></div>
+                <div class="weui-cell__bd">
+                    <div>仅退款</div>
+                    <div class="fs14 colb6">未收到货(包含未签收)，或卖家协商同意前提下</div>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+            <a class="weui-cell weui-cell_access">
+                <div class="weui-cell__hd"><img src="/Public/Wechat/cusimg/img (89).png" alt="" style="width:20px;margin-right:5px;display:block"></div>
+                <div class="weui-cell__bd">
+                    <div>退货退款</div>
+                    <div class="fs14 colb6">已收到货，需要退换已收到的货物</div>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+        </div>
+        
+    </div>
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    //如果是ios
+    if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    var order_id="{$_GET['order_id']}";
+    var p_id="{$_GET['p_id']}";
+    var shop_id="{$_GET['shop_id']}";
+    var status="{$_GET['status']}";//等于2 表示修改退款申请
+    var return_id="{$_GET['return_id']}";
+    var attr_group="{$_GET['attr_group']}";
+    if(status==2){
+        $('.headname').html("修改申请退款");
+    };
+    $('.returnmoneynav a').click(function(){
+        var url="{:U('Refund/refund')}/type/"+($(this).index()+1)+"/order_id/"+order_id+"/attr_group/"+attr_group+"/p_id/"+p_id+(status==2?"/status/2/return_id/"+return_id:"/shop_id/"+shop_id);
+        location.href=url;
+    });
+    var datajson={order_id:order_id,p_id:p_id,attr_group:attr_group};
+    if(status==2){
+        datajson.return_id=return_id;
+    }
+	requestUrl("{:U('Api/ReturnOrder/returnGoodsMess')}",datajson,function(data){
+                if(data['flag'] == "success"){
+                    var shops=data.data;
+                   $('.img').attr('src',shops.cover_pic);
+                   $('.name').html(shops.title);
+                   $('.attrname').html((shops.attr_val&&shops.attr_val!="0")?shops.attr_val:"暂无属性");
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+    },"POST",true);
+</script>
+</block>

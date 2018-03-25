@@ -1,0 +1,774 @@
+<extend name="Public:head"/>
+<block name="headdiv">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/xq_slide.css">
+</block>
+<block name="main">
+     <!-- 头部 -->
+    <div class="header-container bgfff z5">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                    <!-- <div class="addressback"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div> -->
+                    商家详情
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+
+    <div class="businessinfotop box z5">
+        <img class="w20" src="__WEBPUBLIC__/Wechat/cusimg/img (29).png">
+        <!-- <div class="colfff textovh w100 shopMessage"> -->
+            <marquee id="marquee" class="colfff textovh w100 shopMessage" scrollamount="4">  
+                       <!--  请问可劲去了万科及去了危机去玩了几额为了健康&nbsp;&nbsp;&nbsp;
+                        请问可劲去了万科及去了危机去玩了几额为了健康  &nbsp;&nbsp;&nbsp;
+                        请问可劲去了万科及去了危机去玩了几额为了健康 &nbsp;&nbsp;&nbsp; -->
+            </marquee>
+        <!-- </div> -->
+    </div>
+
+    <!-- 内容 -->
+    <div class="xq_container fs14 padtop100">
+        <div class="weui-cell bgfff box boxdetail">
+            <div class="weui-cell__hd wh80 ovh mgr5">
+                <img class="w100 head_pic" src="__WEBPUBLIC__/Wechat/img/defa.jpg">
+            </div>
+            <div class="weui-cell__bd mgr5">
+                <div class="flex">
+                    <div class="line2 shopname"></div>
+                    <div class="flex fs0 flexvcenter none djimg"><img class="h20" src=""></div>
+                </div>
+                <div class="starbox">
+                </div>
+                <div class="colb6"><span class="colred none is_open">[未营业]</span><span class="areaname"></span>[<span class="catename"></span>]</div>
+            </div>
+            <div class="weui-cell__ft textcenter collect">
+                <img class="w30" src="__WEBPUBLIC__/Wechat/img/img (77).png" class="iconfenx"/>
+                <div class="fs0-8">+收藏</div>
+            </div>
+        </div>
+        <div class="re shopmidnav">
+            <div class="fs0"><img class="w100" src="__WEBPUBLIC__/Wechat/cusimg/img (159).png"></div>
+            <div class="flex ab businessinfonav">
+                <div class="flex1 flex2 flexcenter on">
+                    <img class="w20" src="__WEBPUBLIC__/Wechat/cusimg/img (4).png">
+                    <span>店铺首页</span>
+                </div>
+                <div class="flex1 flex2 flexcenter">
+                    <img class="w20" src="__WEBPUBLIC__/Wechat/cusimg/img (58).png">
+                    <span>全部商品</span>
+                </div>
+            </div>
+        </div>
+        <div class="body1">
+        <div class="bgfff">
+            <div class="weui-cell box">
+                <div class="weui-cell__hd mgr5">
+                    <img class="w15 y2" src="__WEBPUBLIC__/Wechat/cusimg/img (2).png">
+                </div>
+                <div class="weui-cell__bd textovh fs0-8 shop_address">
+                </div>
+                <div class="weui-cell__ft">
+                    <div class="fs12 flex textcenter">
+                        <div class="flex2 flexcenter br padlr10 shopfj">
+                            <div class="w15 fs0"><img class="w100" src="__WEBPUBLIC__/Wechat/cusimg/img (22).png"></div>
+                            <div>附近</div>
+                        </div>
+                        <div class="flex2 flexcenter br padlr10 showtel">
+                            <div class="w15 fs0"><img class="w100" src="__WEBPUBLIC__/Wechat/cusimg/img (3).png"></div>
+                            <div>电话</div>
+                        </div>
+                        <div class="flex2 flexcenter padlr10 shopkefu none">
+                            <div class="w15 fs0"><img class="w100" src="__WEBPUBLIC__/Wechat/cusimg/img (40).png"></div>
+                            <div>商家</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cell box">
+                <div class="weui-cell__hd mgr5">
+                    <img class="w15 y2" src="__WEBPUBLIC__/Wechat/cusimg/img (74).png">
+                </div>
+                <div class="weui-cell__bd textovh">
+                    营业时间
+                    <span class="shop_time"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mgtop10 bgfff">
+            <a class="weui-cell weui-cell_access" href="javascript:;">
+                <div class="weui-cell__hd"><img src="__WEBPUBLIC__/Wechat/cusimg/img (103).png" alt="" style="width:20px;margin-right:5px;display:block"></div>
+                <div class="weui-cell__bd">
+                    <p>商家相册(<span class="imgNumber"></span>)</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+            <div class="businessinfoimglist pad10">
+                <div class="shop_img">
+                </div>
+            </div>
+        </div>
+
+        <div class="mgtop10 bgfff none">
+            <a class="weui-cell weui-cell_access after carlq" href="javascript:;">
+                <div class="weui-cell__hd"><img src="__WEBPUBLIC__/Wechat/cusimg/img (102).png" alt="" style="width:20px;margin-right:5px;display:block"></div>
+                <div class="weui-cell__bd fs0-8">
+                    <p>优惠券</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+            <div class="pad10">
+                <div class="flex lqbox lqbox2">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    % <span class="fs35">90</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>打折券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                </div>  
+                <div class="flex lqbox lqbox2">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    % <span class="fs35">90</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>打折券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                </div>  
+                <div class="flex lqbox lqbox2">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    % <span class="fs35">90</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>打折券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                </div>  
+            </div>
+        </div>
+
+        <div class="bgfff mgtop10">
+            <div class="pjtop">
+                <a class="weui-cell weui-cell_access" href="javascript:;">
+                    <div class="weui-cell__bd">
+                        <p><img class="w20 y3 mgr5" src="__WEBPUBLIC__/Wechat/cusimg/img (54).png">用户评价(<span class="yhpingjia"></span>)</p>
+                    </div>
+                    <div class="weui-cell__ft appr_seeall none">
+                        <span class="colb6">查看全部</span>
+                    </div>
+                </a>
+            </div>
+            <div class="pjmain">
+                <div class="textcenter ih30">暂无评价</div>
+            </div>
+        </div>
+
+        <div class="shopinfopjbox flex flexcenter">
+            <span>商家详情介绍</span>
+        </div>
+        <div class="shopimginfobox">
+            <div class="textcenter mgtop20 mgb20">这个商家很懒，没做任何介绍~</div>
+        </div>
+
+        <div class="returnfoot myweuiok z5">
+            我要买单
+        </div>
+
+        </div>
+        <div class="body2">
+            <div class="classnav infoclassnav infoclassnav flex bgfff ih30">
+                <div class="flex1 flex">
+                    <div class="flex1 classnav1">
+                        <!-- <span class="allclass on">全部分类</span> -->
+                        <select class="allclass">
+                            <option value="0">全部分类</option>
+                        </select>
+                        <div>全部分类</div>
+                    </div>
+                    <div class="flex1 classnav2">
+                        
+                        <!-- <span class="zhclass">综合排序</span> -->
+                        <select class="zhclass">
+                            <option value="1">综合排序</option>
+                            <option value="2">销量最高</option>
+                        </select>
+                        <div>综合排序</div>
+                    </div>
+                </div>
+                <div class="divclass">
+                    <img class="" src="__WEBPUBLIC__/Wechat/img/class1.png">
+                </div>
+            </div>
+            <div class="list ovh">
+                <!--<div class="shoplist">-->
+                    <!--<div><img class="listimg1" src="__WEBPUBLIC__/Wechat/img/img (133).png"></div>-->
+                    <!--<div>-->
+                        <!--<div class="ih20 h40 line2 mgb5">巴黎欧欧莱雅</div>-->
+                        <!--<div class="listdiv3 ">-->
+                            <!--<div class="ih20">-->
+                                <!--<div class="colb6 fs12">月售<span>588</span>件</div>-->
+                                <!--<div class="colred">￥<span>189.00</span></div>-->
+                            <!--</div>-->
+                            <!--<div>-->
+                                <!--<img class="listimg2" src="../img/img (136).png">-->
+                            <!--</div>-->
+                        <!--</div> -->
+                    <!--</div>     -->
+                <!--</div>-->
+
+            </div>
+        </div>
+
+    </div>
+
+    
+
+
+     <!-- 商品优惠券详情 -->
+        <div id="actionSheet_wrap2" style="display: none;">
+            <div class="weui-mask_transparent actionsheet__mask bg0-6"  style="opacity: 1" id="mask2"></div>
+            <div class="weui-actionsheet weui-actionsheet_toggle" id="weui-actionsheet2">
+                <div class="weui-actionsheet__menu myweuilq pad10">
+                   <div class="myweuilqtop">
+                        <div class="myweuilqname fs14">巴黎贝甜(小白楼店)</div>
+                        <div><b class="colblack">领取优惠券</b></div>
+                   </div>
+                   <div class="myweuilqmain">
+                        <div class="flex lqbox lqbox1">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    ￥ <span class="fs35">10</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>优惠券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                        </div>         
+                        <div class="flex lqbox lqbox2">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    % <span class="fs35">90</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>打折券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                        </div>         
+                        <div class="flex lqbox lqbox3">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    ￥ <span class="fs35">10</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>现金券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                        </div>                  
+                   </div>
+
+                </div>
+                <div class="weui-actionsheet__action">
+                    <div class="weui-actionsheet__cell myweuiok2" id="actionsheet_cancel2">关闭</div>
+                </div>
+            </div>
+        </div>
+</block>
+<block name="footerjs">
+<script src="__WEBPUBLIC__/Wechat/slide/js/xq_slide.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+        var shop_id = "{$_REQUEST['shop_id']}";
+        var distance = "{$_REQUEST['distance']}";
+        var lat = "{$_REQUEST['lat']}";
+        var lnt = "{$_REQUEST['lnt']}";
+        var is_open=0;//是否营业 1是不营业
+        var hx_name='';
+        var shop_name="";
+        var head_pic="";
+        var c_id = ''; //用户收藏商家的id
+        var dataargs2 = {"shop_id":shop_id,m_id:m_id};
+        var latlnt = sessionStorage.getItem("latlnt");
+        var flag= true;//防止ajax请求期间，对此触发请求数据
+        if ( latlnt ) {
+            //前一页缓存经纬度
+            var json = JSON.parse( latlnt );
+            dataargs2.lat = json.lat;
+            dataargs2.lnt = json.lnt;
+            // json.shop_id = shop_id;
+            // requestUrl( "{:U('Api/Shop/getLntLat')}" , json , function ( res ) {
+            //  if ( res.flag == "success" ) {
+            //      distance = res.data.detail.distance;
+            //      $(".distance_box").html((distance < 1000 ? distance : Math.round(distance/100)/10+"k")+'m');
+            //  }
+            // })
+        }
+        if ( lat && lnt && !distance) {
+            dataargs2.lat = lat;
+            dataargs2.lnt = lnt;
+        }
+        requestUrl("{:U('Api/Shop/shopDetail')}",dataargs2,function(data){
+            layer.closeAll();
+            var a_data=data.data;
+            if(a_data.notice){
+                $('.shopMessage').html(a_data.notice);  //商家公告
+            }else{
+                $('.shopMessage').html('暂无公告~');  //商家公告
+            }
+            var headpic = "{:C('API_URL')}/Public/Wechat/img/defa.jpg";
+            if(a_data.head_pic!=""){
+                headpic = "{:C('API_URL')}/"+a_data.head_pic;
+            }
+            $('.head_pic').attr('src',headpic);         //商家头像
+            $('.shopname').html(a_data.name);       //商家名称
+            obj.title = a_data.name;
+            obj.desc = a_data.name;
+            obj.imgUrl = headpic;
+            $('.starbox').html(showStar(a_data.star));  //商家星数
+            $('.areaname').text(a_data.area_name); //地区名称
+            $('.catename').text(a_data.class_name);//分类名称
+            $(".shop_address").html(a_data.address);    //商家详细地址
+            $(".shop_time").text(a_data.time);          //营业时间
+            $(".yhpingjia").text(a_data.app_count); //评价
+            if(a_data.content){
+                $('.shopimginfobox').html(a_data.content);  //商家详情
+            }
+            if(!(+a_data.is_set_goods)){
+                $('.shopmidnav').hide();
+                $('.boxdetail').addClass('mgb20');
+            }
+            if(a_data.grade_icon){
+                $('.djimg').removeClass('none');
+                $('.djimg img').attr('src',a_data.grade_icon);
+            }
+            is_open=a_data.is_open;
+            if(is_open==1){
+                $('.is_open').removeClass('none');
+            }
+            hx_name=a_data.a_data;
+            shop_name=a_data.name;
+            head_pic=headpic;
+            //判断用户是否收藏
+            if(a_data.is_collect>0){
+                c_id = a_data.is_collect;
+                $('.collect').addClass("on").find("img").attr('src',"__WEBPUBLIC__/Wechat/img/img (78).png");
+                $('.collect').find("div").html("已收藏");
+            }
+            $('.shopfj').attr('linkto',"{:U('Shop/round')}/shop_name/"+a_data.name+"/lat/"+a_data.lat+"/lnt/"+a_data.lnt);
+            putGoods(a_data.app_list);//商家评价
+            top_linkto();
+        },"GET",true);
+
+        $(".collect").click(function() {
+            if($(this).hasClass('on')){
+                //取消收藏
+                var col_id = [c_id];
+                requestUrl("{:U('Api/Product/cancelCollect')}",{type:1,c_id:JSON.stringify(col_id)},function(res){
+                    if(res.flag=="success"){
+                        layer.msg("已取消收藏");
+                        $('.collect').removeClass("on").find("img").attr('src',"__WEBPUBLIC__/Wechat/img/img (77).png");
+                        $('.collect').find("div").html("+收藏");
+                    }
+                });
+            }else{
+                //收藏
+                requestUrl("{:U('Api/Member/collect')}",{m_id:m_id,shop_id:shop_id},function(res){
+                    if(res.flag=="success"){
+                        layer.msg("收藏成功");
+                        c_id = res.data;
+                        $('.collect').addClass("on").find("img").attr('src',"__WEBPUBLIC__/Wechat/img/img (78).png");
+                        $('.collect').find("div").html("已收藏");
+                    }
+                });
+            }
+        });
+        // 首页与商品切换
+        $('.businessinfonav>div').click(function(){
+            $('.businessinfonav>div').removeClass('on');
+            $(this).addClass('on');
+            if($(this).index()==0){
+                $('.body1').removeClass('none');
+                $(this).find('img').attr('src',"__WEBPUBLIC__/Wechat/cusimg/img (4).png");
+                $(this).next().find('img').attr('src',"__WEBPUBLIC__/Wechat/cusimg/img (58).png");
+            }else{
+                $('.body1').addClass('none');
+                $(this).find('img').attr('src',"__WEBPUBLIC__/Wechat/cusimg/img (59).png");
+                $(this).prev().find('img').attr('src',"__WEBPUBLIC__/Wechat/cusimg/img (5).png");
+                getJson('shouci');
+            }
+        });
+        //我要买单
+        $('.myweuiok').click(function(){
+            if(is_open==1){
+                layer.msg('商家未营业');
+                return;
+            }
+            var url="{:U('Pay/pay')}/shop_id/"+shop_id;
+            location.href=url;
+        });
+        //显示商家相册
+        requestUrl("{:U('Api/Store/albumList')}",{shop_id:shop_id,p:1},function(res){
+            if(res.flag=="success"){
+                $('.imgNumber').text(res.data.count);
+                if(res.data.count>1){
+                    $('.imgNumber').parent().parent().parent().attr('linkto',"{:U('Shop/album')}/shop_id/"+shop_id);
+                    top_linkto();
+                }
+                var data = res.data.list;
+                var str = '';
+                for(var i in data){
+                    var item = data[i];
+                    var pic = "{:C('API_URL')}/"+item.pic;
+                    str += '<div><img class="h100" src="'+pic+'"></div>';
+                }
+                $('.shop_img').append(str);
+            }else{
+                $('.imgNumber').text(0);
+                $('.shop_img').hide();
+            }
+        });
+
+         //添加评论到列表
+        function putGoods(data) {
+            if(data.length >= 1){
+                $('.appr_seeall').removeClass('none');
+                $('.appr_seeall').attr('linkto',"{:U('Shop/evaluate')}/shop_id/"+shop_id);
+                top_linkto();
+            }
+            var str = '';
+            for (var i in data){
+                var item = data[i];
+                var head = item.head_pic;
+                if(head.indexOf("://")<0){
+                    head = "{:C('API_URL')}"+item.head_pic;
+                }
+                str += '<div class="pjbox flex">\
+                            <div class="pjheadimg headimgbg" style="background-image:url('+head+')">\
+                            </div>\
+                            <div class="flex1">\
+                                <div class="textovh">'+item.nick_name+'</div>\
+                                <div class="startbox">\
+                                    <div class="startboxtop">'+showStar(item.star)+'</div>\
+                                    <div class="right colb6 startboxtime">'+item.time+'</div>\
+                                </div>\
+                                <div class="pjtext">'+item.content+'</div>\
+                                <div class="pjimgbox">'+pjimg(item.pic)+'</div>\
+                            </div>\
+                        </div>';
+            }
+            
+            if(str){
+                $('.pjmain').html(str);
+            }
+        }
+
+        var dataargs = {p:1,shop_id:shop_id};
+//        $(function(){
+//            getJson('shouci');
+//        });
+
+        $('.divclass').click(function () {
+            if($(this).hasClass('on')){
+                $(this).removeClass('on');
+                $(this).find('img').attr('src','__WEBPUBLIC__/Wechat/img/class1.png');
+                $('.shoplist').removeClass('shoplist2');
+            }else{
+                $(this).addClass('on');
+                $(this).find('img').attr('src','__WEBPUBLIC__/Wechat/img/class2.png');
+                $('.shoplist').addClass('shoplist2');
+            }
+        });
+        //显示所有的商品分类
+        requestUrl("{:U('Api/Product/category')}",{},function(res){
+            if(res.flag=="success"){
+                var data = res.data;
+                var str = '';
+                for(var i in data){
+                    str += '<option value='+data[i].cate_id+'>'+data[i].category+'</option>';
+                }
+                $('.allclass').append(str);
+            }
+        },"GET");
+        //点击购物车
+    $('.list').on('click','.listimg2',function(event){
+        event.stopPropagation();
+        var url="{:U('Store/productinfo')}/status/2/p_id/"+$(this).attr('p_id');
+        location.href=url;
+    });
+        //点击选择分类
+        $('.allclass,.zhclass').change(function(){
+            var claName = $(this).attr('class');
+            var option = $(this).find("option:selected");
+            $(this).next('div').html(option.text());
+            if(claName=="allclass"){
+                // if(option.val()>0){
+                    dataargs.parent_id = option.val();
+                // }
+            }else{
+                dataargs.order = option.val();
+            }
+            dataargs.p = 1;
+            getJson('shouci');
+        })
+
+        //商品列表
+        function getJson(args){
+            requestUrl("{:U('Api/Product/productList')}",dataargs,function(res){
+                putProducts(res,args);
+            },'GET');
+        }
+        //添加商品到列表
+        function putProducts(data,args){
+            if(data.flag == 'success'){
+                var shops = data.data;
+                if((!shops || shops.length == 0 ) && args == "shouci"){
+                    $(".list").addClass('wusj');
+                    $(".nomore").remove();
+                }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                    $(".nomore").remove();
+                    $(".body2").append('<div class="texcen nomore">没有更多了！</div>');
+                }else {
+                    $(".nomore").remove();
+                    $(".list").removeClass('wusj');
+                    var str ="";
+                    for(var index in shops){
+                        var shop = shops[index];
+                        str +='<div class="shoplist '+($(".divclass").hasClass("on")?"shoplist2":"")+'" linkto="{:U('Store/productinfo')}/p_id/'+shop.p_id+'">\
+                                    <div><img class="listimg1" src="'+shop.cover_pic+'"></div>\
+                                    <div>\
+                                        <div class="ih20 h40 line2 mgb5">'+shop.title+'</div>\
+                                        <div class="listdiv3 ">\
+                                            <div class="ih20">\
+                                                <div class="colb6 fs12">月售<span>'+shop.sales+'</span>件</div>\
+                                                <div class="colred">￥<span>'+shop.price+'</span><sapn class="fs12"> 豆(元)</span></div>\
+                                            </div>\
+                                            <div>\
+                                                <img class="listimg2" p_id="'+shop.p_id+'" src="__WEBPUBLIC__/Wechat/img/img (136).png">\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>';
+
+                    }
+                    if (args == "fenye") {
+                        $('.list').append(str);
+                    }else{
+                        $('.list').html(str);
+                    }
+                    flag = true;
+                }
+                top_linkto();
+            }else{
+                if(data.message=="数据为空"&&args == "shouci"){
+                    $('.list').html('').addClass('wusj');
+                    $('.nomore').remove();
+                }else{
+                    layer.msg(data.message);
+                }
+            }
+            if (args == "shouci") {
+                fenye();
+            }
+        }
+
+        function fenye(){
+            
+            var $_zd = $(".shoplist").height();//获取每个单项的高度
+            var length = 3;//定义预加载的数量，提前三个加载数据
+            var $_par = $(".list");//获取包裹容器
+            var winheight = $(window).height();//获取窗口高度
+            var curpage = 1;//存储当前的页数v
+            $(function(){
+                $(window).on("scroll",function(e){
+                    if(flag){
+                        var self = $(this);
+                        var scrtop = self.scrollTop() + winheight;
+                        var docheight = $_par.height();
+                       console.log("scrtop="+scrtop,"docheight="+docheight,"length="+length,'$_zd='+$_zd);
+                       console.log("scrtop="+(scrtop-240),"docheight="+(docheight - ( length * $_zd)));
+                        if(scrtop - 240> docheight+240 - ( length * $_zd) ){
+                            console.log('进入');
+                            flag = false;
+                            dataargs.p = dataargs.p +1;
+                            getJson("fenye");
+                        }
+                    }
+                });
+            });
+        }
+        function pjimg(data){
+            var arr = data;
+            var  str = "";
+            for(var i=0;i<arr.length;i++){
+              str += '<div><img class="w100" src="'+arr[i]+'"></div>'
+            }
+            return str;
+        }
+
+
+    //显示星数
+    function showStar(num){
+        var str = '';
+        for (var i=0;i<num;i++){
+            str += '<img class="w15" src="__WEBPUBLIC__/Wechat/img/img (104).png">';
+        }
+        for (var j=5;j>num;j--){
+            str += '<img class="w15" src="__WEBPUBLIC__/Wechat/img/img (105).png">';
+        }
+        return str;
+    };
+
+
+    // 客服电话
+        //获取商家客服电话
+        var telstr="";
+        requestUrl("{:U('Api/Store/shopTel')}",{shop_id:shop_id},function(res){
+            console.log(res);
+            telstr = '<div class="bgfff telbox ih30">\
+                                <div class="fw padtb10 after">拨打电话</div>\
+                                <div class="telmain">暂无商家联系方式</div>\
+                            </div>';
+            if(res.flag=="success"){
+                var str = '';
+                var data = res.data;
+                var ret= /^(0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8})|(400|800)([0-9\\-]{7,10})|(([0-9]{4}|[0-9]{3})(-| )?)?([0-9]{7,8})((-| |转)*([0-9]{1,4}))?$/;
+                if (data.tel_one&&data.tel_one != ""&&ret.test(data.tel_one)) {
+                    str += '<div class="padtb10 after apptelitem" apptel="'+data.tel_one+'" linkto="tel:' + data.tel_one + '"><span class="mgr5">客服1</span><span>' + data.tel_one + '</span></div>';
+                }
+                if (data.tel_two&&data.tel_two != ""&&ret.test(data.tel_two)) {
+                    str += '<div class="padtb10 after apptelitem" apptel="'+data.tel_two+'" linkto="tel:' + data.tel_two + '"><span class="mgr5">客服2</span><span>' + data.tel_two + '</span></div>';
+                }
+                if (data.tel_three&&data.tel_three != ""&&ret.test(data.tel_three)) {
+                    str += '<div class="padtb10 after apptelitem" apptel="'+data.tel_three+'" linkto="tel:' + data.tel_three + '"><span class="mgr5">客服3</span><span>' + data.tel_three + '</span></div>';
+                }
+                if (data.tel_four&&data.tel_four != ""&&ret.test(data.tel_four)) {
+                    str += '<div class="padtb10 after apptelitem" apptel="'+data.tel_four+'" linkto="tel:' + data.tel_four + '"><span class="mgr5">客服4</span><span>' + data.tel_four + '</span></div>';
+                }
+                if (data.tel_five&&data.tel_five != ""&&ret.test(data.tel_five)) {
+                    str += '<div class="padtb10 after apptelitem" apptel="'+data.tel_five+'" linkto="tel:' + data.tel_five + '"><span class="mgr5">客服5</span><span>' + data.tel_five + '</span></div>';
+                }
+                if (str != "") {
+                    telstr = '<div class="bgfff telbox ih30">\
+                                <div class="fw padtb10 after">拨打电话</div>\
+                                <div class="telmain">' + str + '</div>\
+                            </div>';
+                }
+            }
+        });
+//        var  telstr="<div class='bgfff telbox ih30'>"+
+//                    "<div class='fw padtb10 after'>拨打电话</div>"+
+//                    "<div class='telmain'>"+
+//                        "<div class='padtb10 after'><span class='mgr5'>客服1</span><span>15456456456</span></div>"+
+//                        "<div class='padtb10 after'><span class='mgr5'>客服1</span><span>15456456456</span></div>"+
+//                        "<div class='padtb10 after'><span class='mgr5'>客服1</span><span>15456456456</span></div>"+
+//                    "</div>"+
+//                    "</div>";
+    $('.showtel').on('click',function(){
+        showtel(telstr);
+        top_linkto();
+    })
+     // 显示电话
+    function showtel(e){
+        layer.open({
+          type: 1,
+          title: false,
+          closeBtn: 0,
+          shadeClose: true,
+          // skin: 'yourclass',
+          content: e
+        });
+    };
+</script>
+<script type="text/javascript">
+    function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+        $('.shopkefu').off('click');
+        $('.shopkefu').on('click',function(){
+            bridge.callHandler('appCart',{hx_name:hx_name,shop_id:shop_id,shop_name:shop_name,shop_head_pic:head_pic}, function(response) {
+                //处理oc过来的回调
+                layer.closeAll();
+            })
+        });
+        var ua = navigator.userAgent.toLowerCase(); 
+        if (/android/.test(ua)) {
+            $('.showtel').off('click');
+            $('.showtel').on('click',function(){
+                showtel(telstr);
+            });
+            $('body').on('click','.apptelitem',function(){
+                var apptel=$(this).attr('apptel');
+                bridge.callHandler('appTel',{tel:apptel}, function(response) {
+                    //处理oc过来的回调
+                    layer.closeAll();
+                })
+            });
+        }
+        var iosin="{$_GET['iosin']}";
+        if(iosin==1){
+            $('.back').off('click');
+            $('.back').on('click',function(){
+                bridge.callHandler('iosBack',{}, function(response) {
+                    //处理oc过来的回调
+                    layer.closeAll();
+                })
+            });
+        }
+    });
+</script>        
+</block>

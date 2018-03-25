@@ -1,0 +1,187 @@
+<extend name="Public:head"/>
+<block name="main">
+
+    <!-- <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>兑换记录</p>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="weui-cell ih30 bg000 header-container2">
+        <span class="on top_radio">全部</span><span class="top_radio">待付款</span><span class="top_radio">待发货</span><span class="top_radio">待收货</span><span class="top_radio">退款中</span>
+    </div>
+
+    <div class="xq_container pad100">
+        <div class="jfshoplist">
+
+        </div>
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+       var flag= true;//防止ajax请求期间，对此触发请求数据
+       var dataargs = {"mix_id":shop_id,p:1,"type":1,"status":""};
+      
+        function getJson(args) {
+            console.log(dataargs);
+            requestUrl("{:U('Api/Order/orderList')}",dataargs,function(data){
+                layer.closeAll();
+                putGoods(data,args);
+            },"GET",true);
+        }
+
+         $(function(){
+            getJson("shouci");
+        });
+
+        // 头部点击
+        function radioAfter(e){
+            if(e.index()==0){
+                 dataargs={"mix_id":shop_id,p:1,"type":1,"status":""};
+                 getJson("shouci");
+            }else if (e.index()==1) {
+                dataargs={"mix_id":shop_id,p:1,"type":1,"status":10};
+                getJson("shouci");
+            }else if (e.index()==2) {
+                dataargs={"mix_id":shop_id,p:1,"type":1,"status":1};
+                getJson("shouci");
+            }else if (e.index()==3) {
+                 dataargs={"mix_id":shop_id,p:1,"type":1,"status":2};
+                getJson("shouci");
+            }else if (e.index()==4) {
+                 dataargs={"mix_id":shop_id,p:1,"type":1,"status":4};
+                getJson("shouci");
+            }
+        }
+        //添加商品到列表
+        function putGoods(data,args) {
+            console.log(data);
+            if(data.flag == 'success'){
+                var shops = data.data;
+                if((!shops || shops.length == 0 ) && args == "shouci"){
+                    $(".jfshoplist").html("");
+                   $(".xq_container").addClass('wusj');
+                }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                    $(".xq_container").append('<div class="texcen nulldata">没有更多了！</div>');
+                }else{
+                    $(".nulldata").remove();
+                    $(".xq_container").removeClass("wusj");
+                    var str ="";
+                    for(var index in shops){
+                        var shop = shops[index];
+                        //console.log(shop.cover_pic);
+                        var url = "/index.php/Merchant/Apporder/goodsreceipt/i_o_id/"+shop['i_o_id'];
+                        // var dou = shop['type'] == 0 ? "iconzuan" : "iconmaisui";
+                        var mai = shop['type'] == 0 ? "豆" : "麦穗";
+                        var shoptype;
+                        var d_botton="";
+                        if(shop.status==0){
+                             shoptype="待付款";
+                        }else if(shop.status==1){
+                             shoptype="待发货";
+                        }else if(shop.status==2){
+                             shoptype="待收货";
+                             d_botton='<div class="d_botton1 okgoods">确认收货</div>';
+                        }else if(shop.status==3){
+                             shoptype="已收货";
+                             d_botton='<div class="d_botton2 removegoods">删除订单</div>';
+                        }else if(shop.status==4){
+                             shoptype="退货中";
+                        }else if(shop.status==5){
+                             shoptype="已退货";
+                             d_botton='<div class="d_botton2 removegoods">删除订单</div>';
+                        }
+                        str +=' <div class="cellbox" linkto='+url+'><div class="weui-cells shoplist noafter"><div class="weui-cell"><div class="weui-cell__hd shopimg"><img class="" src=/'+shop.cover_pic+'></div><div class="weui-cell__bd"><div class="fs1 disflex"><span class="flex1 texovh">'+shop.goods_name+'</span><span class="colff0 ">'+shoptype+'</span></div><div class="false"></div><span class="colccc">'+shop.price+'</span><span class="colff0">'+(shop['pay_type']==2?"元":mai)+'</span><span class="fr fs0-8 colccc">'+formatDate(shop.ctime)+'</span></div></div></div></div><div class="weui-cell bgfff"><div class="weui-cell__hd"></div><div class="weui-cell__bd">合计:<span>'+shop.price+'</span></div><div class="weui-cell__ft" goodsid="'+shop['i_o_id']+'">'+d_botton+'</div></div></div>' ;
+                    }
+                    if (args == "fenye") {
+                        $('.jfshoplist').append(str);
+                    }else{
+                        $('.jfshoplist').html(str);
+                    }
+                    flag=true;
+                    top_linkto();
+                }
+            }else{
+                layer.msg(data.message);
+            }
+
+            if (args == "shouci") {
+                fenye();
+            }
+        }
+        // 时间
+        function formatDate(e)
+        { 
+                var now=new Date(e*1000)
+                var year=now.getFullYear(); 
+                var month=now.getMonth()+1; 
+                var date=now.getDate(); 
+                // var hour=now.getHours(); 
+                // var minute=now.getMinutes(); 
+                // var second=now.getSeconds(); 
+                return year+"-"+month+"-"+date; 
+        } 
+
+        // 确认收货
+        $(".jfshoplist").on("click",".okgoods",function(){
+            var order_id=$(this).parent().attr("goodsid");
+            var $that=$(this);
+            requestUrl("{:U('Api/Order/makeSure')}",{"order_id":order_id},function(data){
+                layer.closeAll();
+                if(data.flag == 'success'){
+                    layer.msg("收货成功！");
+                      setTimeout(function () {
+                        dataargs.p=1;
+                        getJson("shouci");
+                    },1000);   
+                }else{
+
+                }
+            },"POST",true);
+        })
+        // 删除订单
+         $(".jfshoplist").on("click",".removegoods",function(){
+            var order_id=$(this).parent().attr("goodsid");
+            var $that=$(this);
+            requestUrl("{:U('Api/Order/delOrder')}",{"order_id":order_id},function(data){
+                layer.closeAll();
+                if(data.flag == 'success'){
+                    layer.msg("删除成功！");
+                     setTimeout(function () {
+                        dataargs.p=1;
+                        getJson("shouci");
+                    },1000);  
+                }else{
+
+                }
+            },"POST",true);
+        })
+
+         function fenye(){
+            var $_zd = $(".cellbox").height();//获取每个单项的高度
+            var length = 3;//定义预加载的数量，提前三个加载数据
+            var $_par = $(".jfshoplist");//获取包裹容器
+            var winheight = $(window).height();//获取窗口高度
+            var curpage = 1;//存储当前的页数v
+            $(function(){
+                $(window).on("scroll",function(e){
+                    if(flag){
+                        var self = $(this);
+                        var scrtop = self.scrollTop() + winheight;
+                        var docheight = $_par.height();
+                        //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                        if(scrtop > docheight - ( length * $_zd ) ){
+                            flag = false;
+                            dataargs.p = dataargs.p +1;
+                            getJson("fenye");
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</block>

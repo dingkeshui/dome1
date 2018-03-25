@@ -1,0 +1,167 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd re textcenter">
+                图库选择(<span class="albumnum count"></span>)
+            </div>
+            <!--<div class="weui-cell__ft">
+                <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+            </div>-->
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container ">
+        <div class="albumbox">
+
+        </div>
+    </div>
+
+    <div class="dingfoot shopspecfoot">
+        <span>选择照片</span>
+    </div>
+</block>
+<block name="footerjs">
+<script>
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    var c_name = "{$_REQUEST['c_name']}";
+    var c_num = "{$_REQUEST['c_num']}";
+    var idarr=[],picarr = [];
+    if ( c_name == "toppic" ) {
+        picarr = JSON.parse( sessionStorage.getItem("toppic") );
+    }else{
+        picarr = JSON.parse( sessionStorage.getItem("lunpic") );
+    }
+    if (picarr && picarr.length > 0) {
+        for (var i = 0; i < picarr.length; i++) {
+            idarr.push(picarr[i]['pic_name']);
+        }
+    }
+
+    var dataargs={
+        "shop_id":shop_id,
+        "p" : 1
+    };
+    
+    var flag= true;//防止ajax请求期间，对此触发请求数据      
+    function getJson(args) {
+        console.log(dataargs);
+        requestUrl("{:U('Api/Store/albumList')}",dataargs,function(data){
+            layer.closeAll();
+            putGoods(data,args);
+        });
+    }
+
+    $(function(){
+        getJson("shouci");
+    });
+
+    //添加商品到列表
+    function putGoods(data,args) {
+        console.log(data);
+        if(data.flag == 'success'){
+            var shops = data.data.list;
+            if ( args == "shouci" ) {
+                if(data.data.count){
+                    $(".count").text(data.data.count);
+                }else{
+                    $(".count").text(0);
+                }
+            }
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+               $(".xq_container").addClass('wusj');
+
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".xq_container").append('<div class="texcen nulldata">没有更多了！</div>');
+            }else{
+                $(".nulldata").remove();
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    //console.log(shop.cover_pic);
+                    var is_check = "";
+                    if ( idarr.indexOf(shop.pic) != -1) {
+                        is_check = "checked";
+                    }
+                    str += '<div class="albumitem">'
+                                +'<img class="w100" src="'+shop.x_pic+'">'
+                                +'<div class="albumbut">'
+                                    +'<div>'
+                                        +'<input type="checkbox" class="pic_id" name="pic_id" value="'+shop.pic_id+'" x_name="'+shop.pic+'" '+is_check+'>'
+                                        +'<span></span>'
+                                    +'</div>'
+                                +'</div>'
+                            +'</div>';
+                }
+                if (args == "fenye") {
+                    $('.albumbox').append(str);
+                }else{
+                    $('.albumbox').html(str);
+                }
+                flag=true;
+            }
+        }else{
+            layer.msg(data.message);
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    function fenye(){
+        var $_zd = $(".albumitem").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".albumbox");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $('.xq_container').on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+
+
+    $(".shopspecfoot").on('click',function () {
+        var pic_id = [];
+        $("[name='pic_id']").each(function () {
+            if ( $(this)[0].checked ) {
+                pic_id.push({pic_id:$(this).val(),pic_name:$(this).attr('x_name')});
+                $(this).parents(".albumitem").attr("isdel","1");
+            }
+        });
+        if (pic_id.length > c_num ) {
+            layer.msg("您只能选择"+c_num+"张图！");
+            return;
+        }
+        if (c_name) {
+            sessionStorage.setItem(c_name,JSON.stringify(pic_id));
+            if(isApp||isA){
+                history.go(-1);
+            }else{
+                location.href = document.referrer;
+            }
+            
+        }
+        console.log(pic_id);
+    });
+
+</script>
+</block>

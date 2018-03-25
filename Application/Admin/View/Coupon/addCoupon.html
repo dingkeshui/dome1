@@ -1,0 +1,186 @@
+<include file="Public:header"/>
+<link rel="stylesheet" href="__WEBPUBLIC__/Uploadify/uploadify.css" type="text/css" />
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/laydate/laydate.js"></script>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active"><a href="">优惠券管理</a></li>
+        <li class="active">添加优惠券</li>
+    </ul>
+
+    <div class="page-header clearfix">
+        <h3>添加优惠券</h3>
+        <ul class="nav nav-tabs">
+            <li  class="">
+                <a href="{:U('Coupon/couponList')}">优惠券列表</a>
+            </li>
+            <li  class="active">
+                <a href="{:U('Coupon/addCoupon')}">添加优惠券</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="tabs-content" class="content-box-content">
+        <div class="ul">
+            <form action="{:U('Coupon/addCoupon')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="shop_id" class="col-sm-3 control-label"><em class="prompt-red">*</em>商家ID：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="shop_id" name="shop_id" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="title" class="col-sm-3 control-label"><em class="prompt-red">*</em>优惠券名称：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="title" name="title" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="desc" class="col-sm-3 control-label"><em class="prompt-red">*</em>优惠券描述：</label>
+                    <div class="col-sm-9">
+                        <textarea type="text" class="form-control" id="desc" name="desc" ></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>优惠券类型：</label>
+                    <div class="col-sm-9">
+                        <select  style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="type">
+                            <option value="">选择类型</option>
+                            <option value="1">定额</option>
+                            <option value="2">折扣</option>
+                            <option value="3">满减</option>
+                            <option value="4">菜品券</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="start_time" class="col-sm-3 control-label"><em class="prompt-red">*</em>开始时间：</label>
+                    <div class="col-sm-9">
+                        <input type="text" style="height: 30px" class="form-control laydate-icon" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" id="start_time" name="start_time" />
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="end_time" class="col-sm-3 control-label"><em class="prompt-red">*</em>结束时间：</label>
+                    <div class="col-sm-9">
+                        <input type="text" style="height: 30px" class="form-control laydate-icon" id="end_time" name="end_time" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" />
+                    </div>
+                </div>
+                <div class="form-group skill maxprice" style="display: none;">
+                    <label for="max_price" class="col-sm-3 control-label"><em class="prompt-red">*</em>消费满足金额：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="max_price" name="max_price" />
+                    </div>
+                </div>
+                <div class="form-group skill minprice" style="display: none;">
+                    <label for="min_price" class="col-sm-3 control-label"><em class="prompt-red">*</em>抵用金额：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="min_price" name="min_price" />
+                    </div>
+                </div>
+                <div class="form-group skill disc" style="display: none;">
+                    <label for="money" class="col-sm-3 control-label"><em class="prompt-red">*</em>折扣：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="money" name="money" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" class="btn btn-default btn-primary make_sure">确认添加</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<include file="Public:footer"/>
+<!--商家的头像和商家的展示图的上传-->
+<script>
+
+    $(".make_sure").click(function () {
+        var name = $('input[name="title"]').val();
+        var shopid = $('input[name="shop_id"]').val();
+
+        if(!name){
+            alert("活动名称不能为空!");return false;
+        }
+
+//        if(!shopid){
+//            alert("商家ID不能为空!");return false;
+//        }
+
+        $(".form").submit();
+    })
+
+    /**判断手机号是否被注册*/
+    $("#shop_id").blur(function () {
+        var account = $("#shop_id").val();
+        var url = "{:U('Coupon/isShop')}";
+        $.post(url,{shop_id:account},function (data) {
+            if(data == 1){
+                alert("商家不存在！");
+            }
+        });
+    })
+    $('select[name="type"]').change(function(){
+        var type = $(this).val();
+        if(type==1){
+            $('.minprice').show();
+            $('#max_price').val('');
+            $('.maxprice').hide();
+            $('#money').val('');
+            $('.disc').hide();
+        }else if(type==2){
+            $('.disc').show();
+            $('#min_price').val('');
+            $('#max_price').val('');
+            $('.minprice').hide();
+            $('.maxprice').hide();
+        }else if(type==3){
+            $('#money').val('');
+            $('#min_price').val('');
+            $('.disc').hide();
+            $('.minprice').show();
+            $('.maxprice').show();
+        }else{
+            $('#min_price').val('');
+            $('.minprice').hide();
+            $('#max_price').val('');
+            $('.maxprice').hide();
+            $('#money').val('');
+            $('.disc').hide();
+        }
+    });
+
+</script>
+<script>
+    ;!function(){
+        laydate({
+            elem: '#demo'
+        })
+    }();
+</script>
+<!--富文本-->
+<script  src="__WEBPUBLIC__/Common/kindeditor/kindeditor-min.js"></script>
+<script  src="__WEBPUBLIC__/Common/kindeditor/lang/zh_CN.js"></script>
+<script>
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('textarea[name="content"]', {
+            resizeType : 1,
+            uploadJson : '__WEBPUBLIC__/Common/kindeditor/php/upload_json.php',
+            fileManagerJson :
+                    '__WEBPUBLIC__/Common/kindeditor/php/file_manager_json.php',
+            allowPreviewEmoticons : false,
+            items:[
+                'source', '|', 'undo', 'redo', '|', 'cut', 'copy','|', 'justifyleft',
+                'justifycenter', 'justifyright',
+                'justifyfull', 'clearhtml', 'selectall', '|', 'formatblock',
+                'fontname', 'fontsize', '|', 'forecolor',
+                'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough','image'
+            ],
+            afterBlur:function(){this.sync();}
+        });
+    });
+</script>

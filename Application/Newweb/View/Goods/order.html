@@ -1,0 +1,272 @@
+<extend name="Public:head"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <!-- <div class="addressback" linkto="{:U('Goods/goodslist')}"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div> -->
+                	<span>兑换记录</span>
+                    <!-- <span class="colon addressgl">管理</span> -->
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+
+    <div class="ordernav flex">
+        <div class="flex1 top_radio on">全部</div>
+        <div class="flex1 top_radio">待发货</div>
+        <div class="flex1 top_radio">待收货</div>
+        <div class="flex1 top_radio">退款中</div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container padtop100">
+        <!--<div class="corderitem mgtop10 bgfff">-->
+                <!--<div class="corderitemtop flex flexvcenter pad10 ih30">-->
+                    <!--<img class="w15 mgr5" src="__WEBPUBLIC__/Wechat/img/img (6).png">-->
+                    <!--<span class="flex1">麦穗商城</span>-->
+                    <!--<span class="right corderlq colred">待发货</span>-->
+                <!--</div>-->
+                <!--<div class="">-->
+                    <!--<div class="flex corderitemshop">-->
+                            <!--<div class="carshopimg">-->
+                                <!--<img class="w100" src="../img/img (86).png">-->
+                            <!--</div>-->
+                            <!--<div class="flex1 ih20 fs14">-->
+                                <!--<div class="carshoptab1">-->
+                                    <!--<div class="line2 h40">按时间段阿萨德看来就阿萨德阿萨德；阿斯达卡asdasdasd阿萨德点击我剪短发阿斯兰的接口打开</div>-->
+                                    <!--<div class="colb6 fs12">-->
+                                        <!--M；xxl；黑色 M；xxl-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<span class="colred">159.02</span>-->
+                                        <!--<span class="colb6">麦穗</span>-->
+                                        <!--<span class="right colb6">x1</span>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="textright after fs12 padlr10 ih30">-->
+                        <!--<span class="">共48件商品</span>-->
+                        <!--合计:<span class="">185.05</span>麦穗-->
+                        <!--<span>(含运费￥10.00)</span>-->
+                <!--</div>-->
+                <!--<div class="orderbutbox">-->
+                    <!--<div class="remindbut">平台客服</div>-->
+                    <!--<div class="remindbut">查看详情</div>-->
+                    <!--<div class="remindbut">删除订单</div>-->
+                    <!--<div class="evaluatebut">立即评价</div>-->
+                    <!--<div class="logisticsbut">查看物流</div>-->
+                    <!--<div class="confirmbut">确认收货</div>-->
+                <!--</div>-->
+        <!--</div>-->
+
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+	var subdata = {mix_id:m_id,type:0,p:1};
+    // 头部点击
+    function radioAfter(e){
+        subdata.p = 1;
+        if(e.index()==0){
+            subdata.status = 0;
+        }else if(e.index()==1||e.index()==2){
+            subdata.status = e.index();
+        }else if(e.index()==3){
+            subdata.status = 4;
+        }
+        getJson('shouci');
+//        if (e.index()==1) {
+//            subdata.status = 1;
+//            getJson("shouci");
+//        }else if (e.index()==2) {
+//            subdata.status = 2;
+//            getJson("shouci");
+//        }else if (e.index()==3) {
+//            subdata.status = 3;
+//            getJson("shouci");
+//        }
+    }
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+    function getJson(args) {
+        requestUrl("{:U('Api/Order/orderList')}",subdata,function(data){
+            layer.closeAll();
+            putGoods(data,args);
+        },'GET');
+    }
+
+    $(function(){
+        getJson("shouci");
+    });
+
+    //添加商品到列表
+    function putGoods(data,args) {
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $('.xq_container').html('');
+                $(".xq_container").addClass('wusj');
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".xq_container").removeClass('wusj');
+                $(".xq_container").append('<div style="text-align:center">没有更多了！</div>');
+            }else{
+                $(".xq_container").removeClass('wusj');
+                $(".nulldata").remove();
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    var img ="";
+                    if(shop.cover_pic.indexOf("{:C('API_URL')}/")!=-1){
+                        img =shop.cover_pic;
+                    }else{
+                        img = "{:C('API_URL')}/"+shop.cover_pic;
+                    }
+                    var url = "{:U('Goods/orderinfo')}/order_id/"+shop.i_o_id;
+                    var but = '';
+                    var paystate = '';
+                    if(shop.status==0){
+                        paystate = '待付款';
+                        but = '<div class="gopay mgr5">立即付款</div>';
+                    }else if(shop.status==1){
+                        paystate = '待发货';
+                    }else if(shop.status==2){
+                        paystate = '待收货';
+                        but = '<div class="logisticsbut mgr5">查看物流</div><div class="confirmbut mgr5">确认收货</div>';
+                    }else if(shop.status==3){
+                        paystate = '待评价';
+                        but = '<div class="evaluatebut mgr5" linkto="{:U('Goods/comment')}/order_id/'+shop.i_o_id+'">立即评价</div>';
+                    }else if(shop.status==4){
+                        paystate = '退款中';
+                    }else if(shop.status==5){
+                        paystate = '已退款';
+                        but = '<div class="delbut mgr5">删除订单</div>';
+                    }else if(shop.status==6){
+                        paystate = '已完成';
+                        but = '<div class="delbut mgr5">删除订单</div>';
+                    }
+                    str += '<div class="corderitem mgtop10 bgfff">\
+                                <div class="corderitemtop flex flexvcenter pad10 ih30">\
+                                    <img class="w15 mgr5" src="__WEBPUBLIC__/Wechat/img/img (6).png">\
+                                    <span class="flex1">麦穗商城</span>\
+                                    <span class="right corderlq colred">'+paystate+'</span>\
+                                </div>\
+                                <div class="" linkto="{:U('Goods/orderinfo')}/order_id/'+shop.i_o_id+'">\
+                                    <div class="flex corderitemshop">\
+                                        <div class="carshopimg">\
+                                            <img src="'+img+'">\
+                                        </div>\
+                                        <div class="flex1 ih20 fs14">\
+                                            <div class="carshoptab1">\
+                                                <div class="line2 h40">'+shop.goods_name+'</div>\
+                                                <div>\
+                                                    <span class="colred">'+shop.price+'</span>\
+                                                    <span class="colb6">麦穗</span>\
+                                                    <span class="right colb6">x1</span>\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="textright after fs12 padlr10 ih30">\
+                                    <span class="">共1件商品</span>\
+                                    合计:<span class="">'+shop.price+'</span>麦穗\
+                                    <span>(含运费￥'+shop.postage+')</span>\
+                                </div>\
+                                <div class="orderbutbox" data-id="'+shop.i_o_id+'">\
+                                    <div class="remindbut mgr5" linkto="{:U('Goods/orderinfo')}/order_id/'+shop.i_o_id+'">查看详情</div>'+but+'\
+                                </div>\
+                            </div>';
+                }
+                if (args == "fenye") {
+                    $('.xq_container').append(str);
+                }else{
+                    $('.xq_container').html(str);
+                }
+                flag=true;
+            }
+            top_linkto();
+        }else{
+            layer.msg(data.message);
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    function fenye(){
+        var $_zd = $(".corderitem").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".xq_container");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        subdata.p = subdata.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+
+    /**点击确认收货*/
+    $('.xq_container').on('click','.confirmbut',function(){
+        var o_id = $(this).parent().attr('data-id');
+        requestUrl("{:U('Api/Order/makeSure')}",{order_id:o_id},function(data){
+            if(data['flag'] == "success"){
+                layer.msg("收货成功！");
+                setTimeout(function () {
+                    var url = "{:U('Goods/order')}";
+                    window.location.href = url;
+                },1000);
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+                layer.closeAll();
+            }
+        })
+    });
+
+    /**点击删除订单*/
+    $('.xq_container').on('click','.delbut',function(){
+        var self = $(this);
+        var o_id = self.parent().attr('data-id');
+        layer.open({
+            title:'删除订单'
+            ,content: '确认删除该订单？'
+            ,btn: ['确认', '取消']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+                requestUrl("{:U('Api/Order/delOrder')}",{order_id:o_id},function(res){
+                    if(res.flag=="success"){
+                        layer.msg("删除成功");
+                        self.parent().parent().remove();
+                    }
+                })
+                layer.close(index);
+            }
+            ,btn2: function(index, layero){
+                // location.href="{:U('Order/myorder')}/type/1";
+            }
+            ,cancel: function(){ 
+                // location.href="{:U('Order/myorder')}/type/1";
+            }
+        });
+    });
+
+    /**取消订单*/
+
+</script>
+</block>

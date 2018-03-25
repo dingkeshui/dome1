@@ -1,0 +1,139 @@
+<extend name="Public:header"/>
+<block name="main">
+<!-- 头部 -->
+    <div class="header-container bgfff z3">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd re textcenter headtime">
+                <div class="headleft" linkto="{:U('Shop/profit')}"><img class="wh20 y3" src="__WEBPUBLIC__/Wechat/img/back2.png" style="transform:rotate(180deg);vertical-align: sub;"></div>
+                <span class="on" day="1">日</span>
+                <span day="3">周</span>
+                <span day="2">月</span>
+                <!-- <span class="fr tc">退出</span> -->
+            </div>
+            <!--<div class="weui-cell__ft">
+                <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+            </div>-->
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div id="transactionimgbox" class="transactionimgbox">
+            
+        </div>
+        <div class="padlr10 bgfff">
+            <div class="ih30 padtb10 after">
+                <span class="dataStart"></span>
+                <span class="right dataEnd"></span>
+            </div>
+            <div class="flex revenuebox">
+                <div class="flex1 br">
+                    <div class="member_num"></div>
+                    <div class="fs14 colb6">付款人数</div>
+                </div>
+                <div class="flex1 br">
+                    <div class="day_aver_price"></div>
+                    <div class="fs14 colb6">全店转化率</div>
+                </div>
+                <div class="flex1">
+                    <div class="aver_member_price"></div>
+                    <div class="fs14 colb6">平均客单价</div>
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells">
+            <a class="weui-cell weui-cell_access" href="{:U('Shop/transactionday')}/day/1">
+                <div class="weui-cell__bd">
+                    <p>每日交易统计</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+            <a class="weui-cell weui-cell_access" href="{:U('Shop/transactionday')}/day/2">
+                <div class="weui-cell__bd">
+                    <p>每月交易统计</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+        </div>
+    </div>
+</block>
+<block name="footerjs"><script type="text/javascript" src="/Public/Wechat/js/echarts.common.min.js"></script>
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('transactionimgbox'));
+    var dataargs = {shop_id:shop_id,day:1};
+    $(".headtime span").on('click',function () {
+        if (!$(this).hasClass("on")) {
+            $(this).addClass("on").siblings().removeClass("on");
+            dataargs.day = $(this).attr("day");
+            getData();
+        }
+    })
+    function getData() {
+        // body...
+    requestUrl("{:U('Api/CurveDeal/dealGraph')}",dataargs,function ( res ) {
+        var dat = res.data;
+        if ( res.flag == "success" ) {
+            option.series=[];
+            option.xAxis.data = dat.curve[0].x_date.split(",");
+            var arr1=  option.xAxis.data.slice(0,1);
+
+             var arr2= option.xAxis.data.slice(-1);
+            for (var i = 0; i < dat.curve.length; i++) {
+                var namestr = '下单笔数';
+                if (i==1) {
+                    namestr = '付款订单';
+                }else if(i==2){
+                    namestr = '发货订单';
+                };
+
+                option.series.push({
+                    name:namestr,
+                    type:'line',
+                    data:dat.curve[i].day_line.split(","),
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: '最大值'},
+                            {type: 'min', name: '最小值'}
+                        ]
+                    }
+                });            
+            };
+            $(".dataStart").text(arr1[0]);
+            $(".dataEnd").text(arr2[0]);
+            $(".member_num").text(dat.other_day_price.member_num);
+            $(".aver_member_price").text("￥"+dat.other_day_price.aver_member_price);
+            $(".day_aver_price").text(dat.other_day_price.day_aver_price);
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }else{
+            layer.msg( res.message );
+        }
+    })
+    }
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '',
+            subtext: ''
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['下单笔数','付款订单','发货订单']
+        },
+        xAxis:  {
+            type: 'category',
+            boundaryGap: false
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: []
+    };
+getData();
+
+</script>
+</block>

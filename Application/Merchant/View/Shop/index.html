@@ -1,0 +1,122 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd fs0 mgr5">
+
+                <img class="indexlogo" style="width:30px;border-radius:50%;">
+
+            </div>
+            <div class="weui-cell__bd textovh shopname">
+                <!-- <span class="fr tc">退出</span> -->
+            </div>
+            <div class="weui-cell__ft indexbusiness">
+                <span>营业中</span>
+            </div>
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="indextop colfff">
+            <div class="fs14">今日付款金额</div>
+            <div class="fs25 total"></div>
+            <div class="flex indextopflexbox w100 mgtop10">
+                <div class="flex1">
+                    <div class="clicknum"></div>
+                    <div class="fs14">浏览人数</div>
+                </div>
+                <div class="flex1">
+                    <div class="order_num"></div>
+                    <div class="fs14">付款订单数</div>
+                </div>
+                <div class="flex1">
+                    <div class="goods_num"></div>
+                    <div class="fs14">付款件数</div>
+                </div>
+            </div>
+        </div>
+        <div class="indexnotice bgfff">
+            <img class="w20" src="__WEBPUBLIC__/Wechat/shopimg/laba.png">
+            <marquee scrollamount="4" class="textovh notice"></marquee>
+        </div>
+        <div class="indexmid">
+            <a href="{:U('Shop/shopcenter')}">
+                <div><img src="__WEBPUBLIC__/Wechat/shopimg/index1.png"></div>
+                <div class="colb3">店铺管理</div>
+            </a>
+            <a class="goosbut">
+                <div><img src="__WEBPUBLIC__/Wechat/shopimg/index2.png"></div>
+                <div class="colb3">商品管理</div>
+            </a>
+            <a href="{:U('Order/orderindex')}">
+                <div><img src="__WEBPUBLIC__/Wechat/shopimg/index3.png"></div>
+                <div class="colb3">订单管理</div>
+            </a>
+            <a href="{:U('Shop/profit')}">
+                <div><img src="__WEBPUBLIC__/Wechat/shopimg/index4.png"></div>
+                <div class="colb3">收益管理</div>
+            </a>
+            <a href="{:U('Shop/myqrcode')}">
+                <div><img src="__WEBPUBLIC__/Wechat/shopimg/index5.png"></div>
+                <div class="colb3">专属二维码</div>
+            </a>
+            <a href="{:U('Shop/security')}">
+                <div><img src="__WEBPUBLIC__/Wechat/shopimg/index6.png"></div>
+                <div class="colb3">账户安全</div>
+            </a>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script>
+    var d_user={
+        "shop_id":shop_id
+    };
+    var isok=false; //是否去签约
+    requestUrl("{:U('Api/Store/index')}",d_user,ding_callback,"POST",true);
+    function ding_callback(res){
+        if (res.flag=="success") {
+            var data = res.data;
+            $(".indexlogo").attr("src",data.head_pic);
+            $(".shopname").text(data.name);
+            $(".indexbusiness span").text(data.is_open == 1 ? "未营业" : "营业中");
+            $(".total").text(data.total);
+            $(".order_num").text(data.order_num);
+            $(".goods_num").text(data.goods_num);
+            $(".clicknum").text(data.click);
+            $(".notice").text(data.notice?data.notice:"暂无公告，请添加商家公告");
+            if(data.should_sign==1){
+                isok=true;
+            }else{
+                isok=false;
+            }
+        }else{
+            layer.msg(res.message);
+        }
+    }
+    var dataargs_other = {shop_id:shop_id,type:1};
+    requestUrl("{:U('Api/Message/isReadShop')}",dataargs_other,function(data){
+        var res = data.data;
+        if(res > 0){
+            $(".message").addClass("is_read");
+        }
+    },"GET");
+
+    //商品管理
+    $('.goosbut').click(function(){
+        var url="";
+        if(isok){
+            layer.msg('请先去签约');
+            url="{:U('Shop/htopen')}";
+            setTimeout(function(){
+                location.href=url;
+            },1000);
+        }else{
+            url="{:U('Shop/managegoods')}";
+            location.href=url;
+        }
+        
+    })
+</script>
+</block>

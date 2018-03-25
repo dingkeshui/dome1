@@ -1,0 +1,121 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter headtime">
+                    <div class="headleft" linkto="{:U('Shop/profit')}"><img class="wh20 y3" src="__WEBPUBLIC__/Wechat/img/back2.png" style="transform:rotate(180deg);vertical-align: sub;"></div>
+                    <span class="on" day="1">日</span>
+                    <span day="3">周</span>
+                    <span day="2">月</span>
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div id="revenueimgbox" class="revenueimgbox">
+            
+        </div>
+        <div class="padlr10 bgfff">
+            <div class="ih30 padtb10 after">
+                <span class="dataStart"></span>
+                <span class="right dataEnd"></span>
+            </div>
+            <div class="flex revenuebox">
+                <div class="flex1 br">
+                    <div class="day_sum_price"></div>
+                    <div class="fs14 colb6"><span class="alldaytext"></span>总收入</div>
+                </div>
+                <div class="flex1 br">
+                    <div class="day_max_price"></div>
+                    <div class="fs14 colb6">单<span class="daytext">日</span>最高</div>
+                </div>
+                <div class="flex1">
+                    <div class="day_aver_price"></div>
+                    
+                    <div class="fs14 colb6"><span class="daytext">日</span>均</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="footerjs"><script type="text/javascript" src="/Public/Wechat/js/echarts.common.min.js"></script>
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('revenueimgbox'));
+    var dataargs = {shop_id:shop_id,day:1};
+    $(".headtime span").on('click',function () {
+        if (!$(this).hasClass("on")) {
+            $(this).addClass("on").siblings().removeClass("on");
+            dataargs.day = $(this).attr("day");
+            $(".daytext").text($(this).text());
+            getData($(this).text());
+        }
+    });
+
+    function getData(e) {
+    requestUrl("{:U('Api/Curve/businessGraph')}",dataargs,function ( res ) {
+        var dat = res.data;
+        if ( res.flag == "success" ) {
+            option.xAxis.data = dat.curve.x_date.split(",");
+            option.series[0]['data'] = dat.curve.day_line.split(",");
+             var arr1=  option.xAxis.data.slice(0,1);            
+             var arr2= option.xAxis.data.slice(-1);
+             $(".dataStart").text(arr1[0]);
+            $(".dataEnd").text(arr2[0]);
+            //显示日月周
+            // if(e){
+            //     $(".alldaytext").text(option.xAxis.data.length+e);
+            // };
+            $(".day_sum_price").text("￥"+dat.other_day_price.day_sum_price)
+            $(".day_aver_price").text("￥"+dat.other_day_price.day_aver_price);
+            $(".day_max_price").text("￥"+dat.other_day_price.day_max_price);
+            $(".day_aver_price").text("￥"+dat.other_day_price.day_aver_price);
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }else{
+            layer.msg( res.message );
+        }
+    })
+}
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '',
+            subtext: ''
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['营收统计']
+        },
+        xAxis:  {
+            type: 'category',
+            boundaryGap: false
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name:'营收统计',
+                type:'line',
+                data:[2, 3, 5, 4, 6, 2, 6],
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name: '最小值'}
+                    ]
+                }
+            }
+        ]
+    };
+getData('日');
+</script>
+</block>

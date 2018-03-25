@@ -1,0 +1,165 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	填写物流
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="logisticslist1">
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                    </div>
+                    <div class="weui-cell__bd">
+                        快递方式
+                        <span class="right">快递</span>
+                    </div>
+                </div> 
+                <div class="weui-cell weui-cell_access showbut">
+                    <div class="weui-cell__hd">
+                    </div>
+                    <div class="weui-cell__bd">
+                        物流公司
+                    </div>
+                    <div class="weui-cell__ft name">
+                        请选择
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="w100px mgr5">物流单号</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input num" type="text" placeholder="请输入物流单号"/>
+                    </div>
+                </div>
+            </div>
+            <div class="addbut addbut2">
+                    <span>确认</span>
+            </div>
+        </div>
+        <div class="logisticslist2 bgfff">
+            <!-- <div class="weui-cell weui-cell_access">
+                    <div class="weui-cell__hd">
+                    </div>
+                    <div class="weui-cell__bd">
+                        申通快递
+                    </div>
+            </div>
+            <div class="weui-cell weui-cell_access">
+                    <div class="weui-cell__hd">
+                    </div>
+                    <div class="weui-cell__bd">
+                        申通快递
+                    </div>
+            </div>
+            <div class="weui-cell weui-cell_access">
+                    <div class="weui-cell__hd">
+                    </div>
+                    <div class="weui-cell__bd">
+                        申通快递
+                    </div>
+            </div>
+            <div class="weui-cell weui-cell_access">
+                    <div class="weui-cell__hd">
+                    </div>
+                    <div class="weui-cell__bd">
+                        申通快递
+                    </div>
+            </div>
+            <div class="weui-cell weui-cell_access">
+                    <div class="weui-cell__hd">
+                    </div>
+                    <div class="weui-cell__bd">
+                        申通快递
+                    </div>
+            </div> -->
+        </div>
+    </div>
+
+
+
+    </block>
+<block name="footerjs">
+<script type="text/javascript">
+    var order_id = "{$_GET['order_id']}";
+    var myid=""; //物流id
+    var is_send=""; //是否可以发货
+    var mydata={order_id:order_id};
+    $('.showbut').click(function () {
+        $('.logisticslist1').addClass('none');
+    })
+    $('.logisticslist2').on('click','.weui-cell',function(){
+        $('.logisticslist1').removeClass('none');
+        myid=$(this).attr('myid');
+        mydata.delivery_id=myid;
+        mydata.delivery_code=$(this).attr('delivery_code');
+        mydata.delivery_company=$(this).attr('delivery_company');
+        $('.name').html($(this).find('.weui-cell__bd').html());
+    })
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    requestUrl("{:U('Api/StoreOrder/deliveryCompanyList')}",{order_id:order_id},function(data){
+        layer.closeAll();
+        if(data.flag=="success"){
+            var shops=data.data.list;
+            var str="";
+            is_send=data.data.is_send;
+            for(var index in shops){
+                str+='<div class="weui-cell weui-cell_access" delivery_company="'+shops[index].company_name+'" delivery_code="'+shops[index].delivery_code+'" myid='+shops[index].id+'>'
+                    +'<div class="weui-cell__hd">'
+                    +'</div>'
+                    +'<div class="weui-cell__bd">'+shops[index].company_name+'</div>'
+                    +'</div>'
+            }
+            $('.logisticslist2').html(str);
+        }
+    },"POST");
+
+    $('.addbut').click(function(){
+        if(is_send!=1){
+            layer.msg('该订单有未处理的售后');
+            return;
+        }
+        if(!myid){
+            layer.msg('请选择物流公司！');
+            return ;
+        };
+        var num=$.trim($('.num').val());
+        if(!num){
+            layer.msg('请输入物流单号！');
+            return ;
+        };
+        var pattern=/^[a-zA-Z0-9]{1,}$/;
+        if(!pattern.test(num)){
+            layer.msg('物流单号不正确！');
+            return;
+        };
+        mydata.delivery_number=num;
+        requestUrl("{:U('Api/StoreOrder/editOrderDeliveryMess')}",mydata,function(data){
+            layer.closeAll();
+            if(data.flag=='success'){
+                layer.msg('发货成功！');
+                setTimeout(function(){
+                    var url="{:U('Order/order')}/status/2";
+                    location.href=url;
+                },1500);
+            }else{
+                layer.msg(data.message);
+            }
+        },"POST");
+    }) 
+</script>
+</block>

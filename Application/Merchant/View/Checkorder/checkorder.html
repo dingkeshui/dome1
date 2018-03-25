@@ -1,0 +1,291 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="headleft" linkto="{:U('Order/orderindex')}"><img class="wh20 y3" src="__WEBPUBLIC__/Wechat/img/back2.png" style="transform:rotate(180deg);vertical-align: sub;"></div>
+                    买单订单
+                    <img linkto="{:U('Checkorder/ordersearch')}" class="headrightimg headright" src="/Public/Wechat/shopimg/img (85).png">
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    
+    <div class="flex managenav after fs0-8 z3">
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>已消费</span>
+            </div>
+        </div>
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>已评价</span>
+            </div>
+        </div>
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>退款</span>
+            </div>
+        </div>
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>全部</span>
+            </div>
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container padtop100">
+        <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd">
+                    订单管理
+                </div>
+                <div class="weui-cell__ft re fs0-8">
+                    <input type="month" name="" class="yueinp">
+                    <img src="__WEBPUBLIC__/Wechat/shopimg/time2.png" class="w15 y2"/>
+                    查看其它月份
+                </div>
+        </div>
+        <div class="bgfff list">
+            <!-- <div class="weui-cell itme">
+                <div class="weui-cell__hd textcenter mgr5">
+                    <div>今天</div>
+                    <div class="tiemspan fs0-8">13:49</div>
+                </div>
+                <div class="weui-cell__bd flex textovh">
+                    <div class="headimgbox mgr5 fs0">
+                        <img class="w100" src="../shopimg/headimg.png">
+                    </div>
+                    <div class="flex1 ih30 textovh">
+                        <div>+100.00</div>
+                        <div class="colb6 textovh">嘉欣嘉欣嘉欣嘉欣嘉欣嘉欣-买单</div>
+                    </div>
+                </div>
+                <div class="weui-cell__ft blue">
+                    退款
+                </div>
+            </div>
+            <div class="weui-cell itme">
+                <div class="weui-cell__hd textcenter mgr5">
+                    <div>今天</div>
+                    <div class="tiemspan fs0-8">13:49</div>
+                </div>
+                <div class="weui-cell__bd flex textovh">
+                    <div class="headimgbox mgr5 fs0">
+                        <img class="w100" src="../shopimg/headimg.png">
+                    </div>
+                    <div class="flex1 ih30 textovh">
+                        <div>+100.00</div>
+                        <div class="colb6 textovh">嘉欣嘉欣嘉欣嘉欣嘉欣嘉欣-买单</div>
+                    </div>
+                </div>
+                <div class="weui-cell__ft blue">
+                    查看评价
+                </div>
+            </div> -->
+        </div>
+        <div class="disn texcen imgarea" style="padding: 10px">
+            <div>请输入退款金额</div>
+            <div class="weui-cells bgfff">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <input class="weui-input price" type="text" placeholder="请填写退款金额">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+    var status = "{:I('get.status')}";
+    
+    switch(+status)
+    {
+    case 1:
+        $('.managenavitem').eq(0).addClass('on');
+        break;
+    case 2:
+        $('.managenavitem').eq(1).addClass('on');
+        break;
+    case 3:
+        $('.managenavitem').eq(2).addClass('on');
+        break;
+    case 4:
+        $('.managenavitem').eq(3).addClass('on');
+        break;
+
+    }
+
+    var dataargs={shop_id:shop_id,p:1,status:status==4?0:status};
+
+    function getJson(args) {
+            console.log(dataargs);
+            requestUrl("{:U('Api/StoreOrder/orderEarnings')}",dataargs,function(data){
+                // layer.closeAll();
+                putGoods(data,args);
+            },"POST");
+    }
+
+    getJson("shouci");
+
+    // 头部导航点击
+    $('.managenav>div').click(function(){
+        $('.managenavitem.on').removeClass('on');
+        $(this).find('.managenavitem').addClass('on');
+        if($(this).index()==3){
+            dataargs.status=0;
+        }else{
+            dataargs.status=$(this).index()+1;
+        }
+        dataargs.month=0;
+        dataargs.p=1;
+        getJson("shouci");
+    });
+
+    // 选择时间
+    $('.yueinp').change(function(){
+        dataargs.p=1;
+        dataargs.month=$(this).val();
+        getJson("shouci");
+    });
+    // 评价
+    $('.list').on('click','.lookspan',function(){
+        var url="{:U('Checkorder/evaluatelist')}&order_id="+$(this).parent().attr('myid');
+        history.replaceState(null,'',"{:U('Checkorder/checkorder')}/status/"+(dataargs.status==0?4:dataargs.status));
+        window.location.href = url;
+    });
+    //退款
+     $('.list').on('click','.tkdiv',function(){
+        var b_id=$(this).parents('.weui-cell__ft').attr('myid');
+        layer.open({
+            "title":false,
+            "type":1,
+            "area":["250px","150px"],
+            "btn":["确定"],
+            "content":$(".imgarea"),
+            "yes":function () {
+                var price = $(".price").val();
+                var reg = /^\d{1,}(.\d{1,2}){0,1}$/;
+                if (!reg.test(price)) {
+                    layer.msg("金额不合法！");
+                    return;
+                }
+                requestUrl("{:U('Api/Back/applyBack')}",{b_id:b_id,price:price},function (res) {
+                    if ( res.flag == "success" ) {
+                        layer.msg("等待用户确认！");
+                        location.reload();
+                    }else{
+                        layer.msg(res.message);
+                    }
+                });
+            },
+            end:function(){
+                $('.price').val('');
+            }
+        });
+    });
+    //添加商品到列表
+    function putGoods(data,args) {
+        console.log(data);
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $(".list").html('');
+                $(".list").addClass('wusj');
+                $(window).off('scroll');
+                $(".nomore").remove();
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".list").append('<div class="texcen nomore">没有更多了！</div>');
+            }else{
+                $(".list").removeClass('wusj');
+                $(".nomore").remove();
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    //console.log(shop.cover_pic);
+                    var newstr={str1:'',str2:''};
+                    if(+shop.type==3&&+shop.pay_type==2){
+                        if(+shop.status==0){
+                            newstr.str1="<div class='tkdiv'>退款</div>";
+                        }else if(+shop.status==2){
+                            newstr.str1="<div>退款确认中</div>";
+                        }else if(+shop.status==3){
+                            newstr.str1="<div>退款成功</div>";
+                        }
+                    }
+                    if (shop.is_appraise==1) {
+                        newstr.str2="<div class='lookspan'>查看评价</div>"
+                    }
+                   str+='<div class="weui-cell itme">'
+                +'<div class="weui-cell__hd textcenter mgr5">'
+                    +'<div>'+shop.month_time+'</div>'
+                    +'<div class="tiemspan fs0-8">'+shop.day_time+'</div>'
+                +'</div>'
+                +'<div class="weui-cell__bd flex textovh">'
+                    +'<div class="headimgbox headimgbg mgr5 fs0" style="background-image:url('+shop.head_pic+')">'
+                        // +'<img class="w100" src="'+shop.head_pic+'">'
+                    +'</div>'
+                    +'<div class="flex1 ih30 textovh">'
+                        +'<div><span class="mgr5">'+shop.price+'</span><span>(总收益:'+shop.total_price+')</span></div>'
+                        +'<div class="colb6 textovh flex"><span class="textovh">'+shop.nick_name+'</span><span>-买单</span></div>'
+                    +'</div>'
+                +'</div>'
+                +'<div myid="'+shop.order_id+'" class="weui-cell__ft blue">'+newstr.str1+newstr.str2+'</div>'
+            +'</div>';
+
+                }
+                if (args == "fenye") {
+                    $('.list').append(str);
+                }else{
+                    $('.list').html(str);
+                }
+                flag=true;
+            };
+        }else{
+            
+            if(data.message=="数据为空"&&args == "shouci"){
+                $(".list").html('').addClass('wusj');
+                $(window).off('scroll');
+            }else{
+               layer.msg(data.message); 
+            }
+        };
+        if (args == "shouci"&& !$('.list').hasClass('wusj')) {
+            fenye();
+        };
+    };
+
+    function fenye(){
+        var $_zd = $(".itme").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".list");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+
+    </script>
+</block>

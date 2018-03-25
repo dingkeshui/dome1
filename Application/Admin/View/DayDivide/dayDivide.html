@@ -1,0 +1,117 @@
+<include file="Public:header"/>
+<!--时间-->
+<!-- 统计图主题 可自行开发 -->
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/laydate/laydate.js"></script>
+<script type="text/javascript" src="__WEBPUBLIC__/Common/Highcharts/exporting.js"></script>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">每天分成管理</a></li>
+        <li class="active">每天分成列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>每天分成管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="{:U('DayDivide/dayDivide')}">每天分成列表</a>
+            </li>
+        </ul>
+    </div>
+    <div class="search-content">
+        <form action="{:U('DayDivide/dayDivide')}" method="post" class="search-form form-inline" role="form">
+            <style>
+                #laydate_ys{
+                    overflow: hidden;!important;
+                }
+                .laydate_body .laydate_bottom{
+                    height: 40px;!important;
+                }
+            </style>
+            &nbsp;&nbsp;
+            <input placeholder="请输入开始日期" name="start_time" value="{$start_time}" class="laydate-icon" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="width: 180px;height:30px">
+            <input placeholder="请输入结束日期" name="end_time" value="{$end_time}" class="laydate-icon" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="width: 180px;height:30px">
+            &nbsp;&nbsp;
+            <button type="submit" class="btn derive">查询</button>
+        </form>
+    </div>
+    <div class="content-box-table content-box-content">
+        <form action="{:U('DayDivide/dayDivide')}" method="post" class="batch-form">
+            <table class="table table-striped table-framed table-hover">
+                <thead>
+                <tr>
+                    <th width="8%">
+                        <input class="check-all" type="checkbox" />&nbsp;&nbsp;编号
+                    </th>
+                    <th>每天分成钱数</th>
+                    <th>时间</th>
+                    <th>省</th>
+                    <th>市</th>
+                    <th>区</th>
+                </tr>
+                </thead>
+                <tbody class="tbody">
+                <if condition="empty($list)">
+                    <tr><td colspan="20"><span style="font-size:14px;">暂无数据</span></td></tr>
+                </if>
+                <volist name="list" id="vo">
+                    <tr>
+                        <td><input type="checkbox" value="{$vo['d_id']}" name="d_id[]"/>&nbsp;&nbsp;{$vo['d_id']}</td>
+                        <td>
+                            <input type="text" name="" id="" style="width: 60px" class="change_dev" data="{$vo['d_id']}" value="{$vo['price']}">
+                            元
+                        </td>
+                        <td>{$vo['ctime']|date='Y-m-d H:i:s',###}</td>
+                        <td>{$vo['province_name']}</td>
+                        <td>{$vo['city_name']}</td>
+                        <td>{$vo['area_name']}</td>
+                    </tr>
+                </volist>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="20">
+                        <!--<div class="bulk-actions fl">-->
+                            <!--<a href="{:U('DayDivide/DayDivideXLS')}" style="text-decoration: none;color: #ffffff"><input type="button" class="btn" value="导出每天分成列表" style="background: green">　</a>-->
+                        <!--</div>-->
+                        <div class="fr">
+                            {$page}
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+<include file="Public:footer"/>
+<script>
+
+    /**改变股价*/
+    $(".change_dev").change(function (data) {
+        var d_id = $(this).attr('data');
+        var value = $(this).val();
+        if(confirm("确认操作？")){
+            var url = "{:U('DayDivide/ajaxDivide')}";
+            $.post(url,{'d_id':d_id,'value':value},function(data){
+                if(data==1){
+                    alert("修改成功");
+                    window.location.reload();
+                }else{
+                    alert("修改失败");
+                }
+            });
+        }
+    })
+
+<<<<<<< HEAD
+=======
+
+>>>>>>> b7a12733bc237f0ec22d6f91fcbb9d6b41cd755c
+    ;!function(){
+        laydate({
+            elem: '#demo'
+        })
+    }();
+</script>

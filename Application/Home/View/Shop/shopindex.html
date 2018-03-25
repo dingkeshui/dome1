@@ -1,0 +1,293 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/Ding_shop.css?1=1">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/xq_slide.css">
+</block>
+<block name="main">
+		<div class="header-container colfff d_index">
+			<div class="weui-cell ih30">
+				<div class="weui-cell__hd"></div>
+				<div class="weui-cell__bd dingdiva" >
+					<img class="searchimg" src="__WEBPUBLIC__/Wechat/img/D_search.png" />
+					<form action="/index.php/Shop/shoplist" method="get">
+						<input placeholder="搜索商家" type="search" name="name" class="search_input" value="" />
+					</form>
+				</div>
+				<div class="location" linkto="{:U('Shop/opencity')}">
+					<img src="__WEBPUBLIC__/Wechat/img/D_location.png" />
+					<span class="city_name">定位中</span>
+					<img src="__WEBPUBLIC__/Wechat/img/D_back.png" />
+				</div>
+			</div>
+		</div>
+		<!--轮播-->
+		<div class="xq_container">
+			<div style="width: 100%;height: 10rem;margin: 0 auto;max-width: 100%;">
+				<div class="xq_slide_out">
+					<ul class="xq_slide_in">	
+
+					</ul>
+				</div>
+			</div>
+			<div id="test"></div>
+			<!--导航-->
+			<div class="scolldiv">
+				<div class="nav">
+					<!--<div class="nav_top">-->
+					
+					<!--</div>-->
+				</div>
+			</div>
+			<!--图片导航-->
+			<!--<div class="imgnav">
+				<div class="imgnav_left" style="background-color: #179B16;">
+					<img src="__WEBPUBLIC__/Wechat/img/left.png" />
+				</div>
+				<div class="imgnav_right" style="background-color: #10AEFF;">
+					<div class="imgnav_right_top" style="background-color: #F7AA40;">
+						<img src="__WEBPUBLIC__/Wechat/img/right_top.png" alt="" />
+					</div>
+					<div class="imgnav_right_foot">
+						<div style="background-color: #3CC51F;">
+							<img src="__WEBPUBLIC__/Wechat/img/right_left.png" alt="" />
+						</div>
+						<div style="background-color: #C9C9C9;">
+							<img src="__WEBPUBLIC__/Wechat/img/right_right.png" alt="" />
+						</div>
+					</div>
+				</div>
+			</div>-->
+			<!--附近的店-->
+			<div class="textdiv">
+				<div class="line"></div>
+				<div class="textdiv_text">附近的店</div>
+				<div class="line"></div>
+			</div>
+			<!--店的详细信息-->
+			<div class="weui-cells shoplist">
+
+			</div>
+		</div>
+		
+</block>
+<block name="footerjs">
+	<script src="__WEBPUBLIC__/Wechat/slide/js/xq_slide.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+    //var shopview = localStorage.getItem("shopview");
+    var shoplist = localStorage.getItem("shoplist");
+    if (shoplist) {
+        $('.shoplist').html(shoplist);
+    }
+  //   if (shopview) {
+  //       $('.xq_slide_in').html(shopview);
+  //       $(".xq_slide_out").xq_slide({
+		//  	type: "h", //轮播方式  h水平轮播；v垂直轮播；o透明切换
+		//  	vatical: false, //图片描述性文本 true 显示 false不显示
+		//  	choseBtn: false, //是否显示上下切换按钮
+		//  	speed: 2000, //动画间隔的时间，以毫秒为单位。
+		//  	mousestop: true, //当鼠标移上去是否停止循环,针对PC端
+		//  	showbar: true, //是否显示轮播导航bar
+		//  	openmb: true //是否开启移动端支持
+		// });
+  //   }
+
+    
+	wx.config({
+        debug: false,
+        appId: "{$appid}",
+        timestamp:'{$wx.timestamp}',
+        nonceStr: '{$wx.nonceStr}',
+        signature:'{$wx.signature}',
+        jsApiList: [
+            // 所有要调用的 API 都要加到这个列表中
+            'scanQRCode',
+            'openLocation',
+            'getLocation',
+			"onMenuShareTimeline",
+			"onMenuShareAppMessage",
+			"onMenuShareQQ",
+			"onMenuShareWeibo",
+			"onMenuShareQZone"
+        ]
+    });
+    var dataargs = {p:1};
+    var flag = false;
+    wx.ready(function(){
+    	wx.getLocation({
+		    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+		    success: function (res) {
+		        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+		        var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+		        var speed = res.speed; // 速度，以米/每秒计
+		        var accuracy = res.accuracy; // 位置精度
+		        //console.log(latitude,longitude);
+		        //getData();
+		        //alert("经度"+latitude);
+		        dataargs.lat = latitude;
+		        dataargs.lnt = longitude;
+				/**通过经纬度获取城市的名称*/
+				requestUrl("{:U('Api/Shop/lngLatCity')}",dataargs,function(data){
+					layer.closeAll();
+					var city = data.data;
+					$(".city_name").text(city.city_name);
+					$(".location").attr("linkto","{:U('Shop/opencity')}/city_name/"+city.city_name);
+				},"POST",true);
+
+		        sessionStorage.setItem("latlnt",JSON.stringify({lat:latitude,lnt:longitude}));
+		        if (flag) {
+		    		return;
+		    	}
+		    	flag = true;
+		        requestUrl("{:U('Api/Shop/shopList')}",dataargs,function(data){
+			        layer.closeAll();
+			        putGoods(data);
+			    },"GET",true);
+
+		        requestUrl("{:U('Api/Shop/advertList')}",{lat:latitude,lnt:longitude},function(data){
+					layer.closeAll();				    
+			        putView(data);
+			    },"POST",true);
+
+		    },
+            fail: function(res) {
+                //console.log('未开启定位功能');
+                //console.log(res);
+                postData();
+            },
+            cancel: function (res) {
+                //console.log('用户拒绝授权获取地理位置');
+                postData();
+            }
+		});
+	});
+
+
+    function postData() {
+    	if (flag) {
+    		return;
+    	}
+    	flag = true;
+    	requestUrl("{:U('Api/Shop/shopList')}",dataargs,function(data){
+	        layer.closeAll();
+	        putGoods(data);
+	    },"GET",true);
+
+
+        requestUrl("{:U('Api/Shop/advertList')}",{},function(data){
+			layer.closeAll();				    
+	        putView(data);
+	    },"POST",true);
+    }
+    requestUrl("{:U('Api/Shop/classList')}",{},function(data){
+		layer.closeAll();
+        putClass(data);
+    },"GET",true);
+
+	function putGoods(data) {
+        console.log(data);
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 )){
+                $(".shoplist").append('<div class="texcen">没有更多了！</div>');
+            }else{
+                var str ="";
+                for(var index in shops){
+                	var shop = shops[index];
+                    str += '<div class="weui-cell shopobj" linkto="{:U('Shop/shopdetail')}/shop_id/'+shop.shop_id+'/lnt/'+shop.lnt+'/lat/'+shop.lat+'/distance/'+shop.distance+'/shop_name/'+shop.shop_name+'">'
+								+'<div class="weui-cell__hd shopimg">'
+									+'<img src="'+shop.head_pic+'">'
+								+'</div>'
+								+'<div class="weui-cell__bd texovh ih20">'
+									+'<div class="fs1 disflex">'
+										+'<span class="flex1 texovh">'+shop.shop_name+'</span>'
+										+'<div class="fs0-8 fr"><span class="colccc">'+shop.class_name+'</span>'
+											+'<span class="colff0">&lt;'+(shop.distance < 1000 ? shop.distance : Math.round(shop.distance/100)/10+"k")+'m</span></div>'
+									+'</div>'
+									+'<div class="xing">'
+										+showXing(shop.star)
+									//	+'<span class="fr fs0-8 colccc">销量:'+shop.sale+'</span>'
+									+'</div>'
+									+'<div class="fs0-8 colbbb texovh">'
+										+shop.address
+									+'</div>'
+								+'</div>'
+							+'</div>';
+                }
+                $('.shoplist').html(str);
+                top_linkto();
+                localStorage.setItem("shoplist",str);
+            }
+        }else{
+             layer.msg(data.message);
+        }
+    }
+
+    function showXing( num ) {
+    	var str ="";
+    	for (var i = 0; i < num; i++) {
+    		str += '<img src="__WEBPUBLIC__/Wechat/img/xing.png"/>';
+    	}
+    	return str;
+    }
+
+
+	function putClass(data) {
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 )){
+                $(".nav").append('<div class="texcen">没有更多了！</div>');
+            }else{
+            	sessionStorage.setItem("classitem",JSON.stringify(shops));
+                var str ="";
+                for(var index in shops){
+                	var shop = shops[index];
+                    str += '<div linkto="{:U('Shop/shoplist')}/class_id/'+shop.class_id+'">'
+								+'<div><img src="Uploads/'+shop.pic+'" /></div>'
+								+'<div>'+shop.name+'</div>'
+							+'</div>';
+                }
+                $('.nav').html(str);
+                top_linkto();
+            }
+        }else{
+            layer.msg(data.message);
+        }
+	}
+
+
+	function putView(data) {
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 )){
+                $(".shoplist").append('<div class="texcen">没有更多了！</div>');
+            }else{
+                var str ="";
+                for(var index in shops){
+                	var shop = shops[index];
+                	var url = shop.url ? 'href="'+shop.url+'"' : '';
+                    var url = shop.url ? 'href="'+shop.url+'"' : '';
+                    str += '<li>'
+								+'<a '+url+'><img src="/Uploads/'+shop.pic+'"/></a>'
+							+'</li>';
+                }
+                $(".xq_slide_out").html('<ul class="xq_slide_in"></ul>');
+                $('.xq_slide_in').html(str);
+                $(".xq_slide_out").xq_slide({
+					type: "h", //轮播方式  h水平轮播；v垂直轮播；o透明切换
+					vatical: false, //图片描述性文本 true 显示 false不显示
+					choseBtn: false, //是否显示上下切换按钮
+					speed: 2000, //动画间隔的时间，以毫秒为单位。
+					mousestop: true, //当鼠标移上去是否停止循环,针对PC端
+					showbar: true, //是否显示轮播导航bar
+					openmb: true //是否开启移动端支持
+				});
+                //localStorage.setItem("shopview",str);
+            }
+        }else{
+            layer.msg(data.message);
+        }
+    }
+
+	</script>
+</block>
+		

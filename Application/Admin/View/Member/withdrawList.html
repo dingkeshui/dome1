@@ -1,0 +1,183 @@
+<include file="Public:header"/>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/js/ajax-operate.js"></script>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/laydate/laydate.js"></script>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="{$url}">{$title}</a></li>
+        <li class="active">提现列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>{$title}</h3>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="{:U('Member/withdrawList')}">提现列表</a>
+            </li>
+        </ul>
+    </div>
+    <div class="search-content">
+        <form action="{:U('Member/withdrawList')}" method="post" class="search-form form-inline" role="form">
+            <style>
+                #laydate_ys{
+                    overflow: hidden;!important;
+                }
+                .laydate_body .laydate_bottom{
+                    height: 40px;!important;
+                }
+            </style>
+            <input type="hidden" name="mix_id" value="{$_REQUEST['mix_id']}"/>
+            <input type="hidden" name="type" value="{$_REQUEST['type']}"/>
+            &nbsp;&nbsp;
+            <input placeholder="请输入开始日期" name="start_time" value="{$start_time}" class="laydate-icon" onclick="laydate({istime: true, format: 'YYYYMMDD'})" style="width: 180px;height:34px;border-radius:5px">&nbsp;&nbsp;
+            <input placeholder="请输入结束日期" name="end_time" value="{$end_time}" class="laydate-icon" onclick="laydate({istime: true, format: 'YYYYMMDD'})" style="width: 180px;height:34px;border-radius:5px">
+            &nbsp;&nbsp;
+            <div class="form-group">
+                <label class="sr-only">订单类型</label>
+                <select name="ordertype" class="form-control input-small form-control-select">
+                    <option>请选择订单类型</option>
+                    <option value="">全部</option>
+                    <option value="3" <if condition="$request['ordertype'] eq 3">selected</if>>收款</option>
+                    <option value="4" <if condition="$request['ordertype'] eq 4">selected</if>>提现</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="ordersn">商户订单号</label>
+                <input class="earch-input form-control" id="ordersn" type="text" name="ordersn" value="{$request['ordersn']}" placeholder="商户订单号"/>　
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="ipsorder">IPS订单号</label>
+                <input class="earch-input form-control" id="ipsorder" type="text" name="ipsorder" value="{$request['ipsorder']}" placeholder="IPS订单号"/>　
+            </div>
+            <button type="submit" class="btn derive">查询</button>
+        </form>
+    </div>
+    <div class="content-box-table content-box-content">
+            <table class="table table-striped table-framed table-hover">
+                <thead>
+                <tr>
+                    <th width="15%">下单时间</th>
+                    <th>商户订单号</th>
+                    <th>IPS订单号</th>
+                    <th>订单金额</th>
+                    <th>交易类型</th>
+                    <th>交易状态</th>
+                    <th>收款账户</th>
+                    <th>付款账户</th>
+                    <th>银行卡号</th>
+                    <!--<th>手续费承担方</th>-->
+                    <th>手续费</th>
+                </tr>
+                </thead>
+                <tbody class="tbody">
+                <if condition="empty($list)">
+                    <tr style="text-align: center;">
+                        <td colspan="20">暂无数据</td>
+                    </tr>
+                </if>
+                <volist name="list" id="vo">
+                    <tr>
+                        <td>{$vo['createTime']}</td>
+                        <td>{$vo['merBillNo']|default='暂无'}</td>
+                        <td>{$vo['ipsBillNo']|default='暂无'}</td>
+                        <td>{$vo['orderAmount']|default='暂无'}</td>
+                        <td><if condition="$vo['ordersType'] eq 3">收款</if>
+                            <if condition="$vo['ordersType'] eq 4">提现</if>
+                            <if condition="$vo['ordersType'] eq ''">全部</if>
+                        </td>
+                        <td><if condition="$vo['orderState'] eq 8">处理中</if>
+                            <if condition="$vo['orderState'] eq 9">失败</if>
+                            <if condition="$vo['orderState'] eq 10">成功</if>
+                            <if condition="$vo['orderState'] eq 4">已退款</if>
+                        </td>
+                        <td>{$vo['collectAcc']|default='暂无'}</td>
+                        <td>{$vo['payMerAcc']|default='暂无'}</td>
+                        <td>{$vo['bankCard']|default='暂无'}</td>
+                        <!--<td><if condition="$vo['Ipsfeepayer'] eq 1">付款方</if>-->
+                            <!--<if condition="$vo['Ipsfeepayer'] eq 1">收款方</if>-->
+                            <!--<if condition="$vo['Ipsfeepayer'] eq 1">第三方</if>-->
+                        <!--</td>-->
+                        <td>{$vo['ipsFee']|default='暂无'} </td>
+                    </tr>
+                </volist>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="20">
+                        <div class="fr">
+                            <span>
+                                <ul class="pagination">
+                                    <!--<li><span>共{$count}条记录</span></li>-->
+                                    <if condition="$totalpage gt 1">
+                                    <li class="active"><span>当前第{$nowpage}页</span></li>
+                                    </if>
+                                    <if condition="$totalpage gt 0">
+                                    <li><span>共{$totalpage}页({$count}条记录)</span></li>
+                                    </if>
+                                </ul>
+                            </span>
+                        </div>
+                        <if condition="$totalpage gt 1">
+                        <div style="padding:24px 10px;float:right;">
+                            <span style="font-size: 16px">转到第</span>&nbsp;
+                            <input type="tel"  min="1" max="" name="" id="page_num" style="border: 1px solid #ccc;width:50px;height:27px;text-align: center;" value="{:I('get.p')}" placeholder="{$totalpage}"/>&nbsp;
+                            <span style="font-size: 16px">页</span>
+                            <input type="button" id="go1" value="Go" style="width: 45px;height:30px;border:0;background-color: #c5c5c5;border-radius:1px;color: #ffffff;cursor: pointer"/>
+                            <!--<input type="hidden" name="url" value="{$_SERVER['REQUEST_URI']}"/>-->
+                            <!--<input type="hidden" id="p" value="{:I('get.p')}"/>-->
+                        </div>
+                        </if>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+    </div>
+</div>
+<script>
+
+    $("#go1").click(function(){
+        var max_page = "{$totalpage}";
+        var go_page = $("#page_num").val();
+        if(go_page == 0){
+            alert("请输入跳转页数！");
+            return false;
+        }
+        var p_go = 0;
+        if(parseInt(go_page)>parseInt(max_page)){
+            $("#page_num").val(max_page);
+            p_go = max_page;
+        }else{
+            p_go = go_page;
+        }
+        var url = "index.php?s=/Admin/Member/withdrawList/mix_id/{$request.mix_id}/type/{$request.type}";//$('input[name="url"]').val();
+        var ordertype = "{$request.ordertype}";
+        if(ordertype){
+            url += "/ordertype/"+ordertype;
+        }
+        var start = "{$start_time}";
+        if(start){
+            url += "/start_time/"+start;
+        }
+        var end = "{$end_time}";
+        if(end){
+            url += "/end_time/"+end;
+        }
+        var ordersn = "{$request.ordersn}";
+        if(ordersn){
+            url += "/ordersn/"+ordersn;
+        }
+        var ipsorder = "{$request.ipsorder}";
+        if(ipsorder){
+            url += "/ipsorder/"+ipsorder;
+        }
+
+        window.location.href = url+"/p/"+p_go;
+//        if(p){
+//            window.location.href =  url+ "/p/"+p_go;
+//        }else{
+//            window.location.href = host + "/p/"+p_go;
+//        }
+    });
+</script>
+<include file="Public:footer"/>

@@ -1,0 +1,69 @@
+<include file="Public:header"/>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/js/ajax-operate.js"></script>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">数据备份</a></li>
+        <li class="active">备份列表</li>
+    </ul>
+    <form action="{:U('Backups/backups')}" method="post" class="search-form form-inline" role="form">
+        <div class="page-header page-header1 clearfix">
+            <h3>数据备份</h3>
+            <ul class="nav nav-tabs">
+                <li class="">
+                    <a href="{:U('Backups/backupsList')}">备份列表</a>
+                </li>
+                <li class="active">
+                    <a href="{:U('Backups/backups')}">数据备份</a>
+                </li>
+            </ul>
+        </div>
+        <div class="search-content">
+            <div class="form-group">
+                <label class="sr-only" for="size">用户昵称</label>
+                <input type="hidden" name="backups" value="1"/>
+                <input type="hidden" name="uploads" value="__WEBUPLOADS__"/>
+                <input class="earch-input form-control" id="size" type="number" name="size"
+                       value="1"/>&nbsp;&nbsp;M
+            </div>
+        </div>
+        <div class="content-box-table content-box-content">
+            <table class="table table-striped table-framed table-hover">
+                <thead>
+                <tr>
+                    <th width="20%">
+                        <input class="check-all" type="checkbox"/>&nbsp;&nbsp;编号
+                    </th>
+                    <th>表名</th>
+                    <th>表行数</th>
+                </tr>
+                </thead>
+                <tbody class="tbody">
+                <if condition="empty($tables)">
+                    <tr>
+                        <td colspan="20"><span style="font-size:14px;">暂无数据</span></td>
+                    </tr>
+                </if>
+                <volist name="tables" id="tab" key="k">
+                    <tr>
+                        <td><input type="checkbox" name="table[]" value="{$tab.table}"/>&nbsp;&nbsp;{$k}</td>
+                        <td>{$tab.table}</td>
+                        <td>{$tab.count}</td>
+                    </tr>
+                </volist>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="20">
+                        <div class="bulk-actions fl">
+                            <input type="submit" class="btn btn-green" value="备份">　
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </form>
+</div>
+<include file="Public:footer"/>

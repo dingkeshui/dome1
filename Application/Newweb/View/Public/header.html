@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no" name="format-detection">
+    <title>众享通赢T+</title>
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/weui.css">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/newding.css?s=6">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/top.css?a=2">
+
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/xq_slide.css">
+    <block name="headdiv"></block>
+</head>
+<body class="bgf6">
+<block name="main"></block>
+
+<div class="foot weui-tab z5">
+    <div class="weui-tabbar bgfff">
+        <div class="weui-tabbar__item" linkto="{:U('Index/index')}">
+            <div class="fs0"><if condition="__CONTROLLER__ eq 'Index'"><img class="w30" src="__WEBPUBLIC__/Wechat/img/img (83).png"><else/><img class="w30" src="__WEBPUBLIC__/Wechat/img/img (82).png"></if></div>
+            <div>首页</div>
+        </div>
+        <div class="weui-tabbar__item" linkto="{:U('Shop/shopindex')}">
+            <div class="fs0"><if condition="__CONTROLLER__ eq 'Shop'"><img class="w40" src="__WEBPUBLIC__/Wechat/img/img (69).png"><else/><img class="w40" src="__WEBPUBLIC__/Wechat/img/img (67).png"></if></div>
+            <div>附近商家</div>
+        </div>
+        <div class="weui-tabbar__item">
+            <div class="fs0 footmidimg"><img id="scanQRCode0" class="w40" src="__WEBPUBLIC__/Wechat/img/img (150).png"></div>
+            <div>扫码支付</div>
+        </div>
+        <div class="weui-tabbar__item" linkto="{:U('Store/index')}">
+            <div class="fs0"><if condition="__CONTROLLER__ eq 'Store'"><img class="w40" src="__WEBPUBLIC__/Wechat/img/img (47).png"><else/><img class="w40" src="__WEBPUBLIC__/Wechat/img/img (46).png"></if></div>
+            <div>众享商城</div>
+        </div>
+        <div class="weui-tabbar__item" linkto="{:U('Member/membercenter')}">
+            <div class="fs0"><if condition="__CONTROLLER__ eq 'Member'"><img class="w40" src="__WEBPUBLIC__/Wechat/img/img (101).png"><else/><img class="w40" src="__WEBPUBLIC__/Wechat/img/img (100).png"></if></div>
+            <div>个人中心</div>
+        </div>
+    </div>
+</div>
+<div class="xq_loadding">
+    
+</div>
+
+<script>
+    var m_id = "{$m_id}";
+    var is_bind = "{$is_bind}";
+    var is_open = "{$is_open}";
+    var wallet = +"{$wallet}";
+    
+    
+    var isApp = "{$_REQUEST['isApp']}";
+    if ( isApp ) {
+        sessionStorage.setItem("isApp",isApp);
+    }else if(sessionStorage.getItem( "isApp" )){
+        isApp = sessionStorage.getItem( "isApp" );
+    }
+    if (!m_id) {
+        m_id = "{$_REQUEST['m_id']}";
+    }
+    if (!is_open) {
+        is_open = "{$_REQUEST['is_open']}";
+    }
+    if ( m_id ) {
+        sessionStorage.setItem("m_id",m_id);
+    }else if(sessionStorage.getItem( "m_id" )){
+        m_id = sessionStorage.getItem( "m_id" );
+    }
+
+</script>
+<script src="__WEBPUBLIC__/Wechat/js/jquery.js"></script>
+<script src="__WEBPUBLIC__/Wechat/js/zepto.min.js"></script>
+<script src="__WEBPUBLIC__/Wechat/js/layer/layer.js"></script>
+<script src="__WEBPUBLIC__/Wechat/js/public.js?s=2"></script>
+    <!--微信二维码扫描点餐js-->
+<script src="https://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+<script>
+    if(isApp){
+        $('.addressback').hide();
+    }
+    wx.config({
+        debug: false,
+        appId: "{$appid}",
+        timestamp:'{$wx.timestamp}',
+        nonceStr: '{$wx.nonceStr}',
+        signature:'{$wx.signature}',
+        jsApiList: [
+            // 所有要调用的 API 都要加到这个列表中
+            'scanQRCode',
+            'openLocation',
+            'getLocation',
+            "onMenuShareTimeline",
+            "onMenuShareAppMessage",
+            "onMenuShareQQ",
+            "onMenuShareWeibo",
+            "onMenuShareQZone",
+        ]
+    });
+    var url = window.location.href;
+    var reg = /code/;
+    if(reg.test(url)){
+        url = url.replace(/[&|?](code).*/,"");
+    }
+    var obj = {
+        title: '众享通赢T+', // 分享标题
+        link: url,
+        imgUrl: 'https://www.qufutong.me/Uploads/logo.png', // 分享图标
+        desc: '加入众享通赢，从此没有难做的生意，爱上我们，让生活充满期待！', // 分享描述
+        success: function () {
+            layer.msg("分享成功！");
+            // 用户确认分享后执行的回调函数
+        },
+        cancel: function () {
+            // 用户取消分享后执行的回调函数
+        }
+    };
+    wx.ready(function(){
+        wx.onMenuShareTimeline(obj);
+
+        wx.onMenuShareAppMessage(obj);
+
+        wx.onMenuShareQQ(obj);
+
+        wx.onMenuShareWeibo(obj);
+
+        wx.onMenuShareQZone(obj);
+    });
+
+    /**百度统计*/
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?6d397711b7000c30906c346a5eb8e212";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    //newweb里的footer
+    // 如果是app调用删除尾部四个导航
+    if(isApp==1){
+        $(".foot.z5").remove();
+        $(".foot.z5").css("bottom","0px");
+        $(".header-container").remove();
+        $('.shopkefu').removeClass('none')
+        // $("[for='x11']").remove();
+    }
+
+    if(isApp==2){
+        sessionStorage.setItem("isApp","2");
+        $(".foot.z5").remove();
+        $(".foot.z5").css("bottom","0px");
+        // backinput();
+        $('.shopkefu').removeClass('none');
+    }
+
+    if(isApp==3){
+        sessionStorage.setItem("isApp","3");
+        $(".header-container").remove();
+        $('.shopkefu').removeClass('none');
+    }
+
+
+    function backinput() {
+        $(".back").html('<img style="width:20px;height:20px;" src="__WEBPUBLIC__/Wechat/img/back.png"/>');
+        $(".back").on('click',function () {
+            history.go(-1);
+        });
+    }
+    //如果是ios
+    if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    // 微信扫描二维码
+    document.querySelector('#scanQRCode0').onclick = function () {
+        wx.scanQRCode({
+            needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+            scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+            success: function (res) {
+                var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                //window.location.href = result;
+                //alert(result);
+            }
+        });
+    };
+</script>
+<block name="footerjs"></block>
+</body>
+</html>

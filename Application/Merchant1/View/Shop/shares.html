@@ -1,0 +1,125 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+	<link rel="stylesheet" type="text/css" href="__WEBPUBLIC__/Wechat/css/Ding_shop.css" />
+</block>
+<block name="main">
+		<div class="header-container colfff">
+			<div class="weui-cell ih30">
+				<div class="weui-cell__hd"></div>
+				<div class="weui-cell__bd">
+					<p>股数</p>
+				</div>
+			</div>
+		</div>
+		<!--头部-->
+    <div class="xq_container">
+        <div class="weui-cells mat0">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <span class="">消费总额:</span><span class="total_price colff0"></span>
+                </div>
+                <div class="weui-cell__ft" style="color:#000">
+                    <span class="">距离下一股还需:</span><span class="earn_total colff0"></span>
+                </div>
+            </div>
+        <div>
+		<div class="rsharestop">
+			<div class="weui-flex d_flex">
+				<div class="weui-flex__item">
+					<div class="placeholder">股数</div>
+				</div>
+				<div class="weui-flex__item">
+					<div class="placeholder">收益</div>
+				</div>
+				<div class="weui-flex__item">
+					<div class="placeholder">剩余</div>
+				</div>
+			</div>
+		</div>
+		<!--内容-->
+		<div class="rsharesmain">
+						
+		</div>
+	</div>
+</block>
+<block name="footerjs">
+<script>
+   var flag= true;//防止ajax请求期间，对此触发请求数据
+       $(function(){
+            getJson("shouci");
+        });
+
+    var dataargs = {"shop_id":shop_id,"p":1};
+    function getJson(args) {
+            console.log(dataargs);
+            requestUrl("{:U('Api/Member/shares')}",dataargs,function(data){
+            layer.closeAll();
+                putGoods(data,args);
+            },"GET",true);
+    }
+
+    requestUrl("{:U('Api/Pool/pilesOther')}",{type:2,mix_id:shop_id},function (res) {
+        layer.msg( res.message );
+        if (res.flag == 'success') {
+            $(".total_price").text(res.data.total);
+            $(".earn_total").text(res.data.earn_total);   
+        }
+    })
+
+     //添加商品到列表
+        function putGoods(data,args) {
+            console.log(data);
+            if(data.flag == 'success'){
+                var shops = data.data;
+                if((!shops || shops.length == 0 ) && args == "shouci"){
+                   $(".rsharesmain").addClass('wusj');
+                }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                    $(".rsharesmain").append('<div class="texcen">没有更多了！</div>');
+                }else{
+                    var str ="";
+                    for(var index in shops){
+                        var shop = shops[index];
+                        //console.log(shop.cover_pic);
+                        str +='<div class="weui-flex d_flex hdiv"><div class="weui-flex__item"><div class="placeholder">'+(+index+1)+'股</div></div><div class="weui-flex__item"><div class="placeholder">'+shop.surplus_price+'</div></div><div class="weui-flex__item"><div class="placeholder">'+shop.price+'</div></div></div>' ;
+                    }
+                    if (args == "fenye") {
+                        $('.rsharesmain').append(str);
+                    }else{
+                        $('.rsharesmain').html(str);
+                    }
+                    flag=true;
+                    top_linkto();
+                }
+            }else{
+                layer.msg(data.message);
+            }
+
+            if (args == "shouci") {
+                fenye();
+            }
+        } 
+
+         function fenye(){
+            var $_zd = $(".hdiv").height();//获取每个单项的高度
+            var length = 3;//定义预加载的数量，提前三个加载数据
+            var $_par = $(".rsharesmain");//获取包裹容器
+            var winheight = $(window).height();//获取窗口高度
+            var curpage = 1;//存储当前的页数v
+            $(function(){
+                $(window).on("scroll",function(e){
+                    if(flag){
+                        var self = $(this);
+                        var scrtop = self.scrollTop() + winheight;
+                        var docheight = $_par.height();
+                        if(scrtop > docheight - ( length * $_zd ) ){
+                            flag = false;
+                            dataargs.p = dataargs.p +1;
+                            getJson("fenye");
+                        }
+                    }
+                });
+            });
+        }
+</script>
+
+</block>

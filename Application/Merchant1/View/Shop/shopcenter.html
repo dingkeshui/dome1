@@ -1,0 +1,333 @@
+<extend name="Public:header"/>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>众享通赢</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        <div class="weui-cell bgfff texovh">
+            <div class="weui-cell__hd cenimg" style="margin-right: 10px">
+                <img class="headimg head_pic">
+            </div>
+            <div class="weui-cell__bd fs0-8">
+                <div class="fs1 nick_name"></div>
+                <div class="colccc account"></div>
+            </div>
+            <div class="weui-cell__ft">
+                <div class="signed showmode">签到</div>
+            </div>
+        </div>
+
+        <div class="weui-tabbar bgfff post bor1p">
+          <!--   <a href="javascript:;" class="weui-tabbar__item" linkto="{:U('Shop/shares')}">
+                <img src="__WEBPUBLIC__/Wechat/img/gjpiao.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">我的股</p>
+            </a> -->
+            <a href="javascript:;" class="weui-tabbar__item showcode">
+                <img src="__WEBPUBLIC__/Wechat/img/hh.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">二维码</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item" linkto="{:U('Shop/shopconfig')}">
+                <img src="__WEBPUBLIC__/Wechat/img/set.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">设置</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item" linkto="{:U('Shop/collectList')}">
+                <img src="__WEBPUBLIC__/Wechat/img/collet.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">被收藏</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item" linkto="{:U('Shop/myappraise')}">
+                <img src="__WEBPUBLIC__/Wechat/img/appraise.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">评价</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item" linkto="{:U('Luckdraw/luckdraw')}">
+                <img src="__WEBPUBLIC__/Wechat/img/luck.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">抽奖</p>
+            </a>
+        </div>
+        
+         <div class="weui-cells weui-cell">
+            <div class="weui-cell__bd">
+              <div class="fs1-2">
+                我的股数
+              </div>
+              <div>
+                 <span class="integral"></span>
+              </div>
+            </div>
+            <div class="weui-cell__ft">
+                <div><span class="fs1-4 colff0 d_piles"></span>股</div>
+                <div>还差<span class="colff0 d_remain"></span>麦穗到<span class="d_piles2"></span>股</div>
+            </div>
+        </div>
+
+
+        <div class="weui-cells fs0-8">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <div id="main" style="width:100%;height:250px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-cells fs0-8 ih50">
+            <div class="weui-flex">
+                <div class="icon iconupu weui-flex__item updateUser" linkto="{:U('Shop/upduserinfo')}">
+                    修改开户信息
+                </div>
+                <div class="icon iconyhq weui-flex__item htopen">
+                    合同签约
+                </div>
+            </div>
+        </div>
+
+        <div class="disn texcen imgarea" style="padding: 30px 40px;">
+            <div>【我的支付二维码】</div>
+            <img class="code" style="height: 150px;">
+            <div>扫一下向我付款</div>
+        </div>
+    </div>
+
+     <!-- 签到弹出层 -->
+        <div class="weui-dialog xq_model disn">
+            <div class="">
+                <img class="ggimg">
+                <div class="modeltop">
+                    <div class="fr d_gg">广告</div>
+                </div>
+            </div>
+            <div class="weui-cell ih30 nobrfore">
+            <div class="weui-cell__hd">
+                <p class="fs0-8">共签到</p>
+                <p class="fs1-2 colff0 number"></p>
+            </div>
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                <img class="douziimg" src="__WEBPUBLIC__/Wechat/img/d_douzi.png">
+                 众享豆
+                <span class="colff0 price"></span>
+            </div>
+            </div>
+            <div class="d_ok sign_button bgccc">
+                确定领取
+            </div>
+        </div>
+</block>
+<block name="footerjs">
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.min.js"></script>
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.common.min.js"></script>
+    <script>
+        var dataargs = {shop_id:shop_id};
+        var detailLink = "";
+        function showuserinfo() {
+            requestUrl("{:U('Api/Merchant/detail')}",dataargs,function(data){
+                var res = data.data;
+                if(data['flag'] == "success"){
+                    $(".nick_name").text(res.name);
+                    $(".account").text(res.account);
+                    $(".head_pic").attr('src',res.img);
+                    $(".code").attr('src',res.code);
+                    $(".d_piles").html(res.piles);
+                    $(".integral").text("麦穗"+res.integral);
+                    $(".d_piles2").html((+res.piles)+1);
+                    $(".d_remain").html((res.remain*1). toFixed(2));
+                    /**如果这个用户不符合领取钱数的条件就不能显示按钮，减少服务器的压力*/
+                    // if(res.is_true == 0){
+                    //     $(".sign_button").removeClass("disn");
+                    // }
+                    /**判断这个用户是否今天已经签到了*/
+                    detailLink = res.detailLink;
+                    if(res.is_sign == 0 && res.is_true == 0){
+                        $(".sign_button").removeClass("bgccc");
+                    }else{
+                        $(".sign_button").off("click");
+                        $(".sign_button").addClass("bgccc");
+
+                        $(".sign_button").on('click',function () {
+                            layer.msg("您暂无签到权限,加油哦~");
+                        });
+                        $(".sign_button").removeClass("sign_button");
+                        $(".sign_button").text("已签到");
+                    }
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+                setTimeout(function () {
+                    layer.closeAll();
+                },1000);
+            },"POST",true);
+        }
+        showuserinfo();
+        $(".showcode").on('click',function () {
+            layer.open({
+                "title":false,
+                "type":1,
+                "area":["250px","250px"],
+                "content":$(".imgarea")
+            });
+        });
+
+        //根据经纬度查询，查询广告图
+
+        wx.ready(function(){
+            wx.getLocation({
+                type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                success: function (res) {
+                    var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                    var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                    getAdpic({type:0,mix_id:shop_id,lat:latitude,lnt:longitude});
+                },
+                fail: function(res) {
+                    //console.log('未开启定位功能');
+                    //console.log(res);
+                    getAdpic({type:0,mix_id:shop_id});
+                }
+            });
+        });
+
+        function getAdpic( args ) {
+            requestUrl("{:U('Api/AboutUs/showPic')}",args,function ( res ) {
+                if ( res.flag == "success" ) {
+                    $(".ggimg").attr({"src":res.data.pic,"linkto":res.data.url});
+                    $(".price").text(res.data.price);
+                    $(".number").text(res.data.number);
+                    top_linkto();
+                }else{
+                    layer.msg( res.message );
+                }
+            });
+        }
+
+        $(".showmode").click(function () {
+            /**判断用户是否有未读的消息*/
+            layer.open({
+                type: 1,
+                title: false,
+                content: $(".xq_model"),
+                area: ["300px","auto"]
+            });
+            return;
+        });
+
+        /**用户签到点击*/
+        $(".sign_button").click(function () {
+            /**判断用户是否有未读的消息*/
+            var dataargs_other = {shop_id:shop_id};
+            requestUrl("{:U('Api/Merchant/sign')}",dataargs_other,function(data){
+                if(data['flag'] == "success"){
+                    layer.msg(data['message']);
+                    $(".sign_button").off("click");
+                    showuserinfo();                    
+                }else if (data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+                setTimeout(function () {
+                    layer.closeAll();
+                },2000);
+            },"POST",true);
+        })
+    </script>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        function showLine(date,line) {
+        var option = {
+            title: {
+                text: '股价曲线'
+            },
+            color: [
+                '#208de1', '#fec42c', '#80F1BE'
+            ],
+            tooltip: {},
+            legend: {
+                data:['股价']
+            },
+            xAxis: {
+                data: date,
+                name: '日'
+            },
+            yAxis: {
+                name: '豆'
+            },
+            series: [{
+                name: '股价',
+                type: 'line',
+                borderColor: '#208de1',
+                data: line
+            }]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+        }
+        requestUrl("{:U('Api/Member/income')}",{},function(res) {
+            if (res.flag == "success") {
+                var date = res.data.x_date;
+                var value = res.data.day_line;
+                showLine(date.split(","),value.split(","));
+            }else{
+                layer.msg(res.message);
+            }
+        })
+
+
+        // $(".updateUser").on('click',function () {
+        //     var dataargs = {mix_id:shop_id,type:1};
+        //     requestUrl("{:U('Api/HxUser/updateUser')}",dataargs,function ( res ) {
+        //         if (res.flag == "success") {
+        //             var form = '<form id="submitform" action="https://ebp.ips.com.cn/fpms-access/action/user/update.html" method="post">'
+        //                 +'<input name="ipsRequest" value="'+res.data.ipsRequest+'" type="hidden"/>'
+        //             '</form>';
+        //             $("body").html(form);
+        //             $("#submitform").submit();
+        //         }else{
+        //             layer.msg( res.message );
+        //         }
+        //     })
+        // })
+
+
+        $(".htopen").on('click',function () {
+            if (detailLink != "") {
+                window.location.href = detailLink;
+            }else{
+                window.location.href = "{:U('Shop/htopen')}"; 
+            }
+        });
+
+
+        function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                 document.addEventListener(
+                'WebViewJavascriptBridgeReady'
+                , function() {
+                    callback(WebViewJavascriptBridge)
+                },
+                false
+            );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+        }
+
+        setupWebViewJavascriptBridge(function(bridge) {
+            bridge.callHandler('signAction', {dhui:"出来了！"}, function(response) {
+                console.log("yes");
+            })
+            bridge.callHandler('openUserAction', {}, function(response) {
+                console.log("yes");
+            })
+        })
+    </script>
+</block>

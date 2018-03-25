@@ -1,0 +1,154 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                	<span>选择退货地址</span>
+                    <span linkto="{:U('Shop/returnaddress',array('type'=>$_GET['type'],'return_id'=>$_GET['return_id']))}" class="colon headright">管理</span>
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+    	<div class="addresslist padlr10 mgtop10 bgfff">
+    		<!-- <div class="addressitem">
+    			<div class="addressitemtop padtb10 after">
+    				<div><span class="mgr5">林俊杰</span><span>1874251694</span></div>
+    				<div class="fs14"><span class="mgr5 colon">默认地址</span><span>婚纱店看得见情况去玩了几去玩了几qwljkqwk情未了</span></div>
+    			</div>
+    		</div> -->
+    	</div>
+    </div>
+
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+     //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    var type="{$_GET['type']}"//1位协商历史选择退货地址
+    var return_id="{$_GET['return_id']}"//协商历史订单id
+    var dataargs={mix_id:shop_id,type:1,p:1};
+	var flag= true;//防止ajax请求期间，对此触发请求数据
+    var mydata={shop_id:shop_id};
+    function getJson(args) {
+        requestUrl("{:U('Api/Address/addressList')}",dataargs,function(data){
+            layer.closeAll();
+            putGoods(data,args);
+        });
+    }
+    //返回协商历史
+    $('.addresslist').on('click','.addressitem',function(){
+        var addr_id=$(this).attr('data-id');
+        if(type==1){
+            layer.open({
+            content: '确认选择当前退货地址？'
+            ,btn: ['确认', '取消']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+            mydata.return_id=return_id;
+            mydata.addr_id=addr_id;
+            mydata.status=1;
+                requestUrl("{:U('Api/ReturnOrder/makeSureReturnOrder')}",mydata,function(data){
+                    if(data['flag'] == "success"){
+                       layer.msg('选择成功!');
+                       setTimeout(function(){
+                            location.href="{:U('Refund/consult')}/return_id/"+return_id;
+                       },1500);
+                    }else if(data['flag'] == "error"){
+                        layer.msg(data['message']);
+                    }
+                },"POST",true);
+                layer.close(index);
+            }
+            ,btn2: function(index, layero){
+            //按钮【按钮二】的回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+            ,cancel: function(){ 
+            //右上角关闭回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+        });
+        }
+    });
+    $(function(){
+        getJson("shouci");
+    });
+
+    //添加商品到列表
+    function putGoods(data,args) {
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $(".addresslist").addClass('wusj');
+
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".addresslist").append('<div style="text-align:center">没有更多了！</div>');
+            }else{
+                $(".nulldata").remove();
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    var is_defa = '';
+                    if(shop.is_default==1){
+                        is_defa = '<span class="mgr5 colon">默认地址</span>';
+                    }
+                    str += '<div class="addressitem" data-id="'+shop.addr_id+'">\
+                                <div class="addressitemtop padtb10 after">\
+                                    <div><span class="mgr5">'+shop.name+'</span><span>'+shop.phone+'</span></div>\
+                                    <div class="fs14">'+is_defa+'<span>'+shop.province+shop.city+shop.area+shop.address+'</span></div>\
+                                </div>\
+                            </div>';
+                }
+                if (args == "fenye") {
+                    $('.addresslist').append(str);
+                }else{
+                    $('.addresslist').html(str);
+                }
+                flag=true;
+            }
+        }else{
+            layer.msg(data.message);
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    function fenye(){
+        var $_zd = $(".addressitem").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".addresslist");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+</script>
+</block>

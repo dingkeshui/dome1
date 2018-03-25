@@ -1,0 +1,120 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" type="text/css" href="__WEBPUBLIC__/Wechat/css/oldtop.css">
+</block>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>绑定账号</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">    
+        <div class="xq_container_div weui-cells mat0">
+        </div>
+        <div class="weui-btn-area">
+            <a class="weui-btn bgjb nobor" href="{:U('Member/newaccount')}">添加账号</a>
+        </div>
+    </div>
+    
+</block>
+<block name="footerjs">
+<script>
+      
+
+       // 选择支付宝
+       $(".xq_container_div").on("click",".hdiv",function(){
+        var $this=$(this);
+        window.sessionStorage.setItem("myname",$this.attr("myname"));
+        window.sessionStorage.setItem("myid",$this.attr("myid"));
+        window.sessionStorage.setItem("myaccount",$this.attr("myaccount"));
+        window.location.href = "{:U('Member/paydraw')}";     
+       })
+
+       var flag= true;//防止ajax请求期间，对此触发请求数据
+       $(function(){
+            getJson("shouci");
+        });
+
+        var dataargs = {"id_type":0,"mix_id":m_id,p:1};
+        function getJson(args) {
+            console.log(dataargs);
+            requestUrl("{:U('Api/Merchant/bindList')}",dataargs,function(data){
+            layer.closeAll();
+                putGoods(data,args);
+            },"GET",true);
+        }
+
+        //添加商品到列表
+        function putGoods(data,args) {
+            console.log(data);
+            if(data.flag == 'success'){
+                var shops = data.data;
+                if((!shops || shops.length == 0 ) && args == "fenye"){
+                    $(".xq_container_div").append('<div class="texcen">没有更多了！</div>');
+                }else{
+                    var str ="";
+                    for(var index in shops){
+                        var shop = shops[index];
+                        //console.log(shop.cover_pic);
+                        str +='<div class="weui-cell white mg20 hdiv" myname='+shop.name+' myid='+shop.width_id+' myaccount='+shop.account+'><div class="weui-cell__hd"><img class="himg" src="__WEBPUBLIC__/Wechat/img/zhifubao.png"></div><div class="weui-cell__bd"><div>'+shop.name+'</div><div class="fs0-8 colccc">'+shop.account+'</div></div><div width_id='+shop.width_id+' class="weui-cell__ft remov"><img class="simg" src="__WEBPUBLIC__/Wechat/img/clear.png"></div></div>' ;
+                    }
+                    if (args == "fenye") {
+                        $('.xq_container_div').append(str);
+                    }else{
+                        $('.xq_container_div').html(str);
+                    }
+                     // 点击删除事件
+                    $(".remov").click(function(event){
+                    var width_id=$(this).attr("width_id");
+                    var $this=$(this).parent();
+                    requestUrl("{:U('Api/Merchant/delBind')}",{"width_id":width_id},function(data){
+                      layer.closeAll();
+                      if(data['flag'] == "success"){
+                        $this.remove();
+                        window.sessionStorage.removeItem("myname");
+                        window.sessionStorage.removeItem("myid");
+                        window.sessionStorage.removeItem("myaccount");
+                      }               
+                    },"POST",true);
+                    event.stopPropagation();
+
+       })
+                    flag=true;
+                    top_linkto();
+                }
+            }else{
+                layer.msg(data.message);
+            }
+
+            if (args == "shouci") {
+                fenye();
+            }
+        } 
+
+         function fenye(){
+            var $_zd = $(".hdiv").height();//获取每个单项的高度
+            var length = 3;//定义预加载的数量，提前三个加载数据
+            var $_par = $(".xq_container_div");//获取包裹容器
+            var winheight = $(window).height();//获取窗口高度
+            var curpage = 1;//存储当前的页数v
+            $(function(){
+                $(window).on("scroll",function(e){
+                    if(flag){
+                        var self = $(this);
+                        var scrtop = self.scrollTop() + winheight;
+                        var docheight = $_par.height();
+                        if(scrtop > docheight - ( length * $_zd ) ){
+                            flag = false;
+                            dataargs.p = dataargs.p +1;
+                            getJson("fenye");
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</block>

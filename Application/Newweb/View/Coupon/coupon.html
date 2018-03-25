@@ -1,0 +1,279 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff" style="z-index: 6;">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                    <span>优惠券</span>
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 分类 -->
+    <div class="classnav coupon bgfff ih30 flex z5">
+        <div class="textcenter on flex1 br">可使用</div>
+        <div class="textcenter flex1">已失效</div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container bgfff padtop100">
+        <div class="list pad10">
+                      <!--  <div class="flex lqbox lqbox1">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    ￥ <span class="fs35">10</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>优惠券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <label class="fs0-8 mgr5">使用规则</label>
+                                <img class="w15" src="../img/img (18).png">
+                            </div>
+                        </div>  
+                        <div class="flex oldcoupon lqbox lqbox3">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    ￥ <span class="fs35">10</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>现金券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <label class="fs0-8 mgr5">使用规则</label>
+                                <img class="w15" src="../img/img (191).png">
+                            </div>
+                        </div>         -->
+        </div>  
+    </div>
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    //如果是ios
+        if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+            $('.header-container .weui-cell__hd').hide();
+        }
+    var dataargs2={m_id:m_id,status:1,p:1};
+    getJson("shouci");
+    function getJson(args) {
+        console.log(dataargs2);
+        requestUrl("{:U('Api/Coupon/couponList')}",dataargs2,function(data){
+            layer.closeAll();
+            putGoods(data,args);
+        },"POST");
+    };
+    //头部导航点击
+    $('.classnav>div').click(function(){
+        var $that=$(this);
+        $('.classnav>div').removeClass('on');
+        $(this).addClass('on');
+        dataargs2.p=1;
+        dataargs2.status=$that.index()+1;
+        getJson("shouci");
+
+    });
+    //点击使用或者删除
+    $('.list').on('click','.lqbox',function(){
+        var $that=$(this);
+        var c_m_id=$that.attr('c_m_id');
+        var type=$that.attr('type');
+        if($that.hasClass('oldcoupon')){
+            layer.open({
+                content: '确定删除该优惠券？'
+                ,btn: ['确定', '取消']
+                ,yes: function(index, layero){
+                //按钮【按钮一】的回调
+                        requestUrl("{:U('Api/Coupon/delCoupon')}",{c_m_id:c_m_id},function(data){
+                            if(data.flag=="success"){
+                                layer.msg('删除成功！');
+                                $that.remove();
+                            }else{
+                                layer.msg(data.message);
+                            }
+                        },'POST',true);
+                    layer.close(index);
+                }
+                ,btn2: function(index, layero){
+                    // location.href="{:U('Order/myorder')}/type/1";
+                }
+                ,cancel: function(){ 
+                    // location.href="{:U('Order/myorder')}/type/1";
+                }
+            });
+        }else{
+            if(type==4){
+                layer.open({
+                    content: '确定使用该优惠券？'
+                    ,btn: ['确定', '取消']
+                    ,yes: function(index, layero){
+                    //按钮【按钮一】的回调
+                            requestUrl("{:U('Api/Coupon/useCoupon')}",{c_m_id:c_m_id},function(data){
+                                if(data.flag=="success"){
+                                    layer.msg('使用成功！');
+                                    dataargs2.p=1;
+                                    getJson("shouci");
+                                }else{
+                                    layer.msg(data.message);
+                                }
+                            },'POST',true);
+                        layer.close(index);
+                    }
+                    ,btn2: function(index, layero){
+                        // location.href="{:U('Order/myorder')}/type/1";
+                    }
+                    ,cancel: function(){ 
+                        // location.href="{:U('Order/myorder')}/type/1";
+                    }
+                });
+            }else{
+                layer.msg('请在付款时使用');
+            }
+        }
+    })
+    //添加商品到列表
+    function putGoods(data,args) {
+        console.log(data);
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $(".list").html('').addClass('wusj');
+                $(".nomore").remove();
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".list").append('<div class="texcen nomore">没有更多了！</div>');
+            }else{
+                $('.list').removeClass('wusj');
+                $(".nomore").remove();
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                        // 判断状态
+                        var newstr="";//存储状态
+                        switch(+shop.type)
+                        {
+                        case 1:
+                            newstr='<div type="'+shop.type+'" class="flex '+(dataargs2.status==1?"":"oldcoupon")+' lqbox lqbox3" c_m_id='+shop.c_m_id+'>'
+                                        +'<div class="flex1 flex lqleft textovh">'
+                                            +'<div class="flex flexcenter mgr5">'
+                                                +'￥ <span class="fs35">'+shop.min_price+'</span>'
+                                            +'</div>'
+                                            +'<div class="flex1 textovh fs14">'
+                                                +'<div>'+shop.title+'</div>'
+                                                +'<div class="textovh">'+shop.desc+'</div>'
+                                                +'<div class="fs12 textovh">(<span>'+shop.start_time+'-'+shop.end_time+'</span><span></span>)</div>'
+                                            +'</div>'
+                                        +'</div>'
+                                        +'<div class="lqright flex flexcenter" money="'+shop.min_price+'" type="'+shop.type+'" myname="'+shop.title+'" >'
+                                            +'<span class="">'+(dataargs2.status==1?"点击使用":"点击删除")+'</span>'
+                                        +'</div>'
+                                    +'</div>'
+                            break;
+                        case 2:
+                            newstr='<div type="'+shop.type+'" class="flex '+(dataargs2.status==1?"":"oldcoupon")+' lqbox lqbox2" c_m_id='+shop.c_m_id+'>'
+                                        +'<div class="flex1 flex lqleft textovh">'
+                                            +'<div class="flex flexcenter mgr5">'
+                                                +'<span class="fs35">'+shop.money+'</span>'
+                                                +'<span class="y3">折</span>'
+                                            +'</div>'
+                                            +'<div class="flex1 textovh fs14">'
+                                                +'<div>'+shop.title+'</div>'
+                                                +'<div class="textovh">'+shop.desc+'</div>'
+                                                +'<div class="fs12 textovh">(<span>'+shop.start_time+'-'+shop.end_time+'</span><span></span>)</div>'
+                                            +'</div>'
+                                        +'</div>'
+                                        +'<div class="lqright flex flexcenter" max_price="'+(shop.max_price?shop.max_price:0)+'" money="'+shop.money+'" type="'+shop.type+'" myname="'+shop.title+'" c_m_id='+shop.c_m_id+'>'
+                                            +'<span class="">'+(dataargs2.status==1?"点击使用":"点击删除")+'</span>'
+                                        +'</div>'
+                                    +'</div>'
+                            break;
+
+                        case 3:
+                            newstr='<div type="'+shop.type+'" class="flex '+(dataargs2.status==1?"":"oldcoupon")+' lqbox lqbox1" c_m_id='+shop.c_m_id+'>'
+                                        +'<div class="flex1 flex lqleft textovh">'
+                                            +'<div class="flex flexcenter mgr5">'
+                                                +'￥ <span class="fs35">'+shop.min_price+'</span>'
+                                            +'</div>'
+                                            +'<div class="flex1 textovh fs14">'
+                                                +'<div>'+shop.title+'</div>'
+                                                +'<div class="textovh">'+shop.desc+'</div>'
+                                                +'<div class="fs12 textovh">(<span>'+shop.start_time+'-'+shop.end_time+'</span><span></span>)</div>'
+                                            +'</div>'
+                                        +'</div>'
+                                        +'<div class="lqright flex flexcenter" max_price="'+shop.max_price+'" type="'+shop.type+'" money="'+shop.min_price+'" myname="'+shop.title+'" c_m_id='+shop.c_m_id+'>'
+                                            +'<span class="">'+(dataargs2.status==1?"点击使用":"点击删除")+'</span>'
+                                        +'</div>'
+                                    +'</div>'
+                            break;
+
+                        case 4:
+                            newstr='<div type="'+shop.type+'" class="flex '+(dataargs2.status==1?"":"oldcoupon")+' lqbox lqbox4" c_m_id='+shop.c_m_id+'>'
+                                        +'<div class="flex1 flex lqleft textovh">'
+                                            +'<div class="flex flexcenter mgr5">'
+                                                +'￥ <span class="fs35">免</span>'
+                                            +'</div>'
+                                            +'<div class="flex1 textovh fs14">'
+                                                +'<div>'+shop.title+'</div>'
+                                                +'<div class="textovh">'+shop.desc+'</div>'
+                                                +'<div class="fs12 textovh">(<span>'+shop.start_time+'-'+shop.end_time+'</span><span></span>)</div>'
+                                            +'</div>'
+                                        +'</div>'
+                                        +'<div class="lqright flex flexcenter" type="'+shop.type+'" myname="'+shop.title+'" c_m_id='+shop.c_m_id+'>'
+                                            +'<span class="">'+(dataargs2.status==1?"点击使用":"点击删除")+'</span>'
+                                        +'</div>'
+                                    +'</div>'
+                            break;
+
+                        }
+                        str +=newstr;
+                }
+                if (args == "fenye") {
+                    $('.list').append(str);
+                }else{
+                    $('.list').html(str);
+                }
+                flag2=true;
+                top_linkto();
+            }
+        }else{
+            layer.msg(data.message);
+            $(".list").html('').addClass('wusj');
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    var flag2=true;
+    function fenye(){
+        var $_zd = $(".lqbox").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".list");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).on("scroll",function(e){
+                if(flag2){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag2 = false;
+                        dataargs2.p = dataargs2.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+</script>
+</block>

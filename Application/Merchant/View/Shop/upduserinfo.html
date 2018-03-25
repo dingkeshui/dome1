@@ -1,0 +1,85 @@
+<extend name="Public:header"/>
+<block name="main">
+    <div class="position:absolute;top:0px;bottom:0px;left:0px;right:0px;width:100vw;height:100vh;">
+        <a href="javascript:history.back();" style="z-index:100;position:absolute;top:50%;left:50%;transform:translate3d(-50%,-50%,0);">继续返回</a>
+    </div>
+</block>
+<block name="footerjs">
+<script>
+var isread = sessionStorage.getItem("isread");
+if (is_readonly) {
+    alert("您不具备操作权限！");
+    history.go(-1);
+}
+$('body').css('width','100vw');
+var updateuser=sessionStorage.getItem("updateuser");
+sessionStorage.removeItem("updateuser");
+if(+updateuser==1){
+    isread="";
+    sessionStorage.removeItem("isread");
+
+}
+if ( !isread || isread == null || isread == "") {
+    var opening = "{$opening}";
+    var dataargs = {mix_id:shop_id,type:1};
+    if ( is_open != "" && is_open ) {
+        requestUrl("{:U('Api/HxUser/updateUser')}",dataargs,function ( res ) {
+            if (res.flag == "success") {
+                var form = '<form id="submitform" action="https://ebp.ips.com.cn/fpms-access/action/user/update.html" method="post">'
+                    +'<input name="ipsRequest" value="'+res.data.ipsRequest+'" type="hidden"/>'
+                '</form>';
+                $("body").html(form);
+                $("#submitform").submit();
+            }else{
+                layer.msg( res.message );
+            }
+        })
+    }else if( is_open == "" && opening == "1"){
+        $("body").append("正在急速审核中，请耐心等待审核通过！").css({"padding":"50px 0px","text-align":"center","width":""});
+        alert("请您耐心等待，women！");
+        setTimeout(function () {
+            setupWebViewJavascriptBridge(function(bridge) {
+                bridge.callHandler('backAction', {dhui:"出来了！"}, function(response) {
+                    console.log("yes");
+                })
+            })
+        },500);
+    }else{
+        layer.msg("您未开户，请先开户！");
+        setTimeout(function () {
+          window.location.href = "{:U('Login/bindtel')}/inself/1";
+        },500);
+    }
+    sessionStorage.setItem("isread",1);
+}else{
+    setupWebViewJavascriptBridge(function(bridge) {
+        bridge.callHandler('backAction', {dhui:"出来了！"}, function(response) {
+            console.log("yes");
+        })
+    })
+    sessionStorage.removeItem("isread");
+    history.back();
+}
+function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+}
+</script>
+</block>

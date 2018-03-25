@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>到{$_REQUEST['shop_name']}商家的路线图</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script src="__WEBPUBLIC__/Wechat/js/jquery.js"></script>
+    <script src="__WEBPUBLIC__/Wechat/js/layer/layer.js"></script>
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+            width:100%;
+
+        }
+        #container {
+            width: 100%;
+            height: 100%
+        }
+        #panel {
+            overflow-x: scroll;
+            width: 100%;
+            margin-top: 10px;
+            background-color: #fff;
+            padding: 5px;
+            box-sizing: border-box;
+            border: 1px solid #999;
+        }
+    </style>
+</head>
+ 
+<body>
+    <div id="container" style="width:100%;height:400px"></div>
+    <div id="panel"></div>
+    <!--微信二维码扫描点餐js-->
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=c5e14c05b9c3aef7d437cb31cda7313f&plugin=AMap.Driving"></script>
+    <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+
+    <script>
+        layer.open({type:3});
+        //基本地图加载
+        var map = new AMap.Map("container", {
+            resizeEnable: true,
+            center: [116.397428, 39.90923],//地图中心点
+            zoom: 13 //地图显示的缩放级别
+        });
+        //构造路线导航类
+        var driving = new AMap.Driving({
+            map: map,
+            panel: "panel",
+            complete:function () {
+
+            }
+        });
+
+
+        wx.config({
+            debug: false,
+            appId: "{$appid}",
+            timestamp:'{$wx.timestamp}',
+            nonceStr: '{$wx.nonceStr}',
+            signature:'{$wx.signature}',
+            jsApiList: [
+                // 所有要调用的 API 都要加到这个列表中
+                'scanQRCode',
+                'openLocation',
+                'getLocation'
+            ]
+        });
+         wx.ready(function(){
+            wx.getLocation({
+                type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                success: function (res) {
+                    var end_lnt = "{:I('get.lnt')}";
+                    var start_lat = "{:I('get.lat')}";
+                    var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                    var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                    // 根据起终点经纬度规划驾车导航路线
+
+                    driving.search(new AMap.LngLat(longitude,latitude), new AMap.LngLat(end_lnt,start_lat),{},function () {
+                        layer.closeAll();
+                    });
+                }
+            });
+        });
+
+
+
+        /**定时器获取节点*/
+        var time = setInterval(function () {
+            var ele = $(".plan dt");
+            ele.on("click",function () {
+                $("html,body").animate({"scrollTop":"0px"},300);
+            });
+            if(ele.size() > 0){
+                clearInterval(time);
+            }
+        },500);
+
+    </script>
+ 
+</body>
+ 
+</html>

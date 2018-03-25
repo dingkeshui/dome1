@@ -1,0 +1,245 @@
+<extend name="Public:header"/>
+<block name="headdiv"></block>
+<!-- 头部 -->
+<block name="main">
+<div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd">
+                众享通赢
+            </div>
+            <div class="weui-cell__ft">
+                 <a class="colfff" href="{:U('Add/add')}">添加</a>
+            </div>
+        </div>
+</div>
+
+<div class="d_timebox bgfff">
+            <div class="eall d_botton1 w50">全部</div>
+            <div class="d_botton2 w50 esx">筛选</div>  
+            <div class="inblock re_center w50"><input class="inpab" type="date" name=""><div class="inblock w50 d_botton2">月-日</div></div>
+        -
+            <div class="inblock re_center w50"><input class="inpab" type="date" name=""><div class="inblock w50 d_botton2">月-日</div></div>
+            <div class="inblock d_showbut">
+                <span class="d_lb d_list1">类别</span>
+                <select onchange="selefun(this)" class="mysele" name="select1">
+                            <option value="">全部</option>
+                </select>        
+            </div>
+</div> 
+<div class="pad100 d_classmodel">
+            <div class="bgfff d_mgbot0 weui-flex texcen pad20-0 dingtop">
+                <div class="weui-flex__item">
+                    <div class="colff0 d_integral fs1 texovh"></div>
+                    <div class="fs0-8 colccc">商家数</div>
+                </div>
+                <!-- <div class="weui-flex__item">
+                    <div class="colff0 d_shares fs1 texovh"></div>
+                    <div class="fs0-8 colccc">订单收益</div>
+                </div> -->
+            </div>
+</div>    
+<!-- 主体 -->
+<div class="xq_container d_minh d_padtop0">
+               <!--  <div class="weui-cells shoplist noafter">
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd shopimg">
+                            <img class="" src="">
+                        </div>
+                        <div class="weui-cell__bd">
+                            <p class="texovh">商家</p>
+                            <p class="false"><span class="colccc">成功交易:</span><span class="colff0">￥888.888</span></p>
+                        </div>
+                    </div>
+                    <div class="weui-cell bgfff">
+                        <div class="weui-cell__hd"></div>
+                        <div class="weui-cell__bd">
+                            <p>地址:<span>天津市南开崎岖鞍山西道</span></p>
+                            <p>手机号:<span>123145646</span></p>
+                        </div>
+                        <div class="weui-cell__ft"></div>
+                    </div>               
+                </div>
+                <div class="weui-cells shoplist noafter">
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd shopimg">
+                            <img class="" src="">
+                        </div>
+                        <div class="weui-cell__bd">
+                            <p class="texovh">商家</p>
+                            <p class="false"><span class="colccc">成功交易:</span><span class="colff0">￥888.888</span></p>
+                        </div>
+                    </div>
+                    <div class="weui-cell bgfff">
+                        <div class="weui-cell__hd"></div>
+                        <div class="weui-cell__bd">
+                            <p>地址:<span>天津市南开崎岖鞍山西道</span></p>
+                            <p>手机号:<span>123145646</span></p>
+                        </div>
+                        <div class="weui-cell__ft"></div>
+                    </div>               
+                </div> -->
+                
+              
+</div>
+
+</block>
+<block name="footerjs">
+    <script type="text/javascript">
+function selefun(e){
+    $('.d_lb').html($(e).find('option:selected').text());
+    $('.esx').removeClass('d_botton2').addClass('d_botton1');
+}
+
+
+        var oldTime='';//开始时间
+        var oldTime2='';//结束时间
+
+        //获取加盟商代理的分类
+    requestUrl("{:U('Api/Cash/agent')}",{"e_id":e_id},function(res) {
+        layer.closeAll();
+
+        if (res.flag == "success") {
+            var info=res.data.classify;
+            if(info.length>0){
+                for(var i=0;i<info.length;i++){
+                    var str='<option value='+info[i].class_id+'>'+info[i].name+'</option>';
+                    $(".mysele").append(str);
+                } 
+            }else{
+                $('.d_showbut').hide();
+            }
+        }else{
+            layer.msg(res.message);
+        }
+    },"GET",true);
+
+
+    $(".inpab").change(function () {
+        if($(this).val()==""){
+            $(this).val("月-日");
+        }
+         oldTime =$(".inpab").eq(0).val();
+         oldTime2 =$(".inpab").eq(1).val();
+        $(this).next().html($(this).val().substring(5));
+        $(this).next().html()?"":$(this).next().html("月-日");
+
+        if(new Date(oldTime).getTime()<=new Date(oldTime2).getTime()){
+            $(".esx").removeClass("d_botton2");
+            $(".esx").addClass("d_botton1");
+        }else{
+            $(".esx").removeClass("d_botton1");
+            $(".esx").addClass("d_botton2");
+        }
+    });
+
+//筛选点击
+$(".esx").click(function(){
+    if($(this).hasClass("d_botton1")){
+        dataargs={"e_id":e_id,"p":1,"start_time":oldTime,"end_time":oldTime2,"class_id":$('.mysele').val()};
+        getJson("shouci");
+    }
+}) 
+
+//全部点击
+$(".eall").click(function(){
+    dataargs={"e_id":e_id,"p":1};
+    getJson("shouci");
+});
+
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+    var dataargs = {"e_id":e_id,p:1};
+      
+        function getJson(args) {
+            console.log(dataargs);
+            requestUrl("{:U('Api/Cash/shopList')}",dataargs,function(data){
+                layer.closeAll();
+                putGoods(data,args);
+            },"GET",true);
+        }
+
+        getJson("shouci");
+
+        //添加商品到列表
+        function putGoods(data,args) {
+            if(data.flag == 'success'){
+                $('.d_integral').html(data.data.shop_num);
+                var shops = data.data.list;
+                if((!shops || shops.length == 0 ) && args == "shouci"){
+                    $(".xq_container").html("");
+                   $(".xq_container").addClass('wusj');
+                }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                    if($(".xq_container").hasClass("wusj")){
+
+                    }else{
+                         $(".xq_container").append('<div class="texcen nulldata">没有更多了！</div>');
+                    } 
+                }else{
+                    $(".nulldata").remove();
+                    $(".xq_container").removeClass("wusj");
+                    var str ="";
+                    for(var index in shops){
+                        var shop = shops[index];
+                        str +='<div class="weui-cells shoplist noafter">'
+                        +'<div class="weui-cell">'
+                        +'<div class="weui-cell__hd shopimg">'
+                            +'<img class="" src="'+shop.head_pic+'">'
+                        +'</div>'
+                        +'<div class="weui-cell__bd">'
+                            +'<p class="texovh">'+shop.name+'</p>'
+                            +'<p class="false"><span class="colccc">入驻时间:</span><span class="colccc">'+shop.ctime+'</span></p>'
+                        +'</div>'
+                    +'</div>'
+                    +'<div class="weui-cell bgfff">'
+                        +'<div class="weui-cell__hd"></div>'
+                        +'<div class="weui-cell__bd">'
+                            +'<p>地址:<span>'+shop.address+'</span></p>'
+                            +'<p>手机号:<span>'+shop.account+'</span></p>'
+                            +(shop.status==0?'':(shop.status==1?'<p>审核状态:<span class="d_red">待审核</span></p>':'<p>审核状态:<sapn class="d_red">审核失败</span></p>'))
+                        +'</div>'
+                        +'<div class="weui-cell__ft"></div>'
+                    +'</div>'               
+                +'</div>';
+                    }
+                    if (args == "fenye") {
+                        $('.xq_container').append(str);
+                    }else{
+                        $('.xq_container').html(str);
+                    }
+                    flag=true;
+                    top_linkto();
+                }
+            }else{
+                layer.msg(data.message);
+            }
+
+            if (args == "shouci") {
+                fenye();
+            }
+        }
+
+         function fenye(){
+            var $_zd = $(".shoplist").height();//获取每个单项的高度
+            var length = 3;//定义预加载的数量，提前三个加载数据
+            var $_par = $(".xq_container");//获取包裹容器
+            var winheight = $(window).height();//获取窗口高度
+            var curpage = 1;//存储当前的页数v
+            $(function(){
+                $(window).on("scroll",function(e){
+                    if(flag){
+                        var self = $(this);
+                        var scrtop = self.scrollTop() + winheight;
+                        var docheight = $_par.height();
+                        //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                        if(scrtop > docheight - ( length * $_zd ) ){
+                            flag = false;
+                            dataargs.p = dataargs.p +1;
+                            getJson("fenye");
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</block>

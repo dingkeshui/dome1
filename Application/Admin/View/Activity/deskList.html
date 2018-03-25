@@ -1,0 +1,83 @@
+<include file="Public:header"/>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/js/ajax-operate.js"></script>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">桌台背景管理</a></li>
+        <li class="active">桌台背景列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>桌台背景管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="{:U('Activity/deskList')}">桌台背景列表</a>
+            </li>
+            <li>
+                <a href="{:U('Activity/addDesk')}">发布桌台背景</a>
+            </li>
+        </ul>
+    </div>
+    <div class="search-content">
+        <form action="{:U('Activity/deskList')}" method="post" class="search-form form-inline" role="form">
+            <div class="form-group">
+                <label class="sr-only" for="g_name">桌台背景标题</label>
+                <input class="earch-input form-control" id="g_name" type="text" name="title" value="{$request['title']}" placeholder="桌台背景标题"/>　
+            </div>
+            <button type="submit" class="btn derive">查询</button>
+        </form>
+    </div>
+    <div class="content-box-table content-box-content">
+        <form action="{:U('Activity/deleteDesk')}" method="post" class="batch-form">
+            <table class="table table-striped table-framed table-hover">
+                <thead>
+                    <tr>
+                        <th width="8%">
+                            <input class="check-all" type="checkbox" />&nbsp;&nbsp;编号
+                        </th>
+                        <th width="15%">发布时间
+                        </th>
+                        <th>桌台背景标题</th>
+                        <th>图片</th>
+                        <th width="10%">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+                    <if condition="empty($list)">
+                        <tr><td colspan="20"><span style="font-size:14px;">暂无数据</span></td></tr>
+                    </if>
+                    <volist name="list" id="vo">
+                        <tr>
+                            <td><input type="checkbox" value="{$vo['id']}" name="id[]"/>&nbsp;&nbsp;{$vo['id']}</td>
+                            <td>{$vo['ctime']|date='Y-m-d H:i:s',###}</td>
+                            <td>{$vo['title']}</td>
+                            <td><img src="/Uploads/{$vo['pic']}" alt="" style='width:50px;height:auto'></td>
+                            <td>
+                                <a href="{:U('Activity/editDesk',array('id'=>$vo['id']))}" title="详情" class="modify">
+                                    <span class="icon glyphicon glyphicon-edit"></span>
+                                </a>&nbsp;
+                                <a href="#" title="删除" class="delete-delete">
+                                    <span class="icon glyphicon glyphicon-remove"></span>
+                                </a><input type="hidden" value="{:U('Activity/deleteDesk',array('id'=>$vo['id']))}">
+                            </td>
+                        </tr>
+                    </volist>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="20">
+                            <div class="bulk-actions fl">
+                                <input type="button" class="btn delete-batch" value="批量删除">　
+                            </div>
+                            <div class="fr">
+                                {$page}
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+<include file="Public:footer"/>

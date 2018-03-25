@@ -1,0 +1,230 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>优惠券</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="weui-cell ih30 bg000 header-container2">
+        <span class="on top_radio">可使用</span><span class="top_radio">已失效</span>
+    </div>
+
+    <div class="xq_container pad100">
+        <!-- <div class="dcon dcol">
+            <div class="condiva ">
+                <div class="dih50 colfff">
+                    <div class="inblock dih50">￥<span class="fs50">50</span></div>
+                    <div class="inblock">
+                        <p class="dih25 fs20">优惠券</p>
+                        <p class="dih25 fs18">满五十可使用</p>
+                    </div>
+                </div>
+                <div class="dih50">
+                    <div class="dih25 colfff">20170209-20170506 使用使用使用使用使用使用使用使用使用使用</div>
+                </div>
+            </div>
+            <div class="conduvb">
+                <p>点</p>
+                <p>击</p>
+                <p>使</p>
+                <p>用</p>
+            </div>
+        </div>
+
+        <div class="dcon dco4">
+            <div class="condiva ">
+                <div class="dih50 colfff">
+                    <div class="inblock dih50">￥<span class="fs50">50</span></div>
+                    <div class="inblock">
+                        <p class="dih25 fs20">优惠券</p>
+                        <p class="dih25 fs18">满五十可使用</p>
+                    </div>
+                </div>
+                <div class="dih50">
+                    <div class="dih25 colfff">20170209-20170506 用使用使用</div>
+                </div>
+            </div>
+            <div class="conduvb">
+                <p>已</p>
+                <p>使</p>
+                <p>用</p>
+            </div>
+        </div> -->
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+    var dataargs = {"m_id":m_id,"status":1,p:1};
+    var myindex=0;
+    var shop_id = "{:I('get.shop_id')}";
+
+    function getJson(args) {
+            console.log(dataargs);
+            requestUrl("{:U('Api/Coupon/couponList')}",dataargs,function(data){
+                layer.closeAll();
+                putGoods(data,args);
+            },"POST",true);
+        }
+
+    getJson("shouci");
+    //头部点击事件 
+    function radioAfter(e){
+           if(e.index()==0){
+            dataargs.status=1;
+            dataargs.p=1;
+            getJson("shouci");
+           }else{
+            dataargs.status=2;
+            dataargs.p=1;
+            getJson("shouci");
+           };
+           
+    }
+
+    function putGoods(data,args) {
+            console.log(data);
+            if(data.flag == 'success'){
+                var shops = data.data;
+                if((!shops || shops.length == 0 ) && args == "shouci"){
+                    $(".xq_container").html("");
+                   $(".xq_container").addClass('wusj');
+                }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                    $(".xq_container").append('<div class="texcen nulldata">没有更多了！</div>');
+                }else{
+                    $(".nulldata").remove();
+                    $(".xq_container").removeClass("wusj");
+                    var str ="";
+                    for(var index in shops){
+                        var shop = shops[index];
+                        //console.log(shop.cover_pic)
+                       
+                         str +='<div myclass='+(shop.type==4?2:1)+' myid='+shop.c_m_id+' class="dflex dcon dco'+(shop.status==0?shop.type:5)+'">'
+                            +'<div class="condiva ">'
+                            +'<div class="dih50 colfff">'
+                            +'<div class="inblock texovh dih50">'+((shop.type==1||shop.type==3)?('￥<span class="fs50">'+parseInt(shop.min_price)+'</span>'):(shop.type==2?'<span class="fs50">'+parseInt(shop.money)+'</span>'+"."+(shop.money.split(".")[1]?shop.money.split(".")[1]:"0")+'折':'<span class="fs50">免</span>'))+'</div>'
+                            +'<div class="inblock">'
+                            +'<p class="dih25 fs20">'+(shop.type==4?'免费券':shop.title)+'</p>'
+                            +'<p class="infodiv dih25 max130 texovh fs18">'+(shop.type==4?shop.title:(shop.type==1?shop.min_price+'元现金券':(shop.type==2?shop.money+'折优惠券':'满'+shop.max_price+'可用')))+'</p>'
+                            +'</div>'
+                            +' </div>'
+                            +'<div class="dih50">'
+                            +'<div class="dih25 colfff max200 texovh">'+shop.desc+'</div>'
+                            +'<div class="dih25 colfff">'+shop.start_time+'至'+shop.end_time+'</div>'
+                            +'</div>'
+                            +'</div>'
+                            +'<div class="conduvb">'
+                            +(shop.status==0?'<p>点</p><p>击</p><p>使</p><p>用</p>':(shop.status==1?'<p>点</p><p>击</p><p>删</p><p>除</p>':'<p>点</p><p>击</p><p>删</p><p>除</p>'))
+                            +'</div>'
+                            +'</div>'
+                            +'</div>';
+                    }
+                    if (args == "fenye") {
+                        $('.xq_container').append(str);
+                    }else{
+                        $('.xq_container').html(str);
+                    }
+                    flag=true;
+                    top_linkto();
+                }
+            }else{
+                $(".xq_container").html("");
+                $(".xq_container").addClass('wusj');
+                layer.msg(data.message);
+            }
+            if (args == "shouci") {
+                fenye();
+            }
+
+        }
+
+        $('.xq_container').on('click','.dcon',function(){
+            var myid=$(this).attr("myid");
+            var myclass=$(this).attr("myclass");
+            var $this=$(this);
+
+            if($(this).hasClass("dco5")){
+                requestUrl("{:U('Api/Coupon/delCoupon')}",{"c_m_id":myid},function(data) {
+                    layer.closeAll();
+                    if (data.flag == 'success') {
+                        $this.remove();
+                        layer.msg("删除成功！");
+                    } else {
+                        layer.msg(data.message);
+                    }
+                })
+
+                layer.confirm('确定使用该优惠券么？', {icon: 3, title:'提示'}, function(index) {
+                    //do something
+                    requestUrl("{:U('Api/Coupon/useCoupon')}", {"c_m_id": myid}, function (data) {
+                        layer.closeAll();
+                        if (data.flag == 'success') {
+                            layer.msg("使用成功！");
+                            $this.attr('class', 'dcon dco5');
+                            $this.find('.conduvb').html('<p>已</p><p>失</p><p>效</p>');
+                            sessionStorage.setItem("c_m_id", myid);
+                        } else {
+                            layer.msg(data.message);
+                        }
+                    }, "POST", true);
+                })
+            }else{  
+                    if(myclass==1&&!shop_id){
+                        layer.msg("请在支付时使用");
+                        return false
+                    }
+                    
+                    layer.confirm('确定使用该优惠券么？', {icon: 3, title:'提示'}, function(index){
+                      //do something
+                      if(myclass==1){
+                            var url="{:U('Pay/pay')}&shop_id="+shop_id+"" ;
+                            sessionStorage.setItem("coupon",JSON.stringify({"c_m_id":myid,"name":$this.find(".infodiv").html(),"shop_id":shop_id}));
+                            window.location.href = url;
+                      }else{
+                            requestUrl("{:U('Api/Coupon/useCoupon')}",{"c_m_id":myid},function(data){
+                                layer.closeAll();
+                                if(data.flag == 'success'){
+                                    layer.msg("使用成功！")
+                                    $this.attr('class','dcon dco5');
+                                    $this.find('.conduvb').html('<p>已</p><p>失</p><p>效</p>');
+                                }else{
+                                    layer.msg(data.message);
+                                }
+                            },"POST",true);
+                      }
+                      layer.close(index);
+                    });
+            }
+        })
+
+
+        function fenye(){
+            var $_zd = $(".dcon").height();//获取每个单项的高度
+            var length = 3;//定义预加载的数量，提前三个加载数据
+            var $_par = $(".xq_container");//获取包裹容器
+            var winheight = $(window).height();//获取窗口高度
+            var curpage = 1;//存储当前的页数v
+            $(function(){
+                $(window).on("scroll",function(e){
+                    if(flag){
+                        var self = $(this);
+                        var scrtop = self.scrollTop() + winheight;
+                        var docheight = $_par.height();
+                        //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                        if(scrtop > docheight - ( length * $_zd ) ){
+                            flag = false;
+                            dataargs.p = dataargs.p +1;
+                            getJson("fenye");
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</block>

@@ -1,0 +1,147 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                   
+                </div>
+                <div class="weui-cell__bd searchimgbox mgr5">
+                    <img class="searchimg" src="__WEBPUBLIC__/Wechat/img/search.png">
+                    <form action="/index.php/Newweb/Goods/goodslist" method="get">
+                        <input placeholder="搜索商品" type="search" name="name" class="search_input" value="" />
+                    </form>
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <div class="weui-cell__ft flex flexcenter" linkto="{:U('Goods/order')}">
+                    <img class="w20" src="__WEBPUBLIC__/Wechat/img/img (35).png">
+                    <span class="colblack fs0-8">兑换记录</span>
+                </div>
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="navbox">
+            <div class="nav">
+                <!--<div>-->
+                    <!--<div><img src="../img/nav1.png"></div>-->
+                    <!--<div>没事</div>-->
+                <!--</div>-->
+            </div>
+        </div>
+        <div class="mgtop10 bgfff pad10 goodslist">
+            <div class="ih30"> <span>本周兑换榜单</span><span class="colred">HOTLISTS</span> </div>
+            <div class="list">
+                <!--<div class="wheatitem mgb20 textcenter bgf6">-->
+                    <!--<div class=" colfff padtb10">-->
+                        <!--<span class="wheatitemtop">零食</span>-->
+                    <!--</div>-->
+                    <!--<div class="flex pad10">-->
+                        <!--<div class="flex1 mgr5">-->
+                            <!--<div class="bgfff pad10">-->
+                                <!--<img class="w100" src="../img/img (134).png">-->
+                            <!--</div>-->
+                            <!--<div>丹麦曲奇饼干</div>-->
+                            <!--<div class="flex flexcenter"> <img class="w20 mgr5" src="../img/img (143).png"><span class="colred">486</span> </div>-->
+                        <!--</div>-->
+                        <!--<div class="flex1">-->
+                            <!--<div class="bgfff pad10">-->
+                                <!--<img class="w100" src="../img/img (134).png">-->
+                            <!--</div>-->
+                            <!--<div>丹麦曲奇饼干</div>-->
+                            <!--<div class="flex flexcenter"> <img class="w20 mgr5" src="../img/img (143).png"><span class="colred">486</span> </div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+            </div>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var dataargs = {};
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+    function getJson(args) {
+        requestUrl("{:U('Api/Goods/goodIndex')}",dataargs,function(data){
+            console.log(data);
+            layer.closeAll();
+            if(data.flag=="success"){
+                var catelist = data.data.cate_list;
+                var goods = data.data.goods_list;
+                putCate(catelist,'shouci');
+                putGoods(goods,args)
+            }
+//            putGoods(data,args);
+        },"GET");
+    }
+
+    $(function(){
+        getJson("shouci");
+    });
+
+    //添加分类到列表
+    function putCate(shops,args){
+        if((!shops || shops.length == 0 ) && args == "shouci"){
+            $(".nav").html('');
+        }else if((!shops || shops.length == 0 ) && args == "fenye"){
+        }else{
+            var str ="";
+            for(var index in shops){
+                var shop = shops[index];
+                str += '<div linkto="{:U('Goods/goodslist')}/cate_id/'+shop.cate_id+'">\
+                            <div><img src="'+shop.pic+'"></div>\
+                            <div>'+shop.category+'</div>\
+                        </div>';
+            }
+            $('.nav').append(str);
+        }
+    }
+
+    //添加商品到列表
+    function putGoods(shops,args) {
+        if((!shops || shops.length == 0 ) && args == "shouci"){
+            $('.list').html('');
+            $(".list").addClass('wusj');
+
+        }else if((!shops || shops.length == 0 ) && args == "fenye"){
+            $(".list").append('<div style="text-align:center">没有更多了！</div>');
+        }else{
+            $(".nulldata").remove();
+            var str ="";
+            for(var index in shops){
+                var shop = shops[index];
+                str += '<div class="wheatitem mgb20 textcenter bgf6">\
+                            <div class=" colfff padtb10">\
+                                <span class="wheatitemtop">'+shop.cate_name+'</span>\
+                            </div>\
+                            <div class="flex pad10">';
+                if(shop.goods_list){
+                    var glists = shop.goods_list
+                    for (var i in glists){
+                        var glist = glists[i];
+                        var url = "{:U('Goods/goodsinfo')}/g_id/"+glist.g_id;
+                        str+='<div class="flex1 mgr5" linkto="'+url+'">\
+                                    <div class="bgfff pad10">\
+                                        <img class="w100" src="'+glist.cover_pic+'">\
+                                    </div>\
+                                    <div>'+glist.name+'</div>\
+                                    <div class="flex flexcenter"> <img class="w20 mgr5" src="__WEBPUBLIC__/Wechat/img/img (143).png"><span class="colred">'+glist.price+'</span> </div>\
+                                </div>';
+                    }
+                }
+                str += '</div>\
+                        </div>';
+            }
+            if (args == "fenye") {
+                $('.list').append(str);
+            }else{
+                $('.list').html(str);
+            }
+            flag=true;
+        }
+
+    }
+
+</script>
+</block>

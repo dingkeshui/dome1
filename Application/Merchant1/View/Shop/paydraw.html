@@ -1,0 +1,169 @@
+<extend name="Public:header"/>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd" linkto="{:U('Shop/withlist')}">
+                <p>转出列表</p>
+            </div>
+            <div class="weui-cell__ft colfff" linkto="{:U('Shop/withdrawlist')}">
+                提现列表
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+    <!--   
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>支付宝账号</p>
+            </div>
+        </div>
+
+        <div class="weui-cell weui-cell_access bgfff" linkto="{:U('Shop/withdraw')}">
+          <div class="weui-cell__hd">
+            <img src="__WEBPUBLIC__/Wechat/img/zhifubao.png" class="himg">
+          </div>
+          <div class="weui-cell__bd">
+            <div class="placeholder d_pa">
+              <p></p>
+              <p></p>
+            </div>
+          </div>
+          <div class="weui-cell__ft"></div>
+        </div>
+        -->
+        <div class="weui-cells">
+          <div class="weui-cell">
+            <div class="weui-cell__bd fs0-8">
+                <div class="colccc">转出豆</div>
+                <div class="fs2 disflex">
+                <span>￥</span><input step="0.01" type="number" name="money" class="weui-input flex1 money"></div>
+                <div class="colccc">可转豆￥<span class="moneyspan"></span></div>
+            </div>
+          </div>
+
+          <div class="weui-cell">
+            <div class="weui-cell__bd gotixi colff0">
+            直接去提现
+            </div>
+            <div class="weui-cell__ft fs0-8">
+              豆转出不予退回，请谨慎操作！
+            </div>
+          </div>
+
+        </div>
+
+        <div class="weui-btn-area ok">
+            <a class="weui-btn bgjb nobor" href="javascript:">确认</a>
+        </div>
+        
+    </div>
+</block>
+<block name="footerjs">
+   <script type="text/javascript">
+      var opening = "{$opening}";
+      if (opening == "1" ) {
+        layer.msg("请等待身份信息审核完成，在提现！");
+      }
+      if (!is_open) {
+        layer.msg("提现需要先开户！");
+        setTimeout(function () {
+          window.location.href = "{:U('Login/bindtel')}";
+        },500);
+      }
+
+      //商家进入时
+       var type=1;
+       var dataargs2={"shop_id":shop_id};
+       var mix_id="";
+       var money="";
+       var width_id="";
+       requestUrl("{:U('Api/Merchant/detail')}",dataargs2,function(data){
+            layer.closeAll();
+            var res = data.data;
+            if(data['flag'] == "success"){
+               mix_id=res.shop_id;
+               money=res.wallet;
+               // width_id=res.account
+               $(".moneyspan").html(res.wallet);
+               // if(sessionStorage.getItem("name")){
+               //     $(".d_pa p:nth-child(1)").html(sessionStorage.getItem("name"));
+               //     $(".d_pa p:nth-child(2)").html(sessionStorage.getItem("account"));
+               //     width_id=sessionStorage.getItem("id");
+               //     isok=true;
+               //  }else{
+               //    if(res.z_account){
+               //       $(".d_pa p:nth-child(1)").html(res.z_name);
+               //       $(".d_pa p:nth-child(2)").html(res.z_account);
+               //       width_id=res.z_id;
+               //       isok=true;
+               //    }else{
+               //       $(".d_pa p:nth-child(1)").html("请绑定支付宝");
+               //       $(".d_pa p:nth-child(2)").html("");
+               //    }
+               //  }     
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+            }
+        },"POST",true);
+
+        $(".gotixi").on('click',function () {
+         requestUrl("{:U('Api/HxUser/withdraw')}",{mix_id:shop_id,type:1},function ( res ) {
+           if (res.flag == "success") {
+            console.log(res.data);
+            var form = '<form id="submitform" action="https://ebp.ips.com.cn/fpms-access/action/withdrawal/withdrawal.html" method="post">'
+                        +'<input name="ipsRequest" value="'+res.data.ipsRequest+'" type="hidden"/>'
+                    '</form>';
+                    $("body").html(form);
+                    $("#submitform").submit();
+
+           }else{
+            layer.msg(res.message);
+           }
+         })
+       })
+
+       $(".xq_container").on("click",".ok",function () {
+            var money = $(".money").val();
+            var reg = /^\d{1,}(.\d{1,2}){0,1}$/;
+            if ( !reg.test(money) ) {
+              layer.msg("金额不合法，请重新输入！");
+              return false;
+            } 
+            if ( money < 10 ) {
+              layer.msg("转出不能少于10豆！");
+              return false;
+            }
+            var dataargs={
+                "type":1,
+                "mix_id":mix_id,
+                "money":money,
+            }
+            // requestUrl("{:U('Api/Merchant/withDraw')}",dataargs,function ( res ) {
+            //   layer.closeAll();
+            //   layer.msg(res.message);                
+            //   if ( res.flag == "success" ) {
+            //        setTimeout(function () {
+            //           window.location.href = "{:U('Shop/index')}";
+            //       },500);
+            //   }
+            // },"POST",true)
+            requestUrl("{:U('Api/HxUser/transfer')}",dataargs,function ( res ) {
+              if ( res.flag == "success" ) {
+                  console.log( res.data );
+                  var form = '<form id="submitform" action="https://ebp.ips.com.cn/fpms-access/action/withdrawal/withdrawal.html" method="post">'
+                        +'<input name="ipsRequest" value="'+res.data.ipsRequest+'" type="hidden"/>'
+                    '</form>';
+                    $("body").html(form);
+                    $("#submitform").submit();
+
+              }else{
+                layer.msg( res.message );
+              }
+            },"POST",true);
+       })
+       
+   </script>
+</block>

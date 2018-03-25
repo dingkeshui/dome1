@@ -1,0 +1,137 @@
+<extend name="Public:header"/>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>转账</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        <div class="weui-cells">
+            <div class="weui-cell" linkto="{:U('Member/zhuan')}">
+                <div class="weui-cell__hd">
+                    <img class="himg" src="__WEBPUBLIC__/Wechat/img/custom.png"/>
+                </div>
+                <div class="weui-cell__bd">
+                    转到众享通赢账号
+                </div>
+            </div>
+
+            <div class="weui-cell" linkto="{:U('Member/zhuanShop')}">
+                <div class="weui-cell__hd">
+                    <img class="himg" src="__WEBPUBLIC__/Wechat/img/user.png"/>
+                </div>
+                <div class="weui-cell__bd">
+                    转到众享通赢商户
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="weui-cells transferList">
+            
+        <!--<div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <img class="himg" src="__WEBPUBLIC__/Wechat/img/shoph.png"/>
+                </div>
+                <div class="weui-cell__bd">
+                    <div>物锦佳超市</div>
+                    <div class="fs0-8 colccc">12990349487</div>
+                </div>
+                <div class="weui-cell__ft">
+                    <img class="simg" src="__WEBPUBLIC__/Wechat/img/shdong.png"/>
+                </div>
+            </div>-->
+
+        </div>
+
+    </div>
+</block>
+<block name="footerjs">
+<script>
+var dataargs = {"p":1,"m_id":m_id};
+//添加商品到列表
+function putGoods(data,args) {
+    console.log(data);
+    if(data.flag == 'success'){
+        var shops = data.data;
+        if((!shops || shops.length == 0 ) && args == "fenye"){
+            $(".transferList").append('<div class="texcen">没有更多了！</div>');
+        }else{
+            var str ="";
+            for(var index in shops){
+                var shop = shops[index];
+                str += '<div class="weui-cell">'
+                +'<div class="weui-cell__hd">'
+                    +'<img class="himg" src="'+shop.other_message.head_pic+'"/>'
+                +'</div>'
+                +'<div class="weui-cell__bd">'
+                    +'<div>'+shop.other_message.name+'<span class="fr colff0">'+shop.price+'</span></div>'
+                    +'<div class="fs0-8 colccc">'+shop.other_message.account+'<span class="fr">'+shop.ctime+'</span></div>'
+                +'</div>'
+                +'<div class="weui-cell__ft">'
+                    +(shop.m_id ? '' : '<img class="simg" src="__WEBPUBLIC__/Wechat/img/shdong.png"/>')
+                +'</div>'
+            +'</div>';
+            }
+            if (args == "fenye") {
+                $('.transferList').append(str);
+            }else{
+                $('.transferList').html(str);
+            }
+            top_linkto();
+        }
+    }else{
+         alert(data.message);
+    }
+
+    if (args == "shouci") {
+        fenye();
+    }
+}
+
+function getJson(args) {
+    console.log(dataargs);
+    requestUrl("{:U('Api/Member/transferRecord')}",dataargs,function(data){
+        layer.closeAll();
+        putGoods(data,args);
+    },"GET",true);
+}
+getJson("shouci");//调用该方法
+function radioAfter(self) {
+    var type = self.attr("type");
+    if (type != "") {
+        dataargs.type=type;
+        dataargs.p = 1;
+        getJson();
+    }
+}
+
+function fenye(){
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+    var $_zd = $(".transferobj").height();//获取每个单项的高度
+    var length = 3;//定义预加载的数量，提前三个加载数据
+    var $_par = $(".transferList");//获取包裹容器
+    var winheight = $(window).height();//获取窗口高度
+    var curpage = 1;//存储当前的页数v
+    $(function(){
+        $(window).on("scroll",function(e){
+            if(flag){
+                var self = $(this);
+                var scrtop = self.scrollTop() + winheight;
+                var docheight = $_par.height();
+                console.log(scrtop + "=" + docheight + "=" + $_zd);
+                if(scrtop > docheight - ( length * $_zd ) ){
+                    flag = false;
+                    dataargs.p = dataargs.p +1;
+                    getJson("fenye");
+                }
+            }
+        });
+    });
+}
+</script>
+</block>

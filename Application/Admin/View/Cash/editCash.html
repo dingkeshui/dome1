@@ -1,0 +1,203 @@
+<include file="Public:header"/>
+<link rel="stylesheet" href="__WEBPUBLIC__/Uploadify/uploadify.css" type="text/css" />
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active"><a href="">加盟商管理</a></li>
+        <li class="active">编辑加盟商</li>
+    </ul>
+
+    <div class="page-header clearfix">
+        <h3>编辑加盟商</h3>
+        <ul class="nav nav-tabs">
+            <li  class="">
+                <a href="{:U('Cash/cashList')}">加盟商列表</a>
+            </li>
+            <li  class="">
+                <a href="{:U('Cash/addCash')}">添加加盟商</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="tabs-content" class="content-box-content">
+        <div class="ul">
+            <form action="{:U('Cash/editCash')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+                <input type="hidden" name="e_id" value="{$res['e_id']}">
+                <input type="hidden" name="password" value="{$res['password']}">
+                <div class="form-group">
+                    <label for="account" class="col-sm-3 control-label"><em class="prompt-red">*</em>加盟商登录账号：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="account" name="account" value="{$res['account']}"/>
+                    </div>
+                </div>
+                <!--<div class="form-group">-->
+                    <!--<label for="password" class="col-sm-3 control-label"><em class="prompt-red">*</em>加盟商登录密码：</label>-->
+                    <!--<div class="col-sm-9">-->
+                        <!--<input type="text" class="form-control" id="password" name="password" value="{$res['password']}"/>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>所在地：</label>
+                    <div class="col-sm-9">
+                        <select onchange="getCity(this.value)"  style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="province">
+                            <option value="">省份</option>
+                            <volist name="pro" id="pr">
+                                <option {$res['province']==$pr['area_id']?'selected':''} value="{$pr['area_id']}">{$pr['area_name']}</option>
+                            </volist>
+                        </select>
+                        <select id="city" onchange="getArea(this.value)" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="city">
+                            <option value="">市/县</option>
+                            <volist name="city" id="ci">
+                                <option {$res['city']==$ci['area_id']?'selected':''} value="{$ci['area_id']}">{$ci['area_name']}</option>
+                            </volist>
+                        </select>
+                        <select id="area" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="area">
+                            <option value="">镇/区</option>
+                            <volist name="area" id="ar">
+                                <option {$res['area']==$ar['area_id']?'selected':''} value="{$ar['area_id']}">{$ar['area_name']}</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>加盟商类型：</label>
+                    <div class="col-sm-9">
+                        <div class="f-left" style="width:498px;padding:5px;">
+                            <select name="type" id="type" style="width: 240px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc">
+                                <option value="">请选择加盟商的类型...</option>
+                                <option value="1" <if condition="$res['type'] eq 1">selected</if>>市级代理</option>
+                                <option value="2" <if condition="$res['type'] eq 2">selected</if>>区（县）代理</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>是否为行业模块：</label>
+                    <div class="col-sm-9">
+                        <div class="f-left" style="width:498px;padding:5px;">
+                            是 : <input type="radio" name="module" id="" value="1" <if condition="$res['module'] eq 1">checked</if>> &nbsp;
+                            否 : <input type="radio" name="module" id="" value="0" <if condition="$res['module'] eq 0">checked</if>> &nbsp;
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">行业模块：</label>
+                    <div class="col-sm-9">
+                        <div class="f-left" style="width:600px;padding:5px;">
+                            <volist name="type" id="vo">
+                                {$vo['name']} : <input type="checkbox" name="cash_type[]" value="{$vo['class_id']}" <if condition="in_array($vo['class_id'],$cash_type)">checked</if>/> &nbsp;
+                            </volist>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="scale" class="col-sm-3 control-label">提成比例（千分之）：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="scale" name="scale" value="{$res['scale']}"/>
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="cash_price" class="col-sm-3 control-label">支付保证金金额：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="cash_price" name="cash_price" value="{$res['cash_price']}"/>
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="cash_price" class="col-sm-3 control-label">地区支付的账期时间：</label>
+                    <div class="col-sm-9">
+                        <select name="payment_days" id="payment_days" style="width: 240px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc">
+                            <option value="">请选账期...</option>
+                            <volist name="period" id="vo">
+                                <option value="{$vo}" <if condition="$res['payment_days'] eq $vo">selected</if>>{$vo}号</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" class="btn btn-default btn-primary make_sure">确认编辑</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<include file="Public:footer"/>
+<!--加盟商的头像和加盟商的展示图的上传-->
+<script>
+
+    $(".make_sure").click(function () {
+        var account = $('input[name="account"]').val();
+        var password = $('input[name="password"]').val();
+        if(!account){
+            alert("加盟商账号不能为空!");return false;
+        }
+//        if(!password){
+//            alert("加盟商密码不能为空!");return false;
+//        }
+        $(".form").submit();
+    })
+
+</script>
+<!--富文本-->
+<script  src="__WEBPUBLIC__/Common/kindeditor/kindeditor-min.js"></script>
+<script  src="__WEBPUBLIC__/Common/kindeditor/lang/zh_CN.js"></script>
+<script>
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('textarea[name="content"]', {
+            resizeType : 1,
+            uploadJson : '__WEBPUBLIC__/Common/kindeditor/php/upload_json.php',
+            fileManagerJson :
+                    '__WEBPUBLIC__/Common/kindeditor/php/file_manager_json.php',
+            allowPreviewEmoticons : false,
+            items:[
+                'source', '|', 'undo', 'redo', '|', 'cut', 'copy','|', 'justifyleft',
+                'justifycenter', 'justifyright',
+                'justifyfull', 'clearhtml', 'selectall', '|', 'formatblock',
+                'fontname', 'fontsize', '|', 'forecolor',
+                'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough','image'
+            ],
+            afterBlur:function(){this.sync();}
+        });
+    });
+</script>
+<!--地区的三级联动-->
+<script type="text/javascript">
+    function getCity(val){
+        $("#city").empty();
+        $("#area").empty();
+        var area = "<option value=''>镇/区</option>";
+        $("#area").append(area);
+        var option = "<option value=''>市/县</option>";
+        $.ajax({
+            url:"{: U('Cash/ajaxCity')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    option += "<option value='"+data[i].area_id+"'>"+data[i].area_name+"</option>"
+                }
+                $("#city").append(option);
+            }
+        });
+    }
+    function getArea(val){
+        $("#area").empty();
+        var option = "<option value=''>镇/区</option>";
+        $.ajax({
+            url:"{:U('Cash/ajaxArea')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    option += "<option value='"+data[i].area_id+"'>"+data[i].area_name+"</option>"
+                }
+                $("#area").append(option);
+            }
+        });
+    }
+</script>

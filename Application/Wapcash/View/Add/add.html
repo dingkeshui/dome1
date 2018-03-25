@@ -1,0 +1,389 @@
+<extend name="Public:header"/>
+<block name="headdiv"></block>
+<!-- 头部 -->
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__bd">
+                <p>商家注册</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        
+       <div class="weui-cells bgfff outinput">
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    手机号
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input account" type="tel" placeholder="手机号"/>
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    密码
+                </div>
+
+                <div class="weui-cell__bd">
+                    <input class="weui-input password" type="password" placeholder="请输入密码"/>
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    确认密码
+                </div>
+
+                <div class="weui-cell__bd">
+                    <input class="weui-input repassword" type="password" placeholder="请确认密码"/>
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    商家名
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input name" type="text" placeholder="请输入您的店名"/>
+                </div>
+            </div>
+
+            <div class="weui-cell weui-cell_select ding_pad">
+                <div class="weui-cell__hd mar15">
+                    分类
+                </div>
+                <div class="weui-cell__bd">
+                    <select class="weui-select d_classlist" name="d_classlist">
+                        
+                    </select>
+                </div>
+            </div>
+
+            <div class="weui-cell weui-cell_select weui-cell_select-after">
+                <div class="weui-cell__hd w100">
+                    <label for="" class="weui-label d_sh"></label>
+                </div>
+                <div class="weui-cell__bd">
+                    <select class="weui-select d_xian" name="d_xian">
+                        <!-- <option value="1">中国</option>
+                        <option value="2">美国</option>
+                        <option value="3">英国</option> -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="weui-cell weui-cell_access showmap">
+                    <div class="weui-cell__bd">
+                        <p class="w70">详细地址</p>
+                    </div>
+                    <div class="weui-cell__ft d_list1"><div class="d_list1 d_addressmain">选择详细地址</div></div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    <div>上传资质</div>
+                    <div class="fs0-8 colff0">(营业执照、门头照等相关资质)</div>
+                </div>
+                <div class="weui-cell__bd weui-uploader__bd">
+                    <ul class="weui-uploader__files" id="uploaderFiles">
+                        <!-- <li class="weui-uploader__file weui-uploader__file_status" style="background-image:url(./images/pic_160.png)">
+                            <div class="weui-uploader__file-content">
+                                <i class="weui-icon-warn remove"></i>
+                            </div>
+                        </li>
+                        <li class="weui-uploader__file weui-uploader__file_status" style="background-image:url(./images/pic_160.png)">
+                            <div class="weui-uploader__file-content">50%</div>
+                        </li> -->
+                    </ul>
+                    <div class="weui-uploader__input-box">
+                        <input id="uploaderInput" onchange="mychange(this)" class="weui-uploader__input" type="file" accept="image/*" multiple />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="weui-btn-area ok">
+            <a class="weui-btn bgjb nobor loginbtn" href="javascript:">注册</a>
+        </div>
+        <div id="containerbox" style="width: 100vw;height: 100vh;position: fixed;top: 0px;z-index: 50;padding-bottom: 50px;">
+            <div id="container" style="width: 100vw;height:100%;z-index: 50">
+                <div class ='panel'>
+                    <input id = 'input' placeholder = '点击地图显示地址/输入地址显示位置'></input>
+                    <div id = 'message'></div>
+                </div>
+                <div class="mapok">确定</div>
+            </div>
+            <div class="closemap">
+                关闭
+            </div>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=c5e14c05b9c3aef7d437cb31cda7313f&plugin=AMap.Autocomplete">
+    </script>
+    <script type="text/javascript">
+    //高德地图
+     $('.showmap').click(function () {
+        $('#containerbox').show();
+        $('#container').show();
+    })
+    var lat='';
+    var lng='';
+    var myaddress="";//详细地址
+    var map = new AMap.Map('container',{
+            resizeEnable: true,
+            zoom: 13,
+            // center: [116.39,39.9]
+    });
+
+    //定位
+     map.plugin('AMap.Geolocation', function() {
+        geolocation = new AMap.Geolocation({
+            enableHighAccuracy: true,//是否使用高精度定位，默认:true
+            timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+            buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+            zoomToAccuracy: false,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+            buttonPosition:'RB'
+        });
+        map.addControl(geolocation);
+        geolocation.getCurrentPosition();
+        AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+        AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+    });
+
+    //解析定位结果
+    function onComplete(data) {
+        $('#input').val(data.formattedAddress);
+        myaddress=data.formattedAddress;
+        $('.d_addressmain').html(myaddress);
+        lat=data.position.lat;
+        lng=data.position.lng;
+    }
+    //解析定位错误信息
+    function onError(data) {
+        console.log(data);
+    }
+
+
+
+    AMap.plugin('AMap.Geocoder',function(){
+        var geocoder = new AMap.Geocoder({
+            // city: "010"//城市，默认：“全国”
+        });
+        var marker = new AMap.Marker({
+            map:map,
+            bubble:true
+        })
+        var input = document.getElementById('input');
+        var message = document.getElementById('message');
+        map.on('click',function(e){
+            console.log(e);
+            lat=e.lnglat.lat;
+            lng=e.lnglat.lng;
+            marker.setPosition(e.lnglat);
+            geocoder.getAddress(e.lnglat,function(status,result){
+              if(status=='complete'){
+                 input.value = result.regeocode.formattedAddress;
+                 myaddress= result.regeocode.formattedAddress;
+                 message.innerHTML = '';
+              }else{
+                 message.innerHTML = '无法获取地址';
+              }
+            })
+        })
+        
+        input.onchange = function(e){
+            var address = input.value;
+            geocoder.getLocation(address,function(status,result){
+                console.log(status);
+                console.log(result);
+              if(status=='complete'&&result.geocodes.length){
+                lat=result.geocodes[0].location.lat;
+                lng=result.geocodes[0].location.lng;
+                myaddress=result.geocodes[0].formattedAddress;
+                marker.setPosition(result.geocodes[0].location);
+                map.setCenter(marker.getPosition());
+                message.innerHTML = ''
+              }else{
+                message.innerHTML = '无法获取位置'
+              }
+            })
+        }
+
+    });
+
+    $('.mapok,.closemap').click(function (e) {
+        e.stopPropagation();
+        $('.d_addressmain').html(myaddress);
+        $('#containerbox').hide();
+        $('#container').hide();
+    })
+
+
+    //获取加盟商代理的分类
+    var province="";//省
+    var city="";//市
+    var area="";//县
+    requestUrl("{:U('Api/Cash/agent')}",{"e_id":e_id},function(res) {
+        layer.closeAll();
+        if (res.flag == "success") {
+            var info=res.data;
+            province=info.province.area_id;
+            city=info.city.area_id;
+            $('.d_sh').html(info.province.area_name+'/'+info.city.area_name);
+            var str="";
+            for(var i=0;i<info.area.length;i++){
+                str+='<option value='+info.area[i].area_id+'>'+info.area[i].area_name+'</option>'
+            }
+            $('.d_xian').append(str);
+        }else{
+            layer.msg(res.message);
+        }
+    },"GET",true);
+
+
+    // 图片数组
+     var imgarr=[];
+     // 点击添加图片
+     function mychange (data) {
+        var fileimg=data.files; 
+        var arrnum=imgarr.length;
+        var num=arrnum+fileimg.length;
+        if(num>3){
+            layer.msg("最多上传三张图片");
+            return false;
+        }
+        for(var i =0;i<fileimg.length;i++){    
+            /*图片转Base64 核心代码*/  
+            var file = fileimg[i];  
+            //这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件  
+            if (!/image\/\w+/.test(file.type)) {  
+                layer.msg("请确保文件为图像类型");  
+                return false;  
+            }  
+            var reader = new FileReader(); 
+            (function(x){
+                    reader.onload = function (e) {  
+                    var str='<li class="weui-uploader__file " style="background-image:url('+this.result+')"><span class="remove" style="color:red">X</span></li>';
+                    $("#uploaderFiles").append(str);
+                    render(this.result,x);
+                    }  
+            })(file.name) 
+            
+            reader.readAsDataURL(file);  
+        }
+     };
+
+
+     var MAX_HEIGHT = 1000;
+// 渲染
+function render(src,picname) {
+    // 创建一个 Image 对象
+    var image = new Image();
+    // 绑定 load 事件处理器，加载完成后执行
+    image.onload = function() {
+        // 获取 canvas DOM 对象
+        var canvas = document.createElement("canvas");
+        // 如果高度超标
+        if (image.height > MAX_HEIGHT && image.height >= image.width) {
+            // 宽度等比例缩放 *=
+            image.width *= MAX_HEIGHT / image.height;
+            image.height = MAX_HEIGHT;
+        }
+        if (image.width > MAX_HEIGHT && image.width > image.height) {
+            // 宽度等比例缩放 *=
+            image.height *= MAX_HEIGHT / image.width;
+            image.width = MAX_HEIGHT;
+        }
+        // 获取 canvas的 2d 环境对象,
+        // 可以理解Context是管理员，canvas是房子
+        var ctx = canvas.getContext("2d");
+        // canvas清屏
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // 重置canvas宽高
+        canvas.width = image.width;
+        canvas.height = image.height;
+        // 将图像绘制到canvas上
+        ctx.drawImage(image, 0, 0, image.width, image.height);
+        // !!! 注意，image 没有加入到 dom之中
+//        document.getElementById('img').src = canvas.toDataURL("image/png");
+        var blob = canvas.toDataURL("image/jpeg");
+        imgarr.push({"pic":blob,"pic_name":picname});
+        // var fd = new FormData();
+        // fd.append("image", blob, "image.png");
+        // imgCompressUpload(canvas.toDataURL("image/png"));
+       
+    };
+    // 设置src属性，浏览器会自动加载。
+    // 记住必须先绑定事件，才能设置src属性，否则会出同步问题。
+    image.src = src;
+};
+
+     // 点击删除图片
+     $("#uploaderFiles").on("click",".remove",function(){
+        $(this).parent().remove();
+        $("#uploaderInput").remove();
+        var str="<input id='uploaderInput' onchange='mychange(this)' class='weui-uploader__input' type='file' accept='image/*' multiple />";
+        $(".weui-uploader__input-box").append(str);
+        imgarr.splice($(this).index()-1,1); 
+     })
+
+      // 添加分类
+      requestUrl("{:U('Api/Shop/classList')}",{},function(res) {
+           layer.closeAll();
+
+            if (res.flag == "success") {
+                var info=res.data;
+                for(var i=0;i<info.length;i++){
+                     var str='<option value='+info[i].class_id+'>'+info[i].name+'</option>';
+                     $(".d_classlist").append(str);
+                }
+            }else{
+                           layer.msg(res.message);
+            }
+        },"POST",true)
+
+
+    // 注册
+     $(".ok").click(function(){
+        var account=$(".account").val();
+        // var vc=$(".vc").val();
+        var password=$(".password").val();
+        var repassword=$(".repassword").val();
+        var name=$(".name").val();
+        area=$('.d_xian').val();
+        // var tel=$(".tel").val();
+        var classid=$(".d_classlist").val();
+        if(imgarr.length<1){
+           layer.msg("最少上传一张图片");
+           return;
+        }else if(!account||!password||!repassword||!name||!myaddress||!area){
+           layer.msg("信息不能为空");
+           return;
+        }else if(password!=repassword){
+           layer.msg("两次输入密码不一致");
+           return;
+        }
+        var dingdata={"account":account,"name":name,"password":password,"re_password":repassword,"pic":imgarr,"class_id":classid,"address":myaddress,"province":province,"city":city,"area":area,"lnt":lng,"lat":lat};
+        requestUrl("{:U('Api/Cash/addShop')}",dingdata,function(res) {
+            // console.log(dingdata);
+            layer.msg(res.message);
+            // console.log(res);
+            if (res.flag == "success") {
+                // console.log(res.data);
+                setTimeout(function () {
+                    window.location.href = "{:U('Listshop/shop')}";
+                },500);
+            }else{
+                
+            }
+        },"POST",true)
+        
+     })
+    </script>
+</block>

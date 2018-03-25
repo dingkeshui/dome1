@@ -1,0 +1,166 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" type="text/css" href="__WEBPUBLIC__/Wechat/css/oldtop.css">
+</block>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd none"></div>
+            <div class="weui-cell__bd" linkto="{:U('Member/withlist')}">
+                <p>转出列表</p>
+            </div>
+            <div class="weui-cell__ft colfff" linkto="{:U('Member/withdrawlist')}">
+                提现列表
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container"> 
+    <!--   
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>支付宝账号</p>
+            </div>
+        </div>
+
+        <div class="pd10 white bor0px">
+            <div class="weui-cell weui-cell_access bgfff" linkto="{:U('Member/withdraw')}">
+              <div class="weui-cell__hd">
+                <img src="__WEBPUBLIC__/Wechat/img/zhifubao.png" class="himg">
+              </div>
+              <div class="weui-cell__bd">
+                <div class="placeholder d_pa">
+                  <p></p>
+                  <p></p>
+                </div>
+              </div>
+              <div class="weui-cell__ft"></div>
+            </div>
+        </div>
+        -->
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <div class="colccc">转出豆</div>
+                    <div class="fs2 disflex">
+                    <span>￥</span><input type="number" step="0.01" name="money" class="weui-input flex1 money"></div>
+                    <div class="colccc fs14">可转豆￥<span class="moneyspan"></span><span style="display:none;">(手续费20%)</span></div>
+                </div>
+            </div>
+
+            <div class="weui-cell fs12">
+              <div class="weui-cell__bd colff0">
+                先转出豆，后提现到卡
+              </div>
+              <div class="weui-cell__ft">
+                豆转出不予退回，请谨慎操作！
+              </div>
+            </div>
+
+        </div>
+
+        <div class="weui-btn-area ok">
+            <a class="weui-btn bgjb nobor" href="javascript:">先确认转出豆</a>
+        </div>
+         <div class="weui-btn-area gotixi">
+            <a class="weui-btn bgjb nobor" href="javascript:">再提现到银行卡</a>
+        </div>
+        
+    </div>
+</block>
+<block name="footerjs">
+   <script type="text/javascript">
+      //用户进入时
+
+      var opening = "{$opening}";
+      if (opening == "1" ) {
+        layer.msg("请等待身份信息审核完成，在提现！");
+      }
+      if (!is_open) {
+        layer.msg("提现需要先开户！");
+        setTimeout(function () {
+          window.location.href = "{:U('Login/bindtel')}";
+        },500);
+      }
+
+       var type=0;
+       var dataargs2={"m_id":m_id};
+       var mix_id="";
+       var money="";
+       var width_id="";
+       requestUrl("{:U('Api/Member/memberCenter')}",dataargs2,function(data){
+            layer.closeAll();
+            var res = data.data;
+            if(data['flag'] == "success"){
+               mix_id=res.m_id;
+               money=res.wallet;             
+              $(".moneyspan").html(res.wallet);
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+            }
+        },"GET",true);
+
+       $(".gotixi").on('click',function () {
+         requestUrl("{:U('Api/HxUser/withdraw')}",{mix_id:m_id,type:0},function ( res ) {
+           if (res.flag == "success") {
+            console.log(res.data);
+            var form = '<form id="submitform" action="https://ebp.ips.com.cn/fpms-access/action/withdrawal/withdrawal.html" method="post">'
+                        +'<input name="ipsRequest" value="'+res.data.ipsRequest+'" type="hidden"/>'
+                    '</form>';
+                    $("body").html(form);
+                    $("#submitform").submit();
+
+           }else{
+            layer.msg(res.message);
+           }
+         })
+       })
+        
+
+       $(".xq_container").on("click",".ok",function () {
+            var money = $(".money").val();
+            var reg = /^\d{1,}(.\d{1,2}){0,1}$/;
+            if ( !reg.test(money) ) {
+              layer.msg("金额不合法，请重新输入！");
+              return false;
+            } 
+            if ( money < 10 ) {
+              layer.msg("转出不能少于10豆！");
+              return false;
+            }
+            var dataargs={
+                "type":0,
+                "mix_id":mix_id,
+                "money":money
+            }
+            // if ( !reg.test(dataargs.money) && dataargs.money >10) {
+            //     layer.msg("请输入大于10元金额！");
+            //     return false;
+            // }
+            // requestUrl("{:U('Api/Merchant/withDraw')}",dataargs,function ( res ) {
+            //   layer.closeAll();
+            //   layer.msg(res.message);                
+            //   if ( res.flag == "success" ) {
+            //        setTimeout(function () {
+            //           window.location.href = "{:U('Member/withdraw')}";
+            //       },500);
+            //   }
+            // },"POST",true)
+            requestUrl("{:U('Api/HxUser/transfer')}",dataargs,function ( res ) {
+              if ( res.flag == "success" ) {
+                  console.log( res.data );
+                  var form = '<form id="submitform" action="https://ebp.ips.com.cn/fpms-access/action/withdrawal/withdrawal.html" method="post">'
+                        +'<input name="ipsRequest" value="'+res.data.ipsRequest+'" type="hidden"/>'
+                    '</form>';
+                    $("body").html(form);
+                    $("#submitform").submit();
+
+              }else{
+                layer.msg( res.message );
+              }
+            },"POST",true);
+       })
+       
+   </script>
+</block>

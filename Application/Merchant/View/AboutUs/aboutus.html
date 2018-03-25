@@ -1,0 +1,48 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" type="text/css" href="__WEBPUBLIC__/Wechat/css/oldtop.css">
+</block>
+<block name="main">
+
+		<div class="header-container colfff">
+			<div class="weui-cell ih30">
+				<div class="weui-cell__hd"></div>
+				<div class="weui-cell__bd">
+					<p>关于我们</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="xq_container dmymain">
+			<!--<div class="dmyimg">-->
+				<!--<img src="__WEBPUBLIC__/Wechat/img/d_my.png" />-->
+			<!--</div>-->
+			<!--<div class="dmyname">-->
+				<!--众享通赢-->
+			<!--</div>-->
+			<!--<div class="dmyversion">-->
+				<!--当前版本:-->
+				<!--<span>v1.1.1</span>-->
+			<!--</div>-->
+		</div>
+		<!--脚部-->
+		<div class="weui-footer my_foot">
+			<!--<p class="weui-footer__text">Copyright © 2016 zxtongying.com</p>-->
+			<!--<p class="weui-footer__text">众享通赢科技有限公司</p>-->
+		</div>
+
+</block>
+<block name="footerjs">
+	<script>
+			var dataargs = "";
+			requestUrl("{:U('Api/AboutUs/aboutUs')}",dataargs,function(data){
+				console.log(data);
+				if(data['flag'] == "success"){
+					$(".dmymain").html(data['data']['content']);
+				}else if(data['flag'] == "error"){
+					alert(data['message']);
+				}
+			},"GET",true);
+			layer.closeAll();
+	</script>
+</block>

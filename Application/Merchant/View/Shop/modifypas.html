@@ -1,0 +1,98 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	修改密码
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="mgr10">输入新密码</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input password" type="password" placeholder="请输入新密码"/>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="mgr10">重复新密码</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input repwd" type="password" placeholder="请重复新密码"/>
+                </div>
+            </div>
+        </div>
+        <div class="addbut">
+            完成
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+    <script type="text/javascript">
+        var type = "{$_GET['type']}";  //找回密码。type=1
+        var dataargs = {};
+        if(is_readonly==1){
+            dataargs.is_readonly = is_readonly;
+        }
+        /**获取用户的账号*/
+        if(type==2){
+            dataargs.way="{$_GET['tel']}";
+        }else{
+            requestUrl("{:U('Api/Store/getPass')}",{shop_id:shop_id},function(res){
+                if(res.flag=="success"){
+                    dataargs.account = res.data.account;
+                }
+            },'GET');
+        }
+        
+        
+        /**点击完成*/
+        $('.addbut').click(function(){
+            var pwd = $('.password').val().trim();
+            var repwd = $('.repwd').val().trim();
+            if(pwd==""){
+                layer.msg("请输入新密码");return;
+            }
+            if(repwd==""){
+                layer.msg("请确认新密码");return;
+            }else if(repwd!=pwd){
+                layer.msg("两次输入的密码不一样");return;
+            }
+            dataargs.r_password = repwd;
+            if(type==2){
+                dataargs.password = pwd;
+                requestUrl("{:U('Api/Merchant/getPass')}",dataargs,function(res){
+                    if(res.flag=="success"){
+                        layer.msg(res.message);
+                        setTimeout(function(){
+                            location.href = "{:U('Login/login')}";
+                        },1200);
+                    }else{
+                        layer.msg(res.message);
+                    }
+                });
+            }else{
+                dataargs.new_password = pwd;
+                requestUrl("{:U('Api/Merchant/exchangePassword')}",dataargs,function(res){
+                    if(res.flag=="success"){
+                        layer.msg(res.message);
+                        setTimeout(function(){
+                            location.href = "{:U('Shop/security')}";
+                        },1200);
+                    }else{
+                        layer.msg(res.message);
+                    }
+                });
+            }
+            
+        });
+    </script>
+</block>

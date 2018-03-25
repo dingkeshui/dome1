@@ -1,0 +1,112 @@
+<extend name="Public:head"/>
+<block name="headdiv">
+	<link rel="stylesheet" type="text/css" href="__WEBPUBLIC__/Wechat/css/dingshop.css">
+</block>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                	商家相册(<span class="albumnum">0</span>)
+                </div>
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+    	<div class="albumbox"></div>
+    		<!--<div class="album">-->
+    			<!--<img class="w100" src="../shopimg/shoptop.png">-->
+    			<!--<div class="albumbut none">-->
+    				<!--<div>-->
+    					<!--<input type="checkbox" name="">-->
+    					<!--<span></span>-->
+    				<!--</div>-->
+    			<!--</div>-->
+    		<!--</div>-->
+    </div>
+</block>
+<block name="footerjs">
+	<script type="text/javascript">
+		var flag = true;
+		var shop_id = "{$_GET['shop_id']}";
+		var dataargs = {shop_id:shop_id,p:1};
+		$(function(){
+			getJson('shouci');
+		});
+		function getJson(args){
+			requestUrl("{:U('Api/Store/albumList')}",dataargs,function(res){
+				putAlbum(res,args);
+			},'POST',true);
+		}
+
+		var imgArr=[];
+		//添加相片到列表
+		function putAlbum(data,args){
+			if(data.flag == 'success'){
+				var shops = data.data.list;
+				if((!shops || shops.length == 0 ) && args == "shouci"){
+					$('.albumbox').html('');
+					$(".albumbox").addClass('wusj');
+
+				}else if((!shops || shops.length == 0 ) && args == "fenye"){
+					$(".xq_container").append('<div style="text-align:center">没有更多了！</div>');
+				}else{
+					$('.albumnum').text(data.data.count);
+					$(".nulldata").remove();
+					var str ="";
+					for(var index in shops){
+						var shop = shops[index];
+						str += '<div class="album">\
+									<img class="w100" x_url="'+shop.x_pic+'" src="{:C('API_URL')}/'+shop.pic+'">\
+								</div>';
+						imgArr.push(shop.x_pic);
+					}
+					if (args == "fenye") {
+						$('.albumbox').append(str);
+					}else{
+						$('.albumbox').html(str);
+					}
+					flag=true;
+				}
+			}else{
+				layer.msg(data.message);
+			}
+			if (args == "shouci") {
+				fenye();
+			}
+		}
+
+		$('.albumbox').on('click','img',function(){
+			wx.previewImage({
+				current:$(this).attr('x_url'),
+				urls:imgArr
+			});
+		});
+
+		function fenye(){
+			var $_zd = $(".album").height();//获取每个单项的高度
+			var length = 3;//定义预加载的数量，提前三个加载数据
+			var $_par = $(".albumbox");//获取包裹容器
+			var winheight = $(window).height();//获取窗口高度
+			var curpage = 1;//存储当前的页数v
+			$(function(){
+				$('.xq_container').on("scroll",function(e){
+					if(flag){
+						var self = $(this);
+						var scrtop = self.scrollTop() + winheight;
+						var docheight = $_par.height();
+                    console.log(scrtop + "=" + docheight + "=" + $_zd);
+						if(scrtop > docheight - ( length * $_zd ) ){
+							flag = false;
+							dataargs.p = dataargs.p +1;
+							getJson("fenye");
+						}
+					}
+				});
+			});
+		}
+	</script>
+</block>
+

@@ -1,0 +1,271 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd textcenter">
+                收益管理
+                <!-- <span class="fr tc">退出</span> -->
+            </div>
+            <!--<div class="weui-cell__ft">
+                <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+            </div>-->
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="mshoptop re">
+            <div class="fs0"><img class="w100" src="/Public/Wechat/shopimg/bg.png"></div>
+            <div class="mshopmain">
+                <div class="mshopmaintop colfff pad10 flex2 flexcenter">
+                    <div class="fs0-8">可用余额</div>
+                    <div class="fs1-8 wallet">0</div>
+                </div>
+                <div class="mshopmainfoot2 flex2 flexcenter colfff">
+                    <div class="w100 ih30">
+                        <span>待结算金额</span>
+                        <span class="right ice_price">￥0</span>
+                    </div>
+                    <div class="w100 ih30">
+                        <span>我的麦穗</span>
+                        <span class="right my_ms"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-cells weui-cell none">
+            <div class="weui-cell__bd">
+              <div class="fs1-2">
+                我的股数
+              </div>
+              <div>
+                 <span class="integral"></span>
+              </div>
+            </div>
+            <div class="weui-cell__ft">
+                <div><span class="fs1-4 colff0 d_piles"></span>股</div>
+                <div>还差<span class="colff0 d_remain"></span>麦穗到<span class="d_piles2"></span>股</div>
+            </div>
+        </div>
+
+        <div class="flex textcenter bgfff ih30">
+            <div class="flex1 pad10 br paydraw">提现</div>
+            <div class="flex1 pad10 br sign_button">签到</div>
+            <div class="flex1 pad10" linkto="{:U('Shop/detailed')}">收支明细</div>
+        </div>
+
+        <div class="weui-cells">
+            <div class="weui-cell bgfff fs14 nob box">
+                <div class="weui-cell__hd"></div>
+                <div class="weui-cell__bd">
+                    <div class="fs1-2 fs re ih30 hasb">您昨日麦穗<span class="blue">成功转换</span>众享豆</div>
+                    <div class="fs12 colb6">麦穗转换率受前一日运营收益影响(上下浮动)</div>
+                </div>
+                <div class="weui-cell__ft">
+                    <span class="colon fs1-2 price"></span>个
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-cells fs0-8 none">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <div id="main" style="width:100%;height:250px;"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="weui-cells bgfff">
+            <div class="weui-cell weui-cell_access yscount">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd">
+                    营收统计
+                </div>
+                <div class="weui-cell__ft">
+
+                </div>
+            </div>
+            <div class="weui-cell weui-cell_access jycount">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd">
+                    交易统计
+                </div>
+                <div class="weui-cell__ft">
+
+                </div>
+            </div>
+            <div class="weui-cell weui-cell_access" linkto="{:U('Shop/member')}">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd">
+                    会员管理
+                </div>
+                <div class="weui-cell__ft">
+
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</block>
+<block name="footerjs">
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.min.js"></script>
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.common.min.js"></script>
+<script>
+    requestUrl("{:U('Api/Store/earnMan')}",{shop_id:shop_id},function ( res ) {
+        if ( res.flag == "success" ) {
+            $(".wallet").text( res.data.wallet );
+            
+            $(".ice_price").text( "￥"+res.data.ice_price );
+
+        }else{
+            layer.msg( res.message );
+        }
+    });
+    //营收统计
+    $('.yscount').click(function(){
+        if(is_readonly==1){
+            layer.msg("暂无权限");
+            return;
+        }
+        location.href = "{:U('Shop/revenue')}";
+    });
+    //交易统计
+    $('.jycount').click(function(){
+        if(is_readonly==1){
+            layer.msg("暂无权限");
+            return;
+        }
+        location.href = "{:U('Shop/transactionnum')}";
+    });
+
+    console.log(is_readonly);
+    //点击提现
+    $('.paydraw').click(function(){
+        if(is_readonly==1){
+            layer.msg('无操作权限');
+            return;
+        }
+        location.href = "{:U('Shop/paydraw')}";
+    });
+
+    getAdpic({'type':0,'mix_id':shop_id});
+    function getAdpic( args ) {
+        requestUrl("{:U('Api/AboutUs/showPic')}",args,function ( res ) {
+            if ( res.flag == "success" ) {
+                $(".price").text(res.data.price?res.data.price:0);
+            }else{
+                layer.msg( res.message );
+            }
+        });
+    }
+
+    var dataargs = {shop_id:shop_id};
+    function showuserinfo() {
+            requestUrl("{:U('Api/Merchant/detail')}",dataargs,function(data){
+                var res = data.data;
+                if(data['flag'] == "success"){
+                    $(".nick_name").text(res.name);
+                    $(".account").text(res.account);
+                    $(".head_pic").attr('src',res.img);
+                    $(".code").attr('src',res.code);
+                    $(".d_piles").html(res.piles);
+                    $(".integral").text("麦穗"+res.integral);
+                    $(".d_piles2").html((+res.piles)+1);
+                    $('.my_ms').html(res.integral?res.integral:0);
+                    $(".d_remain").html((res.remain*1). toFixed(2));
+                    /**如果这个用户不符合领取钱数的条件就不能显示按钮，减少服务器的压力*/
+                    // if(res.is_true == 0){
+                    //     $(".sign_button").removeClass("disn");
+                    // }
+                    /**判断这个用户是否今天已经签到了*/
+                    detailLink = res.detailLink;
+                    if(res.is_sign == 0 && res.is_true == 0){
+                        $(".sign_button").removeClass("bgccc");
+                    }else{
+                        $(".sign_button").off("click");
+                        $(".sign_button").addClass("bgccc");
+
+                        $(".sign_button").on('click',function () {
+                            layer.msg("您暂无签到权限,加油哦~");
+                        });
+                        $(".sign_button").removeClass("sign_button");
+                        $(".sign_button").text("已签到");
+                    }
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+                setTimeout(function () {
+                    layer.closeAll();
+                },1000);
+            },"POST",true);
+        }
+        showuserinfo();
+
+    /**用户签到点击*/
+        $(".sign_button").click(function () {
+            /**判断用户是否有未读的消息*/
+            var dataargs_other = {shop_id:shop_id};
+            requestUrl("{:U('Api/Merchant/sign')}",dataargs_other,function(data){
+                if(data['flag'] == "success"){
+                    layer.msg(data['message']);
+                    $(".sign_button").off("click");
+                    showuserinfo();                    
+                }else if (data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+                setTimeout(function () {
+                    layer.closeAll();
+                },2000);
+            },"POST",true);
+        })
+
+
+        // // 基于准备好的dom，初始化echarts实例
+        // var myChart = echarts.init(document.getElementById('main'));
+        // function showLine(date,line) {
+        // var option = {
+        //     title: {
+        //         text: '每股收益'
+        //     },
+        //     color: [
+        //         '#208de1', '#fec42c', '#80F1BE'
+        //     ],
+        //     tooltip: {},
+        //     legend: {
+        //         data:['价格']
+        //     },
+        //     xAxis: {
+        //         data: date,
+        //         name: '日'
+        //     },
+        //     yAxis: {
+        //         name: '豆'
+        //     },
+        //     series: [{
+        //         name: '价格',
+        //         type: 'line',
+        //         borderColor: '#208de1',
+        //         data: line
+        //     }]
+        // };
+        // // 使用刚指定的配置项和数据显示图表。
+        // myChart.setOption(option);
+        // }
+        // requestUrl("{:U('Api/Member/income')}",{},function(res) {
+        //     if (res.flag == "success") {
+        //         var date = res.data.x_date;
+        //         var value = res.data.day_line;
+        //         showLine(date.split(","),value.split(","));
+        //     }else{
+        //         layer.msg(res.message);
+        //     }
+        // })
+</script>
+</block>

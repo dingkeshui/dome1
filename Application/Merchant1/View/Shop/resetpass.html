@@ -1,0 +1,109 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__bd">
+                <p>修改密码</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        
+       <div class="weui-cells bgfff outinput">
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    原密码
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input old" type="password" placeholder="请输入原密码"/>
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    密码
+                </div>
+
+                <div class="weui-cell__bd">
+                    <input class="weui-input new" type="password" placeholder="请输入密码"/>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    确认密码
+                </div>
+
+                <div class="weui-cell__bd">
+                    <input class="weui-input new2" type="password" placeholder="请再次确认密码"/>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="weui-btn-area">
+            <a class="weui-btn bgccc nobor" href="javascript:">修改</a>
+        </div>
+        
+    </div>
+
+</block>
+<block name="footerjs">
+  <script type="text/javascript">
+  var dataargs2={"shop_id":shop_id};
+  var account="";
+   requestUrl("{:U('Api/Merchant/detail')}",dataargs2,function(data){
+           layer.closeAll();
+            console.log(data);
+            var res = data.data;
+            if(data['flag'] == "success"){
+               account=res.account;
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+            }
+        },"POST",false);
+
+    $(document).keyup(function(){
+      var oldpas=$(".old").val();
+        var pas=$(".new").val();
+        var pas2=$(".new2").val();
+      if( oldpas && pas && pas2 ){
+            $(".weui-btn-area a").removeClass("bgccc");
+            $(".weui-btn-area a").addClass("bgjb");
+            $(".weui-btn-area").addClass("ok")
+      }else{
+        $(".weui-btn-area a").removeClass("bgjb");
+        $(".weui-btn-area a").addClass("bgccc");
+        $(".weui-btn-area").removeClass("ok")
+      }
+    })
+
+      $(".xq_container").on("click",".ok",function () {
+        var oldpas=$(".old").val();
+        var pas=$(".new").val();
+        var pas2=$(".new2").val();
+
+       if(pas!=pas2){
+            layer.msg("两次新密码必须相同！");
+            return;
+        }else if(pas.length<6){
+            layer.msg("密码长度最小为6位！");
+            return;
+        }
+        var dataargs = {"account":account,"old_password":oldpas,"new_password":pas,"r_password":pas2};
+        requestUrl("{:U('Api/Merchant/exchangePassword')}",dataargs,function(data){
+           layer.closeAll();
+            layer.msg(data['message']);
+            if(data['flag'] == "success"){
+            setTimeout(function () {
+                    window.location.href = "{:U('Shop/shopconfig')}";
+                },500);
+            }else if(data['flag'] == "error"){
+                
+            }
+        },"POST",false);
+        
+      })
+  </script>
+</block>

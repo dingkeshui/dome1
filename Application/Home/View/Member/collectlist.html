@@ -1,0 +1,114 @@
+<extend name="Public:header"/>
+<block name="main">
+
+
+		<div class="header-container colfff">
+			<div class="weui-cell ih30">
+				<div class="weui-cell__hd"></div>
+				<div class="weui-cell__bd">
+					<p>我的收藏</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="xq_container">
+			<div class="weui-cells shoplist mat0">
+
+			</div>
+		</div>
+</block>
+<block name="footerjs">
+<script>
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+
+    $(function(){
+        getJson("shouci");
+    });
+
+    var dataargs = {"m_id":m_id,p:1};
+
+    function getJson(args) {
+            console.log(dataargs);
+            requestUrl("{:U('Api/Member/collectList')}",dataargs,function(data){
+            	layer.closeAll();
+                putGoods(data,args);
+            },"GET",true);
+        }
+
+         //添加商品到列表
+        function putGoods(data,args) {
+        	console.log(data);
+            if(data.flag == 'success'){
+                var shops = data.data;
+                if((!shops || shops.length == 0 ) && args == "shouci"){
+                   $(".xq_container").addClass('wusj');
+                }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                   $(".shoplist").append('<div class="texcen">没有更多了！</div>');
+                }else{
+                    var str ="";
+                    for(var index in shops){
+                    	var shop = shops[index];
+                        str +='<div d_id='+shop.c_id+' class="weui-cell d_list"><div class="weui-cell__hd shopimg" linkto="{:U('Shop/shopdetail')}/shop_id/'+shop.shop_id+'"><img src='+shop.head_pic+' /></div><div class="weui-cell__bd texovh ih20" linkto="{:U('Shop/shopdetail')}/shop_id/'+shop.shop_id+'"><div class="fs1 disflex"><span class="flex1 texovh">'+shop.name+'</span></div><div class="xing">'+d_star(shop.star)+'</div><div class="fs0-8 colbbb texovh">地址：<span>'+shop.address+'</span></div></div><div class="weui-cell__ft d_remove"><img src="__WEBPUBLIC__/Wechat/img/collect.png" class="simg"><div class="fs0-8">取消</div></div></div>';
+                    }
+                    if (args == "fenye") {
+                        $('.shoplist').append(str);
+                    }else{
+                        $('.shoplist').html(str);
+                    }
+                    flag=true;
+                    top_linkto();
+                }
+            }else{
+                layer.msg(data.message);
+            }
+        }
+
+        // 判断有几个星星
+        function d_star(x){
+        	var d_xing="";
+        	console.log(x);
+            for(var i=1;i<=x;i++){
+                d_xing+='<img src="__WEBPUBLIC__/Wechat/img/xing.png" />';
+            }
+            return d_xing;
+        }
+        // 分页
+       function fenye(){
+            var $_zd = $(".d_list").height();//获取每个单项的高度
+            var length = 3;//定义预加载的数量，提前三个加载数据
+            var $_par = $(".shoplist");//获取包裹容器
+            var winheight = $(window).height();//获取窗口高度
+            var curpage = 1;//存储当前的页数v
+            $(function(){
+                $(window).on("scroll",function(e){
+                    if(flag){
+                        var self = $(this);
+                        var scrtop = self.scrollTop() + winheight;
+                        var docheight = $_par.height();
+                        console.log(scrtop + "=" + docheight + "=" + $_zd);
+                        if(scrtop > docheight - ( length * $_zd ) ){
+                            flag = false;
+                            dataargs.p = dataargs.p +1;
+                            getJson("fenye");
+                        }
+                    }
+                });
+            });
+        }
+        // 取消关注
+        $(document).ready(function(e){
+                $(".shoplist").on("click",".d_remove",function(e){
+                    e.preventDefault()
+                    e.stopPropagation();
+                    requestUrl("{:U('Api/Member/delCollect')}",{"c_id":$(this).parent().attr("d_id")},function(data){
+                    	layer.closeAll();
+                    	if (data.flag == "success") {
+                    		$(this).parent().remove();
+                    	}else{
+                    		layer.msg(data.message);
+                    	}
+                    }.bind(this),"GET",true);
+                })
+        })
+</script>
+</block>

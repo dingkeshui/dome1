@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no" name="format-detection">
+    <title>众享通赢-商家端</title>
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/weui.min.css">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/dingshop.css?s=4">
+    <block name="headdiv"></block>
+</head>
+<body class="bgf6">
+<block name="main"></block>
+<div class="xq_loadding">
+    
+</div>
+<script src="__WEBPUBLIC__/Wechat/js/jquery.js"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+
+<script>
+    var shop_id = "{$_REQUEST['shop_id']}";
+    if (!shop_id) {
+        shop_id = "{$shop_id}";
+    }
+    var isA = sessionStorage.getItem("isApp");
+    var isApp = "{$_REQUEST['isApp']}";
+    //提供app掉用缓存
+    var is_readonly = "{$_REQUEST['is_readonly']}"?"{$_REQUEST['is_readonly']}":localStorage.getItem('is_readonly');
+    if( is_readonly ){
+        localStorage.setItem("is_readonly",is_readonly);
+    }
+    var is_open = "{$is_open}";
+    if (!is_open) {
+        is_open = "{$_REQUEST['is_open']}";
+    }
+    if(isApp==1 || isA ==1){
+        sessionStorage.setItem("isApp","1");
+        $(".footer-container.weui-tab").remove();
+        $(".footer-container").css("bottom","0px");
+        $(".header-container").remove();
+    }
+
+    if(isApp==2 || isA ==2){
+        sessionStorage.setItem("isApp","2");
+        $(".footer-container.weui-tab").remove();
+        $(".footer-container").css("bottom","0px");
+    }
+
+    if(isApp==3 || isA ==3){
+        sessionStorage.setItem("isApp","3");
+        $(".header-container").remove();
+    }
+
+    wx.config({
+        debug: false,
+        appId: "{$appid}",
+        timestamp:'{$wx.timestamp}',
+        nonceStr: '{$wx.nonceStr}',
+        signature:'{$wx.signature}',
+        jsApiList: [
+            // 所有要调用的 API 都要加到这个列表中
+            'scanQRCode',
+            'openLocation',
+            'getLocation',
+            "onMenuShareTimeline",
+            "onMenuShareAppMessage",
+            "onMenuShareQQ",
+            "onMenuShareWeibo",
+            "onMenuShareQZone",
+        ]
+    });
+    function backinput() {
+        $(".back").html('<img style="width:15px;height:15px" src="__WEBPUBLIC__/Wechat/img/back.png"/>');
+        $(".back").on('click',function () {
+            history.go(-1);
+        });
+    }
+</script>
+<script src="__WEBPUBLIC__/Wechat/js/zepto.min.js"></script>
+<script src="__WEBPUBLIC__/Wechat/js/layer/layer.js"></script>
+<script src="__WEBPUBLIC__/Wechat/js/public.js?s=2"></script>
+<script type="text/javascript">
+    if(isApp||isA){
+        $('.headleft').hide();
+    }
+</script>
+<block name="footerjs"></block>
+</body>
+</html>

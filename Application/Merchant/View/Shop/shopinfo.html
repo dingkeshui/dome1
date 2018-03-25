@@ -1,0 +1,349 @@
+<extend name="Public:header"/>
+<block name="main">
+<!-- 头部 -->
+<div class="header-container bgfff z3">
+    <div class="weui-cell ih30 box">
+        <div class="weui-cell__hd">
+        </div>
+        <div class="weui-cell__bd re textcenter">
+            <span class="headleft y3" linkto="{:U('Shop/shopcenter')}"><img class="wh20" src="/Public/Wechat/img/back2.png" style="transform: rotate(180deg)"></span>
+            店铺信息
+            <!-- <span class="fr tc">退出</span> -->
+        </div>
+        <!--<div class="weui-cell__ft">
+            <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+        </div>-->
+    </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+       <div class="pad10 colb3">
+           基本信息
+       </div>
+       <div class="bgfff">
+           <span class="weui-cell">
+                <div class="weui-cell__bd">
+                
+                    <p><span>店铺logo</span></p>
+
+                </div>
+                <div class="weui-cell__ft fs0 re">
+                    <!--<input class="myfileinp" onchange="mychange2(this)" type="file" name="">-->
+                    <img class="w80 head_pic">
+                </div>
+            </span>
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd">
+                    店铺名称
+                </div>
+                <div class="weui-cell__ft shopname">
+                    扒鸡零食铺
+                </div>
+            </div>
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd">
+                    主营项目
+                </div>
+                <div class="weui-cell__ft class_name">
+                    
+                </div>
+            </div>
+            <a class="weui-cell weui-cell_access flex showmap" href="javascript:;">
+                <div class="weui-cell__bd">
+                    <span>店铺地址</span>
+                </div>
+                <div class="weui-cell__ft textovh flex1 d_addressmain address">
+                    请选择店铺地址
+                </div>
+            </a>
+           <!-- <a class="weui-cell weui-cell_access flex" href="{:U('Shop/freight')}">
+               <div class="weui-cell__bd">
+                   <span>运费设置</span>
+               </div>
+               <div class="weui-cell__ft textovh flex1">
+                &nbsp;
+               </div>
+           </a> -->
+       </div>
+       <div class="pad10 colb3">
+           店主信息
+       </div>
+       <div class="bgfff">
+            <a class="weui-cell weui-cell_access flex">
+                <div class="weui-cell__bd">
+                    <span>联系人</span>
+                </div>
+                <div class="weui-cell__ft textovh flex1 auname" contenteditable="true">
+                    
+                </div>
+            </a>
+            <a class="weui-cell weui-cell_access flex">
+                <div class="weui-cell__bd">
+                    <span>手机号</span>
+                </div>
+                <div class="weui-cell__ft textovh flex1 phone" contenteditable="true">
+                    
+                </div>
+            </a>
+            <a class="weui-cell weui-cell_access flex">
+                <div class="weui-cell__bd">
+                    <span>微信号</span>
+                </div>
+                <div class="weui-cell__ft textovh flex1 weixin" contenteditable="true">
+                </div>
+            </a>
+            <a class="weui-cell weui-cell_access flex">
+                <div class="weui-cell__bd">
+                    <span>QQ号</span>
+                </div>
+                <div class="weui-cell__ft textovh flex1 qq" contenteditable="true">
+                </div>
+            </a>
+       </div>
+    </div>
+
+    <!-- 地图 -->
+    <div id="container" style="width: 100vw;height: 100vh;position: fixed;top: 0px;z-index: 50">
+        <div class ='panel'>
+            <input id = 'input' placeholder = '点击地图显示地址/输入地址显示位置'></input>
+            <div id = 'message'></div>
+        </div>
+        <div class="mapok">确定</div>
+    </div>
+
+</block>
+<block name="footerjs">
+   <!--  <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=c5e14c05b9c3aef7d437cb31cda7313f&plugin=AMap.Autocomplete">
+    </script> -->
+<script type="text/javascript">
+    //高德地图
+    // $('.showmap').click(function () {
+    //     //$('#container').show();
+    // })
+    // var lat='';
+    // var lng='';
+    // var myaddress="";//详细地址
+    // var map = new AMap.Map('container',{
+    //     resizeEnable: true,
+    //     zoom: 13,
+    // });
+
+    // //定位
+    //  map.plugin('AMap.Geolocation', function() {
+    //     geolocation = new AMap.Geolocation({
+    //         enableHighAccuracy: true,//是否使用高精度定位，默认:true
+    //         timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+    //         buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+    //         zoomToAccuracy: false,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+    //         buttonPosition:'RB'
+    //     });
+    //     map.addControl(geolocation);
+    //     geolocation.getCurrentPosition();
+    //     AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+    //     AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+    // });
+
+    // //解析定位结果
+    // function onComplete(data) {
+    //     $('#input').val(data.formattedAddress);
+    //     myaddress=data.formattedAddress;
+    //     $('.d_addressmain').html(myaddress);
+    //     lat=data.position.lat;
+    //     lng=data.position.lng;
+    // }
+    // //解析定位错误信息
+    // function onError(data) {
+    //     console.log(data);
+    // }
+
+    // AMap.plugin('AMap.Geocoder',function(){
+    //     var geocoder = new AMap.Geocoder({
+    //         // city: "010"//城市，默认：“全国”
+    //     });
+    //     var marker = new AMap.Marker({
+    //         map:map,
+    //         bubble:true
+    //     })
+    //     var input = document.getElementById('input');
+    //     var message = document.getElementById('message');
+    //     map.on('click',function(e){
+    //         console.log(e);
+    //         lat=e.lnglat.lat;
+    //         lng=e.lnglat.lng;
+    //         marker.setPosition(e.lnglat);
+    //         geocoder.getAddress(e.lnglat,function(status,result){
+    //           if(status=='complete'){
+    //              input.value = result.regeocode.formattedAddress;
+    //              myaddress= result.regeocode.formattedAddress;
+    //              message.innerHTML = '';
+    //           }else{
+    //              message.innerHTML = '无法获取地址';
+    //           }
+    //         })
+    //     })
+        
+    //     input.onchange = function(e){
+    //         var address = input.value;
+    //         geocoder.getLocation(address,function(status,result){
+    //             console.log(status);
+    //             console.log(result);
+    //           if(status=='complete'&&result.geocodes.length){
+    //             lat=result.geocodes[0].location.lat;
+    //             lng=result.geocodes[0].location.lng;
+    //             myaddress=result.geocodes[0].formattedAddress;
+    //             marker.setPosition(result.geocodes[0].location);
+    //             map.setCenter(marker.getPosition());
+    //             message.innerHTML = ''
+    //           }else{
+    //             message.innerHTML = '无法获取位置'
+    //           }
+    //         })
+    //     }
+
+    // });
+
+    // $('.mapok').click(function (e) {
+    //     e.stopPropagation();
+    //     $('.d_addressmain').html(myaddress);
+    //     $('#container').hide();
+    // })
+
+    // 添加单图
+    function mychange2 (data) {
+            var fileimg=data.files;   
+            /*图片转Base64 核心代码*/  
+            var file = fileimg[0];  
+            //这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件  
+            if (!/image\/\w+/.test(file.type)) {  
+                layer.msg("请确保文件为图像类型");  
+                return false;  
+            }  
+            var reader = new FileReader(); 
+            // (function(x){
+            reader.onload = function (e) {  
+                $('.myfileinp').next().attr('src',this.result);
+                console.log($('.myfileinp').next());
+                render(this.result,file.name,1);
+            }  
+            // })(file.name) 
+            
+            reader.readAsDataURL(file);  
+        // }
+    };
+
+    var MAX_HEIGHT = 1000;
+// 渲染
+function render(src,picname,datanum) {
+    // 创建一个 Image 对象
+    var image = new Image();
+    // 绑定 load 事件处理器，加载完成后执行
+    image.onload = function() {
+        // 获取 canvas DOM 对象
+        var canvas = document.createElement("canvas");
+        // 如果高度超标
+        if (image.height > MAX_HEIGHT && image.height >= image.width) {
+            // 宽度等比例缩放 *=
+            image.width *= MAX_HEIGHT / image.height;
+            image.height = MAX_HEIGHT;
+        }
+        if (image.width > MAX_HEIGHT && image.width > image.height) {
+            // 宽度等比例缩放 *=
+            image.height *= MAX_HEIGHT / image.width;
+            image.width = MAX_HEIGHT;
+        }
+        // 获取 canvas的 2d 环境对象,
+        // 可以理解Context是管理员，canvas是房子
+        var ctx = canvas.getContext("2d");
+        // canvas清屏
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // 重置canvas宽高
+        canvas.width = image.width;
+        canvas.height = image.height;
+        // 将图像绘制到canvas上
+        ctx.drawImage(image, 0, 0, image.width, image.height);
+        // !!! 注意，image 没有加入到 dom之中
+//        document.getElementById('img').src = canvas.toDataURL("image/png");
+        var blob = canvas.toDataURL("image/jpeg");
+        // var fd = new FormData();
+        // fd.append("image", blob, "image.png");
+        // imgCompressUpload(canvas.toDataURL("image/png"));
+       
+    };
+    // 设置src属性，浏览器会自动加载。
+    // 记住必须先绑定事件，才能设置src属性，否则会出同步问题。
+    image.src = src;
+};
+</script>
+
+<script>
+    var keeper ={};
+    requestUrl("{:U('Api/Store/storeInfo')}",{shop_id:shop_id},function ( res ) {
+       if ( res.flag == "success" ) {
+
+            var shop = res.data.shop;
+            keeper = res.data.keeper;
+
+            $(".head_pic").attr("src",shop.head_pic);
+            $(".shopname").text(shop.shop_name);
+            $(".class_name").text(shop.class_name);
+            $(".address").text(shop.address);
+
+            $(".auname").text(keeper.name);
+            $(".phone").text(keeper.phone);
+            $(".weixin").text(keeper.weixin);
+            $(".qq").text(keeper.qq);
+            
+       }else{
+        layer.msg( res.message );
+       } 
+    });
+    $("[contenteditable]").on('focus',function(){
+        if(is_readonly==1){
+            layer.msg("无操作权限");return;
+        }
+    });
+    $("[contenteditable]").on('blur',function () {
+        var val = $(this).text();
+        keeper.shop_id = shop_id;
+        if ( $(this).hasClass('qq') && keeper.qq != val ) {
+            if(/^[0-9]*$/.test(val)){
+                keeper.qq = val;
+                putinfo();
+            }else{
+                layer.msg('QQ号不正确');
+                $(".qq").text(keeper.qq);
+            }
+        }else if ( $(this).hasClass('phone') && keeper.phone != val) {
+            var ret= /^[1][3,4,5,7,8][0-9]{9}$/;
+            if(ret.test(val)){
+                keeper.phone = val;
+                putinfo();
+            }else{
+                layer.msg('手机号格式不对');
+                $(".phone").text(keeper.phone);
+            } 
+        }else if ( $(this).hasClass('weixin') && keeper.weixin != val ) {
+            keeper.weixin = val;
+            putinfo();
+        }else if ( $(this).hasClass('auname') && keeper.name != val ) {
+            if(val==""){
+                layer.msg('联系人不能为空');
+                $(this).text(keeper.name);
+                return;
+            }
+            keeper.name = val;
+            putinfo();
+        }
+        
+    })
+    function putinfo() {
+        requestUrl("{:U('Api/Store/editShopkeeper')}",keeper,function ( res ) {
+            layer.msg(res.message);
+        })
+    }
+</script>
+</block>

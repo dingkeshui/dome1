@@ -1,0 +1,54 @@
+<include file="Public:header"/>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/js/ajax-operate.js"></script>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">站内信管理</a></li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>站内信管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="{:U('News/NewsList')}">站内信列表</a>
+            </li>
+            <li>
+                <a href="{:U('News/sendNews')}">发送站内信</a>
+            </li>
+        </ul>
+    </div>
+
+        <!--表格内容-->
+        <div class="content-box-content">
+            <table style="width: 500px;height: auto;margin:0 20px;font: 微软雅黑">
+                <tr>
+                    <td><h4><strong>接收人：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['m_name']|default="用户"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>标题：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['title']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>内容：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['a_content']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>发送时间：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['ctime']|date='Y-m-d H:i:s',###}</td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+<include file="Public:footer"/>

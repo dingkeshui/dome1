@@ -1,0 +1,62 @@
+<extend name="Public:header"/>
+<block name="main"><!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="addressback" linkto="{:U('Member/membercenter')}"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div>
+                    消息
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cells">
+            <div class="weui-cell ih30 box" linkto="{:U('Message/systemnews')}">
+                    <div class="weui-cell__hd">
+                        <div class="headimgbox2 mgr5 fs0">
+                            <img class="w100" src="/Public/Wechat/shopimg/img (124).png">
+                        </div>
+                    </div>
+                    <div class="weui-cell__bd">
+                        系统消息
+                    </div>
+                    <div class=" weui-cell__ft system"></div>
+            </div>
+            <div class="weui-cell ih30 box" linkto="{:U('Message/transactionnews')}">
+                    <div class="weui-cell__hd">
+                        <div class="headimgbox2 mgr5 fs0">
+                            <img class="w100" src="/Public/Wechat/shopimg/img (64).png">
+                        </div>
+                    </div>
+                    <div class="weui-cell__bd">
+                        交易消息
+                    </div>
+                    <div class=" weui-cell__ft jiao"></div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var dataargs = {mix_id:m_id,type:0}
+    requestUrl("{:U('Api/Message/messIndexShow')}",dataargs,function ( res ) {
+        if(res.flag == "success"){
+            var message = res.data;
+            if(message.system_mess > 0){
+                $(".system").addClass("onmsg");
+            }
+            if(message.order_mess > 0){
+                $(".jiao").addClass("onmsg");
+            }
+        }else{
+            layer.msg(res.message);
+        }
+    })
+</script>
+</block>

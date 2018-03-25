@@ -1,0 +1,103 @@
+<extend name="Public:header"/>
+<block name="main">
+	<div class="header-container colfff">
+		<div class="weui-cell ih30">
+			<div class="weui-cell__hd"></div>
+			<div class="weui-cell__bd">
+				<p>提现记录</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="xq_container">
+		<div class="weui-cells fs0-8 mat0 billList">
+			
+		</div>
+	</div>
+</block>
+<block name="footerjs">
+	<script>
+
+    var dataargs = {p:1,mix_id:shop_id,type:1};
+    //添加提现到列表
+    function putGoods(data,args) {
+    	console.log(data);
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if(!shops || shops.length == 0 ){
+                $(".billList").append('<div class="texcen">没有更多了！</div>');
+                return;
+                
+            }else{
+                //+(shop.status == 0 ? '待打款' : (shop.status == 1 ? '已打款' : '已驳回'))+
+                var str ="";
+                for(var index in shops){
+                	var shop = shops[index];
+                    str += '<div class="weui-cell bill">'
+					+'<div class="weui-cell__hd texcen">'
+						+'<div class="colbbb">'+ shop.ctime.substr(0,10) +'</div>'
+						+'<div class="borad4 bgjb colfff">'+shop.state+'</div>'
+					+'</div>'
+					+'<div class="weui-cell__hd pad0-10">'
+						+'<img class="hnrimg" src="/Public/Wechat/img/bank.png"/>'
+					+'</div>'
+					+'<div class="weui-cell__bd">'
+						+'<div>'+shop.amount+'</div>'
+                        +'<div>'+shop.bankCard+'</div>'
+					+'</div>'
+                    +'<div class="weui-cell__ft">'
+                        +shop.orderType
+                    +'</div>'
+				+'</div>';
+                }
+                if (args == "fenye") {
+                    $('.billList').append(str);
+                }else{
+                    $('.billList').html(str);
+                }
+                top_linkto();
+            }
+        }else{
+            layer.msg(data.message);
+        }
+
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    function getJson(args) {
+        requestUrl("{:U('Api/HxUser/withdrawList')}",dataargs,function(data){
+        	layer.closeAll();
+            putGoods(data,args);
+        },"POST",true);
+    }
+
+    getJson("shouci");
+    
+    function fenye(){
+        var flag= true;//防止ajax请求期间，对此触发请求数据
+        var $_zd = $(".bill").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".billList");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).off("scroll");
+            $(window).on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+</script>
+</block>

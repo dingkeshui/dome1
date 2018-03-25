@@ -1,0 +1,156 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__bd">
+                <p>找回密码</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        
+       <div class="weui-cells bgfff">
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    手机号
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input tel account" type="tel" placeholder="手机号"/>
+                </div>
+            </div>
+
+             <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    图形码
+                </div>
+
+                <div class="weui-cell__bd">
+                    <input class="weui-input verify_code" type="text" placeholder="请输入图形码"/>
+                </div>
+                <div class="weui-cell__ft">
+                    <img class="changevirify" src="{:U('Api/Login/verify')}" style="height:30px"/>
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    验证码
+                </div>
+
+                <div class="weui-cell__bd">
+                    <input class="weui-input vc" type="text" placeholder="请输入验证码"/>
+                </div>
+                <div class="weui-cell__ft colff0 getcode">获取验证码</div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    密码
+                </div>
+
+                <div class="weui-cell__bd">
+                    <input class="weui-input pas" type="password" placeholder="请输入密码"/>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    确认密码
+                </div>
+
+                <div class="weui-cell__bd">
+                    <input class="weui-input pas2" type="password" placeholder="请再次确认密码"/>
+                </div>
+            </div>
+
+
+        </div>
+        
+        <div class="weui-btn-area">
+            <a class="weui-btn bgccc nobor" href="javascript:">完成</a>
+        </div>
+        
+    </div>
+
+</block>
+<block name="footerjs">
+  <script type="text/javascript">
+  // 查询验证码
+   getCode("{:U('Api/Login/sendVerify')}","getPass",1);
+  var curind = 0;
+  var url = "{:U('Api/Login/verify')}";
+  $(".changevirify").on('click',function () {
+      curind++;
+      $(this).attr("src",url+"/"+curind);
+  });
+
+  $(document).keyup(function(){
+     var tel=$(".tel").val();
+      var vc=$(".vc").val();
+      var pas=$(".pas").val();
+      var pas2=$(".pas2").val();
+      if( /^1{1}[3|5|7|8|4]{1}[0-9]{9}$/.test(tel) && vc && pas && pas2 ){
+            $(".weui-btn-area a").removeClass("bgccc");
+            $(".weui-btn-area a").addClass("bgjb");
+            $(".weui-btn-area").addClass("ok");
+      }else{
+        $(".weui-btn-area a").removeClass("bgjb");
+        $(".weui-btn-area a").addClass("bgccc");
+            $(".weui-btn-area").removeClass("ok");
+
+      }
+  })
+
+  $(".xq_container").on("click",".ok",function () {
+      var tel=$(".tel").val();
+      var vc=$(".vc").val();
+      var pas=$(".pas").val();
+      var pas2=$(".pas2").val();
+      
+      var verify_code=$(".verify_code").val();
+
+      if(!tel||!vc||!pas||!pas2){
+           layer.msg("信息不能为空！");
+            return;
+      }else if(pas!=pas2){
+          layer.msg("两次密码不一致！");
+            return;
+      }else if (pas.length<6) {
+          layer.msg("密码长度不能少于六位")
+      }
+      
+      var dataargs={
+        "way":tel,
+        "vc":vc,
+        "password":pas,
+        "r_password":pas2,
+        "verify_code":verify_code
+      }
+
+    requestUrl("{:U('Api/Merchant/getPass')}",dataargs,function(data){
+        layer.closeAll();
+        layer.msg(data['message']);
+            console.log(data);
+            console.log(dataargs);
+            var res = data.data;
+            if(data['flag'] == "success"){
+              setTimeout(function () {
+                      window.location.href = "{:U('Shop/login')}";
+                      },500);
+                // requestUrl("{:U('Api/Merchant/getPass')}",{"account":tel,"password":pas},function(data){
+                //   layer.closeAll();
+                //    if(data['flag'] == "success"){
+                //        setTimeout(function () {
+                //          window.location.href = "{:U('Shop/index')}";
+                //        },500);
+                //    }
+                //  },"POST",true);
+            }else if(data['flag'] == "error"){
+                
+            }
+        },"POST",true);
+  })
+     
+  </script>
+</block>

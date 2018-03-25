@@ -1,0 +1,178 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	转账
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cells">
+            <div linkto="{:U('Accounts/transfernum')}&type=1" class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                   <div class="headimgbox2 mgr5 fs0">
+                            <img class="w100" src="/Public/Wechat/cusimg/img (125).png">
+                    </div>
+                </div>
+                <div class="weui-cell__bd">
+                    转到众享通赢账户
+                </div>
+                <div class="weui-cell__ft">
+                
+                </div>
+            </div>
+            <div linkto="{:U('Accounts/transfernum')}&type=2" class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                   <div class="headimgbox2 mgr5 fs0">
+                        <img class="w100" src="/Public/Wechat/cusimg/img (65).png">
+                    </div>
+                </div>
+                <div class="weui-cell__bd">
+                    转到众享通赢商户
+                </div>
+                <div class="weui-cell__ft">
+                
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells__title">最近</div>
+        <div class="weui-cells list">
+            <!-- <div class="weui-cell item">
+                <div class="weui-cell__hd">
+                   <div class="headimgbox2 mgr5 fs0">
+                            <img class="w100" src="../img/img (125).png">
+                    </div>
+                </div>
+                <div class="weui-cell__bd">
+                    <div>嘉欣</div>
+                    <div class="colb6">186****8956</div>
+                </div>
+                <div class="weui-cell__ft">
+                
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var dataargs = {"p":1,"m_id":2};
+	// //获取用户信息
+ //        requestUrl("{:U('Api/Member/transferRecord')}",{m_id:2,p:1},function(res){
+ //            if(res.flag=="success"){
+ //                var data = res.data;
+ //                str=""; 
+ //                for(var i in data){
+ //                    str+='<div class="weui-cell item">'
+ //                +'<div class="weui-cell__hd">'
+ //                   +'<div class="headimgbox2 mgr5 fs0">'
+ //                            +'<img class="w100" src="'+data[i].other_message.head_pic+'">'
+ //                    +'</div>'
+ //                +'</div>'
+ //                +'<div class="weui-cell__bd">'
+ //                    +'<div>'+data[i].other_message.name+'</div>'
+ //                    +'<div class="colb6">'+data[i].other_message.account+'</div>'
+ //                +'</div>'
+ //                +'<div class="weui-cell__ft">'
+ //                +'<div class="colblue">'+shop.price+'</div>'
+ //                +'<div class="">'+shop.ctime+'</div>'
+ //                +'</div>'
+ //            +'</div>';
+ //                }
+ //                $('.list').html(str);
+ //            }else{
+ //                layer.msg(res.message);
+ //            }
+ //        },'GET',true);
+
+        function putGoods(data,args) {
+    console.log(data);
+    if(data.flag == 'success'){
+        var shops = data.data;
+        if((!shops || shops.length == 0 ) && args == "fenye"){
+            $(".list").append('<div class="texcen">没有更多了！</div>');
+        }else{
+            var str ="";
+            for(var index in shops){
+                var shop = shops[index];
+                str += '<div class="weui-cell">'
+                +'<div class="weui-cell__hd">'
+                    +'<img class="himg" src="'+shop.other_message.head_pic+'"/>'
+                +'</div>'
+                +'<div class="weui-cell__bd">'
+                    +'<div>'+shop.other_message.name+'<span class="fr colff0">'+shop.price+'</span></div>'
+                    +'<div class="fs0-8 colccc">'+shop.other_message.account+'<span class="fr">'+shop.ctime+'</span></div>'
+                +'</div>'
+                +'<div class="weui-cell__ft">'
+                    +(shop.m_id ? '' : '<img class="simg" src="__WEBPUBLIC__/Wechat/img/shdong.png"/>')
+                +'</div>'
+            +'</div>';
+            }
+            if (args == "fenye") {
+                $('.list').append(str);
+            }else{
+                $('.list').html(str);
+            }
+            top_linkto();
+        }
+    }else{
+         alert(data.message);
+    }
+
+    if (args == "shouci") {
+        fenye();
+    }
+}
+
+function getJson(args) {
+    console.log(dataargs);
+    requestUrl("{:U('Api/Member/transferRecord')}",dataargs,function(data){
+        layer.closeAll();
+        putGoods(data,args);
+    },"GET",true);
+}
+getJson("shouci");//调用该方法
+function radioAfter(self) {
+    var type = self.attr("type");
+    if (type != "") {
+        dataargs.type=type;
+        dataargs.p = 1;
+        getJson();
+    }
+}
+
+function fenye(){
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+    var $_zd = $(".item").height();//获取每个单项的高度
+    var length = 3;//定义预加载的数量，提前三个加载数据
+    var $_par = $(".list");//获取包裹容器
+    var winheight = $(window).height();//获取窗口高度
+    var curpage = 1;//存储当前的页数v
+    $(function(){
+        $(window).on("scroll",function(e){
+            if(flag){
+                var self = $(this);
+                var scrtop = self.scrollTop() + winheight;
+                var docheight = $_par.height();
+                console.log(scrtop + "=" + docheight + "=" + $_zd);
+                if(scrtop > docheight - ( length * $_zd ) ){
+                    flag = false;
+                    dataargs.p = dataargs.p +1;
+                    getJson("fenye");
+                }
+            }
+        });
+    });
+}
+</script>
+</block>>

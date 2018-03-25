@@ -1,0 +1,313 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p class="goodsinfo">待发货</p>
+            </div>
+        </div>
+    </div>
+    <div class="xq_container">
+        <!-- 待收货/已完成 开始 -->
+        <!-- <div class="weui-cell bgfff">
+            <div class="weui-cell__hd pad10">
+                <img src="Uploads/Shop/2017-07-07/595f2ad403b7f.jpg">
+            </div>
+            <div class="weui-cell__bd texovh ih30">
+                <div class="fs1 disflex">
+                    快递公司:<span>元通快递</span>
+                </div>
+                
+                <div class="">快递单号:<span>12454515645312315415123</span></div>
+            </div>
+        </div>  -->
+        <!-- 待收货/已完成结束 -->
+
+        
+       <!--  <div class="weui-cell bgfff">
+            <div class="weui-cell__hd pad10">
+                <img src="Uploads/Shop/2017-07-07/595f2ad403b7f.jpg">
+            </div>
+            <div class="weui-cell__bd texovh ih30">
+                <div class="fs1 disflex">
+                    <span class="flex1 texovh">金领教育</span>
+                    <div class="fs0-8 fr">
+                       17602226923
+                    </div>
+                </div>
+                
+                <div class="fs0-8 colbbb texovh">收货地址:天津市西青区南开路</div>
+            </div>
+        </div> 
+        <div class="weui-cells shoplist noafter">
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd shopimg">
+                            <img class="" src="">
+                        </div>
+                        <div class="weui-cell__bd">
+                            <p class="texovh">飞科剃须刀</p>
+                            <p class="false"><span class="colccc">195</span><span class="colff0">众享豆</span></p>
+                        </div>
+                        <div class="weui-cell__ft">
+                            <p class="fs0-8 colccc">2017-12-06</p>
+                        </div>
+                    </div>               
+        </div>
+        <div class="weui-cell bgfff">
+                    <div class="weui-cell__hd"></div>
+                    <div class="weui-cell__bd">
+                        <p>运费</p>
+                        <p>众享豆抵扣</p>
+                        <p>麦穗抵扣</p>
+                        <p class="fs1-2">实际付款(含运费)</p>
+
+                    </div>
+                    <div class="weui-cell__ft">
+                        <p>￥0.00</p>
+                        <p><span class="colff0">-123</span>众享豆</p>
+                        <p><span class="colff0">-123</span>麦穗</p>
+                        <p class="fs1-2">￥<span>123</span></p>
+                    </div>
+        </div>
+
+        <div class="weui-cells ih30 pad10">            
+                         <p>订单编号:<span>1215454545</span></p>
+                         <p>创建时间:<span>2016-13-15 02:00</span></p>
+                         <p>付款时间:<span>2017-12-12 06:56</span></p>
+                  
+                         <p>发货时间:<span>2017-12-12 06:56</span></p>
+                 
+                         <p>成交时间:<span>2017-12-12 06:56</span></p>
+            
+                        <p>退款原因:<span>协商退款</span></p>
+                        <p>退款时间:<span>2017-12-12 </span></p>
+                        <p>退款编号:<span>5645611231323</span></p>
+                  
+                        <p>退款金额:￥<span>0.00</span></p>
+                        <p>退回众享豆:<span>158</span></p>
+                        <p>退回麦穗:<span>158</span></p>
+                      
+        </div>
+
+        <div class="pad10 footer-container bgfff ih50" style="bottom: 50px">
+        
+            <div class="fr d_botton1">确认收货</div>
+       
+            <div class="fr d_botton2 mar15 ">申请退款</div>
+       
+      
+            <div class="fr d_botton2 mar15">删除订单</div>
+        
+        </div> -->
+    </div>
+</block>
+<block name="footerjs">
+    <script>
+       var order_id = "{:I('get.i_o_id')}";
+        var dataargs={"order_id":order_id};
+        var status=""//订单状态;
+        var res;
+        requestUrl("{:U('Api/Order/orderDetail')}",dataargs,function(data){
+            //console.log(data);
+            res = data.data;
+            status = res.status;
+            var mai = res['type'] == 0 ? "元" : "麦穗";
+            if(data['flag'] == "success"){
+                var str1="";
+                var str2="";
+                if(status==0){
+                    var but = "删除订单";
+                    if (res.pay_type == 2 && (+res.d_price != 0 )) {
+                        but = "退豆删除";
+                    }
+                     str1='<div class="fr d_botton1 make_sure_price">立刻支付</div><div class="fr d_botton2 mar15 removegoods">'+but+'</div>';
+                    $(".goodsinfo").html("待支付");
+                }else if(status==1){
+                    if(res['pay_type']!=2){
+                    str1=' <div class="fr d_botton2 mar15 goodsback" linkto="/index.php/Order/refund/order_id/'+order_id+'">申请退款</div>';
+                    }
+                    $(".goodsinfo").html("待发货");
+                }else if(status==2){
+                    if(res['pay_type']!=2){
+                    str1=' <div class="fr d_botton1 goodsok">确认收货</div><div class="fr d_botton2 mar15 goodsback" linkto="/index.php/Order/refund/order_id/'+order_id+'>申请退款</div>';
+                    }else{
+                    str1=' <div class="fr d_botton1 goodsok">确认收货</div>';
+                    }
+                    str2='<p>发货时间:<span>'+res.f_time+'</span></p>';
+                    $(".goodsinfo").html("待收货");
+                }else if(status==3){
+                    str1=' <div class="fr d_botton2 mar15 removegoods">删除订单</div>';
+                    str2='<p>收货时间:<span>'+res.complete_time+'</span></p>';
+                    $(".goodsinfo").html("已收货");
+                }else if (status==4) {
+                     str2='<p>退款时间:<span>'+res.t_time+'</span></p>';
+                    $(".goodsinfo").html("退款中");
+                }else if(status==5){
+                    str1=' <div class="fr d_botton2 mar15 removegoods">删除订单</div>';
+                    str2='<p>退款时间:<span>'+res.t_time+'</span></p>';
+                    $(".goodsinfo").html("已退款");
+                }
+                var str = '<div class="weui-cell bgfff"><div class="weui-cell__hd pad10"><img class="max30" src="__WEBPUBLIC__/Wechat/img/d_wuliu.png"></div><div class="weui-cell__bd texovh ih30"><div class="fs1 disflex"><span class="flex1 texovh">'+res.name+'</span><div class="fs0-8 fr">'+res.tel+'</div></div><div class="fs0-8 colbbb texovh">收货地址:'+res.address+'</div></div></div><div class="weui-cells shoplist noafter"><div class="weui-cell"><div class="weui-cell__hd shopimg"><img class="" src=/'+res.cover_pic+'></div><div class="weui-cell__bd"><p class="texovh">'+res.goods_name+'</p><p class="false"><span class="colccc">'+res.price+'</span><span class="colff0">'+mai+'</span><span class="fr colccc">'+res.ctime+'</span></p></div><div class="weui-cell__ft"></div></div></div><div class="weui-cell bgfff"><div class="weui-cell__hd"></div><div class="weui-cell__bd"><p>'+(res['pay_type']==2?"微信":(res['pay_type']==1?"麦穗":"豆"))+'支付</p></div><div class="weui-cell__ft"><p><span class="colff0">'+res.price+'</span>'+(res['pay_type']==2?"元":mai)+'(含运费)</p></div></div><div class="weui-cells ih30 pad10"><p>订单编号:<span>'+res.order_sn+'</span></p><p>创建时间:<span>'+res.ctime+'</span></p><p>付款时间:<span>'+res.ctime+'</span></p>'+str2+'</div><div class="pad10 footer-container bgfff ih50" style="bottom: 50px">'+str1+'</div>'
+                $(".xq_container").html(str);
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+            }
+            layer.closeAll();
+        },"POST",true);
+
+        // 确认收货
+        $(".xq_container").on("click",".goodsok",function(){
+             requestUrl("{:U('Api/Order/makeSure')}",{"order_id":order_id},function(data){
+                if(data['flag'] == "success"){
+                    layer.msg("收货成功！");
+                    setTimeout(function () {
+                        var url = "{:U('Order/orderlist')}";
+                        window.location.href = url;
+                    },1000);
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                    layer.closeAll();
+                }
+            },"POST",true);
+        });
+
+        // 删除订单
+        $(".xq_container").on("click",".removegoods",function(){
+            if (res && res.pay_type == 2 && (+res.d_price != 0 )) {
+                requestUrl("{:U('Api/Order/returnBeanOrder')}",{"order_id":order_id},function(data){
+                    if(data['flag'] == "success"){
+                        layer.msg("删除成功！");
+                        setTimeout(function () {
+                            var url = "{:U('Order/orderlist')}";
+                            window.location.href = url;
+                        },1000);
+                    }else if(data['flag'] == "error"){
+                        layer.msg(data['message']);
+                        layer.closeAll();
+                    }
+                },"POST",true);
+            }else{
+                requestUrl("{:U('Api/Order/delOrder')}",{"order_id":order_id},function(data){
+                    if(data['flag'] == "success"){
+                        layer.msg("删除成功！");
+                        setTimeout(function () {
+                            var url = "{:U('Order/orderlist')}";
+                            window.location.href = url;
+                        },1000);
+                    }else if(data['flag'] == "error"){
+                        layer.msg(data['message']);
+                        layer.closeAll();
+                    }
+                },"POST",true);
+            }
+             
+        });
+
+        // 申请退款
+        $(".xq_container").on("click",".goodsback",function(){
+             var url = "/index.php/Order/refund/i_o_id/"+order_id;
+                        window.location.href = url;
+
+        });
+        var dataargs = {};
+        /**立即支付微信*/
+        $(".xq_container").on("click",".make_sure_price",function(){
+            var jsApiParameters;
+            dataargs.i_o_id = "{:I('get.i_o_id')}";
+//            requestUrl("{:U('Pay/getJsApiGoods')}",dataargs, function (res) {
+//                if(res['flag'] == "error"){
+//                    layer.closeAll();
+//                    layer.msg(res['message']);
+//                }else{
+//                    var data = JSON.parse(res);
+//                    if (data.jsApiParameters) {
+//                        jsApiParameters = JSON.parse(data.jsApiParameters);
+//                        dataargs.id = jsApiParameters.id;
+//                        callpay();
+//                        layer.closeAll();
+//                    }
+//                }
+//            },"POST",true);
+            requestUrl("{:U('Pay/getJsHXApiGoods')}",dataargs, function (res) {
+                if(res['flag'] == "error"){
+                    layer.closeAll();
+                    layer.msg(res['message']);
+                }else{
+                    flag =true;
+                    document.getElementsByTagName("body")[0].innerHTML = res.data;
+                    document.forms['ipspaysubmit'].submit()
+                }
+            },"POST",true);
+
+            function jsApiCall(){
+                WeixinJSBridge.invoke(
+                        'getBrandWCPayRequest',
+                        jsApiParameters,
+                        function(res){
+                            WeixinJSBridge.log(res.err_msg);
+                            if (res.err_msg == "get_brand_wcpay_request:fail") {
+                                layer.msg("系统支付失败！");
+                            }else if(res.err_msg == "get_brand_wcpay_request:cancel"){
+                                layer.msg("取消支付！");
+                            }else if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                layer.msg("支付成功！");
+                                setTimeout(function () {
+                                    window.location.href = "{:U('Order/orderList')}";
+                                },500);
+                            }
+                        }
+                );
+            }
+
+            function callpay()
+            {
+                if (typeof WeixinJSBridge == "undefined"){
+                    if( document.addEventListener ){
+                        document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+                    }else if (document.attachEvent){
+                        document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                        document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+                    }
+                }else{
+                    jsApiCall();
+                }
+            }
+        })
+
+    function setupWebViewJavascriptBridge(callback) {
+        if (window.WebViewJavascriptBridge) {
+            return callback(WebViewJavascriptBridge); }
+        if (window.WVJBCallbacks) {
+            return window.WVJBCallbacks.push(callback); }
+        if (!window.WebViewJavascriptBridge) {
+             document.addEventListener(
+            'WebViewJavascriptBridgeReady'
+            , function() {
+                callback(WebViewJavascriptBridge)
+            },
+            false
+        );
+        }
+        window.WVJBCallbacks = [callback];
+        var WVJBIframe = document.createElement('iframe');
+        WVJBIframe.style.display = 'none';
+        WVJBIframe.src = 'https://__bridge_loaded__';
+        document.documentElement.appendChild(WVJBIframe);
+        setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+        $(".xq_container").off('click','.make_sure_price');
+        $(".xq_container").on('click','.make_sure_price',function ( e ) {
+            e.preventDefault();
+            dataargs.i_o_id = "{:I('get.i_o_id')}";
+            layer.msg("正在唤起微信！");
+            bridge.callHandler('loginAction', dataargs, function(response) {
+                layer.closeAll();
+            })
+        }) 
+    })
+    </script>
+</block>

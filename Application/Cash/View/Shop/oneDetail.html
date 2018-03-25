@@ -1,0 +1,62 @@
+
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">订单管理</a></li>
+        <li class="active">评价详情</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>评价详情</h3>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="{:U('Shop/appraise',array('shop_id'=>$_REQUEST['shop_id']))}">评价列表</a>
+            </li>
+        </ul>
+    </div>
+    <style>
+        table tr td{
+            padding: 5px;
+        }
+    </style>
+        <!--表格内容-->
+        <div class="content-box-content">
+            <table style="width: 300px;height: auto;margin:0 20px;font: 微软雅黑">
+                
+                <tr>
+                    <td><h4><strong>评价人的头像：</strong></h4></td>
+                    <td><img src="{$res['head_pic']}" alt="" style="width: 100px;height:100px;border-radius:50px"></td>
+                </tr>
+                <tr>
+                    <td><h4><strong>评价时间：</strong></h4></td>
+                    <td>{$res['ctime']|date='Y-m-d H:i:s',###}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>评价人的姓名：</strong></h4></td>
+                    <td>{$res['mem_name']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>评价内容：</strong></h4></td>
+                    <td>{$res['content']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>评价人的回复：</strong></h4></td>
+                    <td>
+                        <if condition="empty($res['list'])">
+                            暂无回复
+                            <else/>
+                            <volist name="res['list']" id="vo">
+                                {$vo['r_m_name']}回复：{$vo['content']}
+                            </volist>
+                        </if>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>
+

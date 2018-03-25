@@ -1,0 +1,210 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/calendar.css">
+</block>
+<block name="main">
+<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="headleft" linkto="{:U('Shop/transactionnum')}"><img class="wh20 y3" src="__WEBPUBLIC__/Wechat/img/back2.png" style="transform:rotate(180deg);vertical-align: sub;"></div>
+                   <span class="headcenter">每日交易统计</span>
+                   <span class="headright colon" id="firstSelect2">筛选</span>
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div id="transactionimgbox" class="transactionimgbox">
+            
+        </div>
+        <div class="padlr10 bgfff">
+            <div class="ih30 padtb10 after">
+                <span class="dataStart"></span>
+                <span class="right dataEnd"></span>
+            </div>
+            <div class="flex revenuebox after">
+                <div class="flex1 br">
+                    <div class="fs1-2 member_num"></div>
+                    <div class="fs14 colb6">下单人数</div>
+                </div>
+                <div class="flex1">
+                    <div class="fs1-2 pay_member_num"></div>
+                    <div class="fs14 colb6">付款人数</div>
+                </div>
+            </div>
+            <div class="flex revenuebox after">
+                <div class="flex1 br">
+                    <div class="fs1-2 xia_member_num"></div>
+                    <div class="fs14 colb6">下单订单数</div>
+                </div>
+                <div class="flex1">
+                    <div class="fs1-2 pay_member_total_num"></div>
+                    <div class="fs14 colb6">付款人数</div>
+                </div>
+            </div>
+            <div class="flex revenuebox">
+                <div class="flex1 br">
+                    <div class="fs1-2">￥<span class="place_order_price"></span></div>
+                    <div class="fs14 colb6">下单金额(元)</div>
+                </div>
+                <div class="flex1">
+                    <div class="fs1-2">￥<span class="day_sum_price"></span></div>
+                    <div class="fs14 colb6">付款金额(元)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 日期选择器 -->
+    <div class="mask_calendar">
+        <div class="calendar">
+            <div class="headerWrapper" style="height: 50px; line-height: 50px; width: 100%; background: rgb(255, 255, 255); position: fixed; z-index: 9999;"><div class="headerTip" style="text-align: left; line-height: 50px; margin-left: 10px; font-size: 15px;">请选择开始结束日期</div><div class="comfire" style="height: 26px; line-height: 26px; width: 50px; color: rgb(46, 182, 168); position: absolute; right: 10px; text-align: center; font-size: 14px; cursor: pointer; top: 11px; border: 1px solid rgb(46, 182, 168); border-radius: 4px;">完成</div>
+            </div>
+        </div>
+        <div class="calendar_tishi">请选择结束日期...</div>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript" src="/Public/Wechat/js/echarts.common.min.js"></script>
+<script type="text/javascript" src="/Public/Wechat/js/date.js"></script>
+<script type="text/javascript">
+    var day = "{$_REQUEST['day']}" || 1;
+    var args = {shop_id:shop_id,day:day};
+    var myChart = echarts.init(document.getElementById('transactionimgbox'));
+    if (day==2) {
+        $(".headcenter").text("每月交易统计");
+        $('.headright').hide();
+        myChart.on('click', function (params) {
+            // 控制台打印数据的名称
+            if (args.time != params.name.replace("月","")) {
+                args.time = params.name.replace("月","");
+                getjson(args);
+            }
+        });
+    }
+    getjson(args);
+    function getjson(data){
+        requestUrl("{:U('Api/CurveColumn/businessGraph')}",data,function ( res ) {
+            var dat = res.data;
+            if ( res.flag == "success" ) {
+                option.xAxis[0].data = dat.curve.x_date.split(",").map(function( val ){
+                    return val.replace(/^(\d{1,})年(\d{2})月(\d{2})日/,'$2/$3');
+                });
+
+                option.series[0]['data'] = dat.curve.day_line.split(",");
+                var arr1=option.xAxis[0].data.slice(0,1);
+                var arr2=option.xAxis[0].data.slice(-1);
+                $(".dataStart").text(arr1[0]);
+                $(".dataEnd").text(arr2[0]);
+
+                $(".day_sum_price").text(dat.other_day_price.day_sum_price);
+                $(".member_num").text(dat.other_day_price.member_num);
+                $(".pay_member_num").text(dat.other_day_price.pay_member_num);
+                $(".xia_member_num").text(dat.other_day_price.xia_member_num);
+                $(".pay_member_total_num").text(dat.other_day_price.pay_member_total_num);
+                $(".place_order_price").text(dat.other_day_price.place_order_price);
+                $(".pay_order_price").text(dat.other_day_price.pay_order_price);
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);      
+            }else{
+                layer.msg( res.message );
+            }
+        },'POST',true);
+    }
+
+    // 指定图表的配置项和数据
+        option = {
+            color: ['#3398DB'],
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis : [
+                {
+                    type : 'category',
+                    data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    axisTick: {
+                        alignWithLabel: true
+                    }
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            series : [
+                {
+                    name:'付款金额',
+                    type:'bar',
+                    barWidth: '60%',
+                    data:[10, 52, 200, 334, 390, 330, 220]
+                }
+            ]
+        };
+
+        //日期
+        $('#firstSelect2').on('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            $('.mask_calendar').show();
+        });
+        $('.mask_calendar').on('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            if (e.target.className == "mask_calendar") {
+                $('.calendar').slideUp(200);
+                $('.mask_calendar').fadeOut(200);
+            }
+        });
+        $('#firstSelect2').calendarSwitch({
+            selectors : {
+                sections : ".calendar"
+            },
+            index :6,      //展示的月份个数
+            animateFunction : "slideToggle",        //动画效果
+            controlDay:true,//知否控制在daysnumber天之内，这个数值的设置前提是总显示天数大于90天
+            daysnumber : "186",     //控制天数
+            comeColor : "#2EB6A8",       //入住颜色
+            outColor : "#2EB6A8",      //离店颜色
+            comeoutColor : "#E0F4F2",        //入住和离店之间的颜色
+            comfireBtn:'.comfire',//确定按钮的class或者id
+            callback: function(data){
+            //回调函数
+                console.log('回调参数'+data);
+                $('.mask_calendar').fadeOut(200);
+                if(data.start&&data.end){
+                    getjson({shop_id:shop_id,day:day,start_time:data.start,end_time:data.end});
+                }
+            }   
+        });
+
+        $('a.weui-tabbar__item').eq(0).click(function(){
+            location.href="{:U('Shop/index')}";
+        })
+        $('a.weui-tabbar__item').eq(1).click(function(){
+            location.href="{:U('Msg/news')}";
+        })
+        $('a.weui-tabbar__item').eq(2).click(function(){
+            location.href="{:U('Sales/marketing')}";
+        })
+        $('a.weui-tabbar__item').eq(3).click(function(){
+            location.href="{:U('More/more')}";
+        })
+</script>
+</block>

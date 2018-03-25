@@ -1,0 +1,665 @@
+<extend name="Public:head"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                   
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <!-- <div class="addressback" linkto="{:U('Store/productlist')}"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div> -->
+                	<span>购物车</span>
+                    <span class="carbj none">编辑</span>
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!-- <div class="weui-cell__ft">
+                    
+                </div> -->
+            </div>
+    </div>
+
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="list"></div>
+        <div class="list2 none">
+            <div class="shopinfopjbox flex flexcenter">
+                <span>失效商品</span>
+            </div>
+            <div class="list2main"></div>
+        </div>
+    </div>
+
+    <!-- 商品规格详情 -->
+        <div id="actionSheet_wrap" style="display: none;">
+            <div class="weui-mask_transparent actionsheet__mask bg0-6"  style="opacity: 1" id="mask"></div>
+            <div class="weui-actionsheet weui-actionsheet_toggle" id="weui-actionsheet">
+                <div class="weui-actionsheet__menu myweuigg">
+                    <div class="myweuiggtop flex">
+                        <div class="myweuiggtopimg">
+                            <img src="__WEBPUBLIC__/Wechat/img/img (86).png">
+                        </div>
+                        <div class="flex1 ih25 padr10">
+                            <div class="fs1-2 flex flexvcenter"><span class="colred flex1 money">￥0.00</span><span class="x cssx"></span></div>
+                            <div class="fs14 colb6">库存<span class="num">0</span>件</div>
+                            <div class="fs14 colb6 shopgg">请选择商品规格</div>
+                        </div>
+                    </div>
+                    <div class="myweuiggmain padlr10">
+                        <!-- <div class="myweuiggbox">
+                            <div class="myweuiggboxtop">尺码</div>
+                            <div class="myweuiggboxfoot">
+                                <div><input type="radio" name="001" /><span>L</span></div>
+                                <div><input type="radio" name="001" /><span>xxl</span></div>
+                                <div><input type="radio" name="001" /><span>啊哈哈哈</span></div>
+                                <div><input type="radio" name="001" /><span>无情刻进去额</span></div>
+                                <div><input type="radio" name="001" /><span>0025</span></div>
+                                <div><input type="radio" name="001" /><span>asdas</span></div>
+                                <div><input type="radio" name="001" /><span>奥斯卡到了那上课了</span></div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="weui-actionsheet__action">
+                    <div class="weui-actionsheet__cell myweuiok" id="actionsheet_cancel">确定</div>
+                </div>
+            </div>
+        </div>
+
+    <!-- 商品优惠券详情 -->
+        <div id="actionSheet_wrap2" style="display: none;">
+            <div class="weui-mask_transparent actionsheet__mask bg0-6"  style="opacity: 1" id="mask2"></div>
+            <div class="weui-actionsheet weui-actionsheet_toggle" id="weui-actionsheet2">
+                <div class="weui-actionsheet__menu myweuilq pad10">
+                   <div class="myweuilqtop">
+                        <div class="myweuilqname fs14">巴黎贝甜(小白楼店)</div>
+                        <div><b class="colblack">领取优惠券</b></div>
+                   </div>
+                   <div class="myweuilqmain">
+                        <div class="flex lqbox lqbox1">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    ￥ <span class="fs35">10</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>优惠券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                        </div>         
+                        <div class="flex lqbox lqbox2">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    % <span class="fs35">90</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>打折券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                        </div>         
+                        <div class="flex lqbox lqbox3">
+                            <div class="flex1 flex lqleft textovh">
+                                <div class="flex flexcenter mgr5">
+                                    ￥ <span class="fs35">10</span>
+                                </div>
+                                <div class="flex1 textovh fs14">
+                                    <div>现金券</div>
+                                    <div>实付满199可用</div>
+                                    <div class="fs12 textovh">(<span>2017.08.09-2019.02.06</span><span>全场可用</span>)</div>
+                                </div>
+                            </div>
+                            <div class="lqright flex flexcenter">
+                                <span class="">点击领取</span>
+                            </div>
+                        </div>                  
+                   </div>
+
+                </div>
+                <div class="weui-actionsheet__action">
+                    <div class="weui-actionsheet__cell myweuiok2" id="actionsheet_cancel2">关闭</div>
+                </div>
+            </div>
+        </div>
+
+    <!-- 脚部 -->
+    <div class="carfoot flex none z5">
+        <div class="carfootl flex1">
+            <div class="carfootla">
+                <div class="fs1-2 colred allpri">0</div>
+                <div class="fs12">不含配送费</div> 
+            </div>
+            <div class="carfootlb none h100 flex ih50">
+                <div class=" checkdiv flex flexvcenter">
+                    <input class="carallcheck" type="checkbox" name="">
+                    <span></span>
+                </div>
+                <div>
+                    全选
+                </div>
+            </div>
+        </div>
+        <div class="carfootr">
+            去结算
+        </div>
+    </div>
+
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var allpri=0;//总价格
+    var p_id='';//商品id
+    var shopobj={};//shangpin
+    requestUrl("{:U('Api/Cart/cartList')}",{m_id:m_id},function(data){
+        if(data.flag='success'){
+            var shops=data.data;
+            //如果购物车为空，隐藏编辑和结算按钮
+            if(shops.length<=0){
+                $('.carbj,.carfoot').hide();
+                $('.list').addClass('wusj');
+            }else{
+                $('.carbj,.carfoot').removeClass('none');
+            }
+            // 有效产品
+            var str="";
+            // 无效产品
+            var str2="";
+            for(var index in shops){
+                var shop=shops[index];
+                // 缓存商品信息
+                // 可用
+                var newstr="";
+                // 不可用
+                var newstr2="";
+                for(var i in shops[index].product){
+                    if(shops[index].product[i].status==9||shops[index].product[i].is_stock==0){
+                        newstr2+='<div class="flex item" myattr="'+shops[index].product[i].attr_val_id+'" myattrname="'+shops[index].product[i].attr_val+'" cart_id="'+shops[index].product[i].cart_id+'" mypri='+shops[index].product[i].price+' mynum='+shops[index].product[i].num+'>'
+                    +'<div class="checkdiv none flex flexvcenter">'
+                        +'<input class="checkitem" type="checkbox" name="111">'
+                        +'<span></span>'
+                    +'</div>'
+                    +'<div class="flex1 flex carlist padtb10">'
+                        +'<div class="carshopimg">'
+                            +'<img src="'+shops[index].product[i].cover_pic+'">'
+                        +'</div>'
+                        +'<div class="flex1 ih20 fs14">'
+                            +'<div class="carshoptab1">'
+                                +'<div class="line2 h40">'+shops[index].product[i].title+'</div>'
+                                +'<div class="colb6 fs12">'+((shops[index].product[i].attr_val&&shops[index].product[i].attr_val!="0")?shops[index].product[i].attr_val:"暂无属性")+'</div>'
+                                +'<div>'
+                                    +'<span class="">￥'+shops[index].product[i].price+'</span>'
+                                    +'<span class="right colred shopnum">'+(shops[index].product[i].status==9?"商品已下架":"商品库存不足")+'</span>'
+                               +'</div>'
+                            +'</div>'
+                       +'</div>'
+                    +'</div>'
+                +'</div>';
+                    }else{
+                    newstr+='<div class="flex item" myattr="'+(shops[index].product[i].attr_val_id?shops[index].product[i].attr_val_id:"")+'" myattrname="'+shops[index].product[i].attr_val+'" cart_id="'+shops[index].product[i].cart_id+'" mypri='+shops[index].product[i].price+' mynum='+shops[index].product[i].num+'>'
+                    +'<div class="checkdiv flex flexvcenter">'
+                        +'<input class="checkitem" type="checkbox" name="111">'
+                        +'<span></span>'
+                    +'</div>'
+                    +'<div class="flex1 flex carlist padtb10">'
+                        +'<div class="carshopimg">'
+                            +'<img src="'+shops[index].product[i].cover_pic+'">'
+                        +'</div>'
+                        +'<div class="flex1 ih20 fs14">'
+                            +'<div class="carshoptab1 new">'
+                                +'<div class="line2 h40">'+shops[index].product[i].title+'</div>'
+                                +'<div class="colb6 fs12 ggtext">'+((shops[index].product[i].attr_val&&shops[index].product[i].attr_val!="0")?shops[index].product[i].attr_val:"暂无属性")+'</div>'
+                                +'<div>'
+                                    +'<span class="colred itempri">￥'+shops[index].product[i].price+'</span>'
+                                    +'<span class="right colb6 shopnum">x'+shops[index].product[i].num+'</span>'
+                               +'</div>'
+                            +'</div>'
+                            +'<div class="carshoptab2 new none w100">'
+                                +'<div class="flex">'
+                                    +'<div class="carreduce">-</div>'
+                                    +'<div class="carshopitemnum flex1">'
+                                        +'<input class="carnuminp" type="number" value="'+shops[index].product[i].num+'" />'
+                                    +'</div>'
+                                    +'<div class="caradd">+</div>'
+                                +'</div>'
+                                +'<div p_id="'+shops[index].product[i].p_id+'" type="'+shops[index].product[i].type+'" class="flex w100 cargg">'
+                                    +(shops[index].product[i].attr_val?'<span class="flex1 mgr5 ggtext">'+shops[index].product[i].attr_val+'</span><span><img class="w15" src="__WEBPUBLIC__/Wechat/img/img (15).png"></span>':"暂无属性")
+                                +'</div>'
+                            +'</div>'
+                       +'</div>'
+                    +'</div>'
+                +'</div>';
+
+                    }
+                }
+                if(newstr2){
+                   str2+='<div class="carmain old padlr10 mgb20 bgfff">'
+                            +'<div class="carmaintop flex">'
+                                +'<div class="checkdiv none">'
+                                    +'<input class="checktop" type="checkbox" name="111">'
+                                    +'<span></span>'
+                                +'</div>'
+                                +'<div class="flex1 flex textovh flexvcenter" linkto="{:U("Shop/shopdetail")}/shop_id/'+shop.shop_id+'">'
+                                    +'<img class="w15 mgr5" src="__WEBPUBLIC__/Wechat/img/img (5).png" />'
+                                    +'<span class="carname textovh mgr5">'+shop.shop_name+'</span>'
+                                    +'>'
+                                +'</div>'
+                            +'</div>'
+                            +'<div class="carmianmid">'+newstr2+'</div>'
+                        +'</div>'; 
+                }
+                if(newstr){
+                    str+='<div class="carmain padlr10 mgb20 bgfff">'
+                            +'<div class="carmaintop flex">'
+                                +'<div class="checkdiv">'
+                                    +'<input class="checktop" type="checkbox" name="111">'
+                                    +'<span></span>'
+                                +'</div>'
+                                +'<div class="flex1 flex textovh flexvcenter" linkto="{:U("Shop/shopdetail")}/shop_id/'+shop.shop_id+'">'
+                                    +'<img class="w15 mgr5" src="__WEBPUBLIC__/Wechat/img/img (5).png" />'
+                                    +'<span class="carname textovh mgr5">'+shop.shop_name+'</span>'
+                                    +'>'
+//                                    +'<span class="right carlq">领券</span>'
+                                +'</div>'
+                            +'</div>'
+                            +'<div class="carmianmid">'+newstr+'</div>'
+                    +'</div>';          
+                }    
+                      
+
+            }
+            $('.list').append(str);
+            $('.list2').append(str2);
+            if(!str2.length){
+                $('.list2').remove();
+            }else{
+                $('.list2').removeClass('none');
+            }
+            top_linkto();
+        }else{
+            layer.msg(data.message);
+        }
+              
+    },"POST");
+
+    $('body').on('click','input:checkbox',function () {
+        allpri=0;
+        console.log($(this).attr('name'));
+        if($(this).hasClass('carallcheck')){
+            // 点击全选按钮
+            var mytype=$(this)[0].checked;
+            console.log($(this).attr('checked'));
+           // $('input:checkbox').attr('checked',$(this)[0].checked?'checked':false);
+           $('input:checkbox').each(function(){
+                $(this)[0].checked=mytype;
+           })
+        }else if($(this).hasClass('checktop')){
+            // 是否点击了商家的全选按钮
+            if($(this)[0].checked){
+                console.log('全选');
+                $(this).parents('.carmain').find('input:checkbox').each(function(){
+                    $(this)[0].checked=true;
+                });
+                if($('.checktop').length==$('.checktop:checked').length){
+                    $('.carallcheck')[0].checked=true;
+                };
+            }else{
+                console.log('全不选');
+                $(this).parents('.carmain').find('input:checkbox').attr('checked',false);
+                $('.carallcheck')[0].checked=false;
+            }
+        }else{
+            // 点击商品选中按钮
+            if($(this)[0].checked){
+                if($(this).parents('.carmianmid').find('input:checked').length==$(this).parents('.carmianmid').find('input:checkbox').length){
+                    $(this).parents('.carmain').find('.checktop')[0].checked=true;
+                    if($('.checktop').length==$('.checktop:checked').length){
+                        $('.carallcheck')[0].checked=true;
+                    }
+                }
+            }else{
+                $('.carallcheck')[0].checked=false;
+                $(this).parents('.carmain').find('.checktop').attr('checked',false);
+            }
+        }
+
+        $('.carmianmid input:checked').each(function(){
+            allpri+=(+$(this).parents('.item').attr('mynum'))*(+$(this).parents('.item').attr('mypri'));
+        });
+        $('.allpri').html('￥'+allpri.toFixed(2));
+    });
+
+    // 点击编辑
+    $('.carbj').click(function(){
+        if($(this).hasClass('on')){
+            location.reload();
+            // $(this).removeClass('on').html('编辑');
+            // $('.carfootla').removeClass('none');
+            // $('.carfootlb').addClass('none');
+            // $('.carshoptab1.new').removeClass('none');
+            // $('.carshoptab2.new').addClass('none');
+            // $('.carfootr').removeClass('on').html('去结算');
+            // $('input:checkbox').attr('checked',false);
+            // allpri=0;
+            // $('.allpri').html('￥'+allpri);
+        }else{
+            $(this).addClass('on').html('完成');
+            $('.carfootlb').removeClass('none');
+            $('.carfootla').addClass('none');
+            $('.checkdiv').removeClass('none');
+            $('.carshoptab2.new').removeClass('none');
+            $('.carshoptab1.new').addClass('none');
+            $('.carfootr').addClass('on').html('删除');
+            $('input:checkbox').attr('checked',false);
+        }
+    });
+
+    // 点击加号
+    $('.list').on('click','.caradd',function(){
+        var that=$(this);
+        var num=parseInt(that.prev().find('.carnuminp').val());
+        var cart_id=that.parents('.item').attr('cart_id');
+        if(that.parents('.item').attr('myattr')){
+            var attr=that.parents('.item').attr('myattr');
+        }else{
+            var attr="";
+        }
+        requestUrl("{:U('Api/Cart/editCart')}",{cart_id:cart_id,num:num+1,attr:attr},function(res){
+                if(res.flag=="success"){
+                    num++;
+                    that.prev().find('.carnuminp').val(num);
+                    that.parents('.item').attr('mynum',num).find('.shopnum').html(num);
+                }else{  
+                    layer.msg(res.message);
+                }
+        },'POST');
+    });
+
+    // 点击减号
+    $('.list').on('click','.carreduce',function(){
+        var that=$(this);
+        var num=parseInt(that.next().find('.carnuminp').val());
+        var cart_id=that.parents('.item').attr('cart_id');
+        if(that.parents('.item').attr('myattr')){
+            var attr=that.parents('.item').attr('myattr');
+        }else{
+            var attr="";
+        }
+        if(num&&num>1){
+            requestUrl("{:U('Api/Cart/editCart')}",{cart_id:cart_id,num:num-1,attr:attr},function(res){
+                if(res.flag=="success"){
+                    num--;
+                    that.next().find('.carnuminp').val(num);
+                    that.parents('.item').attr('mynum',num).find('.shopnum').html(num);
+                }else{  
+                    layer.msg(res.message);
+                };
+            },'POST');
+        }else if(num==1){
+            delCart({cart_id:cart_id},that);
+        };
+    });
+
+    // 输入框输入事件
+    $('.list').on('change','.carnuminp',function(){
+        var that=$(this);
+        console.log(that.val())
+        var val=parseInt(that.val());
+        if(val<1||!val){
+            val=1;
+        };
+        var cart_id=that.parents('.item').attr('cart_id');
+        var myattr=that.parents('.item').attr('myattr');
+        var num=that.parents('.item').attr('mynum');
+        requestUrl("{:U('Api/Cart/editCart')}",{cart_id:cart_id,num:val,attr:myattr},function(res){
+                if(res.flag=="success"){
+                    that.val(val);
+                    that.parents('.item').attr('mynum',val).find('.shopnum').html(val);
+                }else{  
+                    layer.msg(res.message);
+                    that.val(num);
+                    that.parents('.item').attr('mynum',num).find('.shopnum').html(num);
+                };
+        },'POST',true);
+    });
+
+    // 点击删除购物车/去付款
+    $('.carfootr').click(function(){
+        if($(this).hasClass("on")){
+            console.log($('.checkitem:checked').length);
+            $('.checkitem:checked').each(function(){
+                // $(this).parents('.item').attr('cart_id');
+                (function(e,k){
+                    delCart({cart_id:e},k);
+                    console.log(e);
+                })($(this).parents('.item').attr('cart_id'),$(this));
+            });
+        }else {
+            if(addressnum){
+                if($('.checkitem:checked').length>0){
+                    var cart_idarr=[];
+                    $('.checkitem:checked').each(function(){
+                        cart_idarr.push($(this).parents('.item').attr('cart_id'));
+                    });
+                    var url="{:U('Order/confirmorder')}/cart_id/["+cart_idarr+"]";
+                    window.location.href = url;
+                }else{
+                    layer.msg('请选择商品');
+                }  
+            }else{
+                layer.open({
+                    title:"添加收货地址"
+                    ,content: '您还未添加收货地址，是否添加？'
+                    ,btn: ['立即添加', '稍后添加']
+                    ,yes: function(index, layero){
+                    //按钮【按钮一】的回调
+                        location.href="{:U('Address/newaddress')}/car/car"
+                    }
+                    ,btn2: function(index, layero){
+                        // location.href="{:U('Order/myorder')}/type/1";
+                    }
+                    ,cancel: function(){ 
+                        // location.href="{:U('Order/myorder')}/type/1";
+                    }
+                });
+            }
+            
+        };
+    });
+    //获取用户收货地址
+    var addressnum=false;
+    requestUrl("{:U('Api/Address/addressList')}",{mix_id:m_id,type:0,p:1},function(res){
+                if(res.flag=="success"){
+                    var data=res.data;
+                    if(res.data&&res.data!=[]){
+                        addressnum=true;
+                    }
+                }else{
+                    
+                };
+    },'POST',true);
+    //显示领券
+    $('.list').on('click','.carlq',function () {
+        console.log(123);
+        $('#actionSheet_wrap2').css('display','block');
+    });
+    $('#mask2,#actionsheet_cancel2').click(function(){
+        $('#actionSheet_wrap2').hide();
+    });
+    //点击规格显示价钱库存
+    function itemgg(e){
+        if($('.inpgg:checked').length==$('.myweuiggbox').length){
+            var attr=[];
+            var str=[];
+            $('.inpgg:checked').each(function(){
+                attr.push($(this).attr('myid'));
+                str.push($(this).next().text());
+            });
+            $('.shopgg').text(str.join(';'));
+            attr=attr.join('|');
+            requestUrl("{:U('Api/Product/productPrice')}",{p_id:shopobj.myp_id,attr:attr},function(res){
+                if(res.flag=="success"){
+                    var data=res.data;
+                    $('.myweuiggtop .money').html('￥'+data.price);
+                    $('.myweuiggtop .num').html(data.stock);
+                    $('#actionSheet_wrap').attr({
+                        "bignum":data.stock,
+                        "money":data.price,
+                        "attrname":str,
+                        "myattr":attr
+                    });
+                }else{
+                    layer.msg(res.message);
+                };
+            },'POST',true);
+        };
+    }; 
+    //显示规格
+    $('.list').on('click','.cargg',function () {
+        var that=$(this);
+        var type=that.attr('type');
+        if(type==1){
+            layer.msg('暂无属性');
+            return;
+        }
+        var item=that.parents('.item');
+        shopobj.money=item.attr('mypri');
+        shopobj.num=item.attr('mynum');
+        shopobj.obj=item;
+        shopobj.img=that.parents('.carlist').find('.carshopimg img').attr('src');
+        shopobj.myp_id=that.attr('p_id');
+        shopobj.cart_id=item.attr('cart_id');
+        shopobj.attrname=item.attr('myattrname');
+        shopobj.myattr=item.attr('myattr');
+        $('#actionSheet_wrap').css('display','block');
+        $('.shopgg').html(shopobj.attrname);
+        $('.money').html('￥'+shopobj.money);
+        var myarr=shopobj.myattr.split('|');
+        // $('#actionSheet_wrap .num').html(shopobj.num);
+        $('.myweuiggtopimg img').attr('src',shopobj.img);
+        requestUrl("{:U('Api/Product/productAttr')}",{p_id:shopobj.myp_id},function(res){
+                if(res.flag=="success"){
+                    var data=res.data;
+                    var str="";
+                    for(var index in data){
+                        var newstr="";
+                        for(var i in data[index].attr_val){
+                            var isok="";
+                            for(var k in myarr){
+                                if(myarr[k]==data[index].attr_val[i].val_id){
+                                    isok='checked';
+                                    break;
+                                };   
+                            };
+                            newstr+='<div class="mgr5"><input '+isok+' onchange="itemgg(this)" class="inpgg" myid="'+data[index].attr_val[i].val_id+'" type="radio" name="'+data[index].attr_name.attr_id+'" /><span>'+data[index].attr_val[i].attr_value+'</span></div>';
+                        }
+                        str+='<div class="myweuiggbox">'
+                                +'<div class="myweuiggboxtop">'+data[index].attr_name.attr_name+'</div>'
+                                +'<div class="myweuiggboxfoot">'+newstr+'</div>'
+                            +'</div>';
+                    };
+                    $('.myweuiggmain').html(str);
+                    itemgg();
+                }else{
+                    layer.msg(res.message);
+                }
+        },'GET',true);
+    });
+    $('#mask,#actionsheet_cancel,.x').click(function(){
+        $('#actionSheet_wrap').hide();
+    });
+    // 确认规格
+    $('#actionsheet_cancel').click(function(){
+        var item=$('#actionSheet_wrap');
+        requestUrl("{:U('Api/Cart/editCart')}",{cart_id:shopobj.cart_id,num:(shopobj.num>item.attr('bignum')?item.attr('bignum'):shopobj.num),attr:item.attr('myattr')},function(res){
+                if(res.flag=="success"){
+                    layer.msg('修改成功');
+                    if(shopobj.num>item.attr('bignum')){
+                        shopobj.num=item.attr('bignum');
+                    };
+                    shopobj.attrname=item.attr('attrname');
+                    shopobj.myattr=item.attr('myattr');
+                    shopobj.money=item.attr('money');
+                    var myitem=shopobj.obj;
+                    myitem.attr({
+                        "mypri":item.attr('money'),
+                        "myattr":item.attr('myattr'),
+                        "myattrname":item.attr('attrname'),
+                        "mynum":shopobj.num,
+                    });
+                    myitem.find('.itempri').html('￥'+shopobj.money);
+                    myitem.find('.shopnum').html(shopobj.num);
+                    myitem.find('.ggtext').html(shopobj.attrname);
+                    myitem.find('.carnuminp').val(shopobj.num);
+                }else{  
+                    layer.msg(res.message);
+                };
+        },'POST',true);
+    });
+    // 删除购物车
+    function delCart(data,k){
+        requestUrl("{:U('Api/Cart/delCart')}",data,function(res){
+                if(res.flag=="success"){
+                    layer.msg('删除成功！');
+                    if(k.parents('.carmianmid').find('.item').length==1){
+                        k.parents('.carmain').remove();
+                    }else{
+                        k.parents('.item').remove();
+                    };
+                    if(!$('.list').html()&&!$('.list2main').html()){
+                        setTimeout(function(){
+                            location.reload();
+                        },1000);
+                    }
+                }else{
+                    layer.msg(res.message);
+                }
+        },'POST',true);
+    };
+</script>
+<script type="text/javascript">
+    function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+        var iosin="{$_GET['iosin']}";
+        if(iosin==1){
+            if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+                $('.back').off('click');
+                $('.back').on('click',function(){
+                    bridge.callHandler('iosBack',{}, function(response) {
+                        //处理oc过来的回调
+                        layer.closeAll();
+                    })
+                });
+            }
+        }     
+    });
+</script>
+</block>

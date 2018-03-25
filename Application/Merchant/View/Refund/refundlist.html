@@ -1,0 +1,289 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <!-- <div class="headleft" linkto="{:U('Order/orderindex')}"><img class="wh20 y3" src="__WEBPUBLIC__/Wechat/img/back2.png" style="transform:rotate(180deg);vertical-align: sub;"></div> -->
+                    退款/售后
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    
+    <div class="flex managenav after fs0-8 z3">
+        <div class="flex1">
+            <div class="managenavitem on">
+                <span>待审核</span>
+            </div>
+        </div>
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>退款中</span>
+            </div>
+        </div>
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>已完成</span>
+            </div>
+        </div>
+        <div class="flex1">
+            <div class="managenavitem">
+                <span>全部</span>
+            </div>
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container list padtop100">
+        <!-- <div class="corderitem mgtop10 bgfff">
+                <div class="weui-cell fs0-8">
+                    <div class="weui-cell__bd">
+                        <div>退款编号:18454534846546516</div>
+                        <div class="colb6">创建时间:5489515314545</div>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="flex corderitemshop">
+                            <div class="carshopimg">
+                                <img class="w100" src="../img/img (86).png">
+                            </div>
+                            <div class="flex1 ih20 fs14">
+                                <div class="carshoptab1">
+                                    <div class="line2 h40">按时间段阿萨德看来就阿萨德阿萨德；阿斯达卡asdasdasd阿萨德点击我剪短发阿斯兰的接口打开</div>
+                                    <div class="colb6 fs12">
+                                        M；xxl；黑色 M；xxl
+                                    </div>
+                                    <div>
+                                        <span class="">x1</span>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="flex corderitemshop">
+                            <div class="carshopimg">
+                                <img class="w100" src="../img/img (86).png">
+                            </div>
+                            <div class="flex1 ih20 fs14">
+                                <div class="carshoptab1">
+                                    <div class="line2 h40">按时间段阿萨德看来就阿萨德阿萨德；阿斯达卡asdasdasd阿萨德点击我剪短发阿斯兰的接口打开</div>
+                                    <div class="colb6 fs12">
+                                        M；xxl；黑色 M；xxl
+                                    </div>
+                                    <div>
+                                        <span class="">x1</span>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="after fs12 blue padlr10 ih30">
+                        <span>仅退款</span>
+                        <span>待审核</span>
+                        <span>退款中</span>
+                        <span>退款成功</span>
+                        <span>退货退款</span>
+                        <span>退款关闭</span>
+                </div>
+                <div class="orderbutbox">
+                    <div class="allred">查看详情</div>
+                </div>
+        </div> -->
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+        //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+        var type=0;//0待审核，1退款中，2已完成，3全部
+        var dataargs = {"mix_id":shop_id,"p":1,"type":1,"status":1};
+        var flag= true;//防止ajax请求期间，对此触发请求数据      
+        function getJson(args) {
+            console.log(dataargs);
+            requestUrl("{:U('Api/ReturnOrder/returnOrderList')}",dataargs,function(data){
+                layer.closeAll();
+                putGoods(data,args);
+            },"POST");
+        }
+        getJson("shouci");
+    //头部导航点击
+    $('.managenav>div').click(function(){
+        $('.managenavitem').removeClass('on');
+        $(this).find('.managenavitem').addClass('on');
+        type=$(this).index();
+        dataargs.p=1;
+        if(type==2){
+            dataargs.status=4;
+        }else if(type==3){
+            dataargs.status="";
+        }else{
+            dataargs.status= +type+1;
+        }
+        getJson("shouci");
+    });
+    //查看详情
+    $('.list').on('click','.more',function(){
+        var url="{:U('Refund/refundinfo')}/return_id/"+$(this).attr('return_id');
+        location.href=url;
+    });
+    //添加商品到列表
+    function putGoods(data,args) {
+        console.log(data);
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $(".list").html('');
+                $(".list").addClass('wusj');
+                $(".nomore").remove();
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".list").append('<div class="texcen nomore">没有更多了！</div>');
+            }else{
+                $(".list").removeClass('wusj');
+                $(".nomore").remove();
+                var str="";
+                for(var i in shops){
+                    var newstr="";
+                    var shop=shops[i];
+                    if((type==0&&shop.status==0)||(type==1&&shop.status==1)||(type==2&&shop.status==3)||type==3){
+                        switch(+shop.status)
+                        {
+                            case 0:
+                               newstr="待审核";
+                                break;
+                            case 1:
+                               newstr="退款中";
+                                break;
+                            case 2:
+                               newstr="商家拒绝";
+                                break;
+                            case 3:
+                               newstr="已完成";
+                                break;
+                            case 9:
+                               newstr="撤销";
+                                break;
+                        }
+                        str+='<div class="corderitem mgtop10 bgfff">'
+                                +'<div class="weui-cell fs0-8">'
+                                    +'<div class="weui-cell__bd">'
+                                        +'<div>退款编号:'+shop.return_sn+'</div>'
+                                        +'<div class="colb6">创建时间:'+shop.ctime+'</div>'
+                                    +'</div>'
+                                +'</div>'
+                                +'<div class="">'
+                                    +'<div class="flex corderitemshop">'
+                                            +'<div class="carshopimg">'
+                                                +'<img class="w100" src="'+shop.cover_pic+'">'
+                                            +'</div>'
+                                            +'<div class="flex1 ih20 fs14">'
+                                                +'<div class="carshoptab1">'
+                                                    +'<div class="line2 h40">'+shop.title+'</div>'
+                                                    +'<div class="colb6 fs12">'+((shop.attr_val&&shop.attr_val!="0")?shop.attr_val:"暂无数据")+'</div>'
+                                                    +'<div>'
+                                                        // +'<span class="">x1</span>'
+                                                    +'</div>'
+                                                +'</div>'
+                                            +'</div>'
+                                    +'</div>'
+                                +'</div>'
+                                +'<div class="after fs12 blue padlr10 ih30">'
+                                        +'<span class="mgr5">'+shop.return_status+'</span>'
+                                        +newstr
+                                        // +'<span>退款中</span>'
+                                        // +'<span>退款成功</span>'
+                                        // +'<span>退货退款</span>'
+                                        // +'<span>退款关闭</span>'
+                                +'</div>'
+                                +'<div class="orderbutbox">'
+                                    +'<div return_id="'+shop.return_id+'" class="allred more">查看详情</div>'
+                                +'</div>'
+                            +'</div>';
+                    };   
+                };
+               if (args == "fenye") {
+                    $('.list').append(str);
+                }else{
+                    $('.list').html(str);
+                }
+                flag=true;
+            }
+        }else{
+            if(data.message=="数据为空"){
+                $(".list").html('').addClass('wusj');
+            }else{
+                layer.msg(data.message);
+            }
+            
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    };
+
+    function fenye(){
+        var $_zd = $(".corderitem").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".list");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $('.xq_container').on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+    </script>
+    <script type="text/javascript">
+        function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+        }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+        if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+            $('.back').off('click');
+            $('.back').on('click',function(){
+                bridge.callHandler('iosBack',{}, function(response) {
+                    //处理oc过来的回调
+                    layer.closeAll();
+                })
+            });
+        }
+    })
+    </script>
+</block>

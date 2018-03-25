@@ -1,0 +1,59 @@
+<extend name="Public:header"/>
+<block name="main">
+<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <span class="headleft y3" linkto="javascript:history.go(-1);"><img class="wh20" src="/Public/Wechat/img/back2.png" style="transform: rotate(180deg)"></span>
+                    运费设置
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="mgr10">金额</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input postage" type="number" placeholder="请输入运费金额"/>
+                </div>
+            </div>
+        </div>
+        <div class="pad10 colb3">
+            设置国内统一运费价格
+        </div>
+        <div class="addbut">
+            保存
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var dataargs = {shop_id:shop_id};
+    //获取商家运费
+    requestUrl("{:U('Api/Store/setPostage')}",dataargs,function(res){
+        if(res.flag=="success"){
+            if(res.data>0){
+                $('.postage').val(res.data);
+            }
+        }
+    },'GET');
+    $('.addbut').click(function(){
+        var postage = $('.postage').val();
+        dataargs.price = postage;
+        requestUrl("{:U('Api/Store/setPostage')}",dataargs,function(res){
+            if(res.flag=="success"){
+                layer.msg('保存成功');
+            }else{
+                layer.msg(res.message);
+            }
+        });
+    });
+</script>
+</block>

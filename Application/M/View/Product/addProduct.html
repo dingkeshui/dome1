@@ -1,0 +1,709 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">商品管理</a></li>
+        <li class="active">商品列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>商品管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="">
+                <a href="{:U('Product/productList')}">商品列表</a>
+            </li>
+            <li class="active">
+                <a href="{:U('Product/addProduct')}">添加商品</a>
+            </li>
+        </ul>
+    </div>
+        <!--表格内容-->
+        <div class="content-box-content">
+            <!--表单 start-->
+            <form action="{:U('Product/addProduct')}" method="post" class="form-horizontal form"  enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商品名称：</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control Product"  name="title" placeholder="商品名称">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商品邮费：</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control shoe-quantity postage"  name="postage" placeholder="商品邮费">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商品分类：</label>
+                    <div class="col-sm-9">
+                        <select onchange="getSecond(this.value)"  style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="parent_id">
+                            <option value="">一级分类</option>
+                            <volist name="list" id="vo">
+                                <option value="{$vo['cate_id']}">{$vo['category']}</option>
+                            </volist>
+                        </select>
+                        <select id="second_cate" onchange="getThird(this.value)" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="second_id">
+                            <option value="">二级分类</option>
+                        </select>
+                        <select id="three_cate" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="three_id">
+                            <option value="">三级分类</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">商品类型：</label>
+                    <div class="col-sm-6">
+                        <span>电子卡券：<input type="radio" class="typeRadio"  name="type" value="1" >&nbsp;&nbsp;
+                        实物商品：<input type="radio" class="typeRadio on"  name="type" value="0" checked></span>
+                    </div>
+                </div>
+                <div class="form-group type1 hidden">
+                    <label class="col-sm-3 control-label">商品价格（电子商品填）：</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control shoe-quantity price"  name="price" placeholder="商品价格">
+                    </div>
+                </div>
+                <div class="form-group type1 hidden">
+                    <label class="col-sm-3 control-label">商品规格（电子商品填）：</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control shoe-quantity goods_attr"  name="goods_attr" placeholder="商品规格（电子商品填）">
+                    </div>
+                </div>
+                <div class="form-group type1 hidden">
+                    <label class="col-sm-3 control-label">商品库存（电子商品填）：</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control shoe-quantity stock"  name="stock" placeholder="商品库存">
+                    </div>
+                </div>
+
+
+                 <div class="form-group goosdAttr">
+                    <label class="col-sm-3 control-label">商品规格：</label>
+                    <div class="col-sm-6">
+                        <div class="control-label noneText" style="text-align:left;">请先选择分类</div>
+                        <div class="butBox">
+                            <!-- <div class="butMain">
+                                <blockquote>
+                                    <p>颜色</p>
+                                </blockquote>
+                                <span type="button" style="margin-right: 10px;margin-bottom:10px;color: #333" class="btn btn-default">红色</span>
+                                <span type="button" style="margin-right: 10px;margin-bottom:10px;color: #333" class="btn btn-default">蓝色</span>
+                                <span type="button" style="margin-right: 10px;margin-bottom:10px;color: #333" class="btn btn-default">紫色</span>
+                                <span type="button" style="margin-right: 10px;margin-bottom:10px;color: #333" class="btn btn-default">黑色</span>
+                            </div> -->
+                        </div>
+                        <div class="showAttr hidden">
+                                <div style="margin-bottom: 10px; position: relative;line-height: 40px;background-color: #ccc;text-align: center;">
+                                    填写价格库存
+                                     <button type="button" style="position: absolute;right: 5px;top: 3px;" class="btn allPic btn-success">填写统一价格/库存</button>
+                                </div>
+                            <!-- <div class="showBox col-sm-4" style="border: 1px solid #E5E5E5;border-radius:5px;margin-right:10px;margin-bottom:10px;padding: 10px 10px;">
+                                <div class="text-center">
+                                    <span style="margin-right: 10px;margin-bottom: 10px;" class="btn btn-default active">红色</span>
+                                    <span style="margin-right: 10px;margin-bottom: 10px;" class="btn btn-default active">XXL</span>
+                                    <span style="margin-right: 10px;margin-bottom: 10px;" class="btn btn-default active">100</span>
+                                </div>
+                                <div class="text-center">
+                                    <input class="col-sm-2 form-control text-center" style="margin-right: 10px;" placeholder="请输入价格" type="text" name="">
+                                    <input class="col-sm-2 form-control text-center" style="margin-right: 10px;"  placeholder="请输入库存" type="text" name="">
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="form-group">
+                    <label class="col-sm-3 control-label">商品销量：</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control shoe-quantity"  name="sales" placeholder="商品销量">
+                    </div>
+                </div> -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">是否上架：</label>
+                    <div class="col-sm-6">
+                        <span>上架：<input type="radio" class="on"  name="is_sale" value="1" checked>&nbsp;&nbsp;
+                        下架：<input type="radio" class=""  name="is_sale" value="0"></span>
+                    </div>
+                </div>
+                <!-- <div class="form-group">
+                    <label class="col-sm-3 control-label">商品排序：</label>
+                    <div class="col-sm-6">
+                        <input type="number" class="form-control shoe-quantity"  name="sort" placeholder="商品排序">
+                    </div>
+                </div> -->
+
+                <!-- <div class="form-group">
+                    <label class="col-sm-3 control-label">商品来源地址：</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control shoe-quantity"  name="url" placeholder="商品来源地址">
+                    </div>
+                </div> -->
+                <div class="form-group">
+                    <label for="content" class="col-sm-3 control-label"><em class="prompt-red">*</em>商品描述：</label>
+                    <div class="col-sm-9">
+                        <textarea name="content" class="form-control" id="content" style="width:auto;height:300px;visibility:hidden;" ></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商品封面图片：</label>
+                    <div id="imgPreview">
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"></label>
+                    <div class="col-sm-4">
+                        <input type="file" name="head_pic_upload" class="cover_pic"/>
+                    </div>
+                    <!--<div class="col-sm-4">-->
+                        <!--<input type="text" class="singelimg"/>-->
+                    <!--</div>-->
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商品的多图展示：</label>
+                    <div id="imgPreviewMore">
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"></label>
+                    <div class="col-sm-4">
+                        <input type="file" name="pic_upload" class="mix_pic" multiple/>
+                        <span style="color: red">框选上传多张图片</span>
+                    </div>
+                    <!--<div class="col-sm-4">-->
+                        <!--<input type="text" class="playimg"/>-->
+                    <!--</div>-->
+                </div>
+                <!-- 规格和价格 -->
+                <input type="hidden" name="attrs" class="attrs">
+                <input type="hidden" name="prices" class="prices">
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" class="btn btn-default btn-primary add-to-here make_sure">确认添加</button>
+                    </div>
+                </div>
+            </form>
+            <!--表单 end-->
+        </div>
+    </div>
+</div>
+
+<!-- 统一价格库存 -->
+<div class="openDiv2" style="padding: 20px;display: none;">
+    <input type="number" name="" class="allPicinp form-control" style="margin-bottom: 10px;width: 100%" placeholder="统一价格">
+    <input type="number" class="allNuminp form-control" name="" style="width: 100%;" placeholder="统一库存">
+</div>
+<include file="Public:footer"/>
+<!--商品的封面图和商品的多图的展示-->
+<script>
+    var shop_id="{$shop_id}";
+    var cate_id=[];//当前分类ID
+    var allPicnum=[];//统一的价格和库存
+    $(".playimg").on('change',function () {
+        var imgsrc = $(this).val().split(",");
+        imgsrc.forEach(function (val,idx) {
+                $("#imgPreviewMore").append("<div class='parents' style='float: left'>" +
+                                    "<div class='two_del'>[-]</div>" +
+                                    "<input type='hidden' value='"+val+"' name='pic[]'/>"+
+                                    "<div><img src='"+val+"' style='width: 150px;'></div></div>");
+        });
+    })
+
+    $(".singelimg").on('change',function () {
+        var imgsrc = $(this).val().split(",");
+        if (imgsrc.length>1) {
+            layer.msg("默认取第一张！");
+        }
+        $("#imgPreview").append(" <div class='parents'><div class='two_del'>[-]</div><input type='hidden' value='"+imgsrc[0]+"' name='cover_pic'/>"+
+                                    "<div><img src='"+imgsrc[0]+"' style='width: 150px;'></div></div>");
+    });
+
+    $("#imgPreview,#imgPreviewMore").on('click','.two_del',function(){
+        $(this).parent().remove();
+    });
+
+    var isok=true;
+    $(".make_sure").click(function () {
+        if(!isok){
+            return;
+        }
+        isok=false;
+        var title = $('input[name="title"]').val();  //标题
+        var content = $('textarea[name="content"]').val();  //富文本
+        var pic=[];//封面图
+        var lunPic=[];//轮播图
+        var type= +$('input[name="type"].on').val();//虚拟物品还实物
+        var is_sale= +$('input[name="is_sale"].on').val();//是否上架
+        if($('#imgPreview img').length){
+            pic=$('#imgPreview img').attr('src');
+        }else{
+            layer.msg('请上传封面图');
+            isok=true;
+            return;
+        }
+        if($('#imgPreviewMore img').length){
+            $('#imgPreviewMore img').each(function(){
+                lunPic.push($(this).attr('src'));
+            });
+        }else{
+            layer.msg('请上传轮播图');
+            isok=true;
+            return;
+        }
+        
+        if(!title){
+            alert("商品名称不能为空!");
+            isok=true;
+            return false;
+        }
+        var datas={
+            shop_id:shop_id,
+            title:title,
+            pic:pic,
+            pic_more:lunPic.join(','),
+            content:content,
+            type:type,
+            is_sale:is_sale,
+            postage:$('.postage').val()?$('.postage').val():0
+        };
+
+        if(!type){
+            if (attrs && attrs.length>0) {
+                $('.attrs').val(JSON.stringify(attrs));
+            }else{
+                layer.msg('请选择规格');
+                isok=true;
+                return;
+            }
+            var pri = /^\d{1,}(.\d{1,2}){0,1}$/;
+            var prices = [];
+            $(".showBox[idstr]").each(function () {
+                var attr = $(this).attr("idstr");
+                var valstr = $(this).attr("valstr");
+                var price = $(this).find(".inpPic").val();
+                var stock = $(this).find(".inpNum").val();
+                if ( !pri.test(price) || !/^[0-9]{1,}$/.test(stock)) {
+                    layer.msg("价格和库存不合法！");
+                    isok=true;
+                    return;
+                }
+                prices.push({attr:attr,price:price,stock:stock,valstr:valstr});
+            });
+            datas.attrs=JSON.stringify(attrs);
+            datas.prices=JSON.stringify(prices);
+        }else{
+            var data_price=$('.price').val();
+            var data_goods_attr=$('.goods_attr').val();
+            var data_stock=$('.stock').val();
+            if(!$.trim(data_price)){
+                layer.msg('请输入价格');
+                isok=true;
+                return;
+            }
+            if($.trim(data_goods_attr)){
+               datas.goods_attr=data_goods_attr;
+            }
+            if(!$.trim(data_stock)){
+                layer.msg('请输入库存');
+                isok=true;
+                return;
+            }
+            datas.price=data_price;
+            datas.stock=data_stock;
+        }
+//        if(!content){
+//            alert("商品的描述不能为空!");return false;
+//        }
+        var i=1;
+        while ( cate_id && cate_id.length > 0 ) {
+            if (i == 1) {
+
+                datas.parent_id = cate_id.pop();
+
+            }else if(i == 2){
+
+                datas.second_id = cate_id.pop();
+
+            }else if(i == 3){
+
+                datas.three_id = cate_id.pop();
+
+            }
+            ++i;
+        }
+
+        $.post("{:U('Api/Product/addGoods')}",datas,function(data){
+            if(data.flag=="error"){
+                layer.msg(data.message);
+                isok=true;
+            }else{
+                layer.msg('添加成功');
+                setTimeout(function(){
+                    location.href="{:U('Product/productList')}";
+                },1000);
+            }
+        });
+        
+    });
+
+    //是否上架
+    $('input[name="is_sale"]').click(function(){
+        $('input[name="is_sale"]').removeClass('on');
+        $(this).addClass('on');
+    })
+
+
+    //选择实物还是电子卡券
+    $('input:radio[name="type"]').click(function(){
+        $('.input.on').removeClass('on');
+        $(this).addClass('on');
+        if($(this).val()==1){
+            $('.type1').removeClass('hidden');
+            $('.goosdAttr').hide();
+        }else{
+            $('.type1').addClass('hidden');
+            $('.goosdAttr').show();
+        }
+    });
+
+    //填写统一价格
+    $('.allPic').click(function(){
+        layer.open({
+            title:'填写统一价格/库存'
+            ,type:1
+            ,content:$('.openDiv2')
+            ,btn: ['确定','关闭']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+                var allPic=$('.allPicinp').val();
+                var allNum=$('.allNuminp').val();
+                if(!$.trim(allNum)&&!$.trim(allPic)){
+                    layer.msg('不能为空');
+                    return;
+                }
+                allPicnum[0]=allPic;
+                allPicnum[1]=allNum;
+                $('.inpBox').each(function(){
+                    $(this).find('.inpPic').val(allPic);
+                    $(this).find('.inpNum').val(allNum);
+                })
+                layer.close(index);
+            }
+            ,btn2: function(index, layero){
+            //按钮【按钮二】的回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+            ,cancel: function(){ 
+            //右上角关闭回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+        });
+    });
+
+    /**上传图片的方法*/
+    function ajaxPic(callback){
+        var filesize = this.files[0].size;
+        if (filesize > 10000*1024) {
+            alert("请上传大小在500k以下的图片");
+            return false;
+        }
+        var files = this.files;
+        console.log(files);
+        var i = '';
+        for(var obj of files){
+            var picname = obj.name;
+            var reader = new FileReader();
+            reader.onload = function(e){
+                var src = e.target.result;
+                $.ajax({
+                    type:"post",
+                    url:"{:U('Product/uploadPic')}",
+                    data: {"pic":src,"pic_name":picname},
+                    dataType : "json",
+                    success : function(data){
+                        if (typeof callback == 'function') callback(data);
+                    }
+                });
+            }
+            reader.readAsDataURL(obj);
+        }
+    }
+
+    $("input[name='head_pic_upload']").on('change',function(){
+        ajaxPic.call(this,function(data){
+            var data = JSON.parse(data);
+            if(data['flag'] == "success"){
+                    $("#imgPreview").append(" <div class='parents'><div class='one_del'>[-]</div><input type='hidden' value='" + data['data']['path'] + "' name='cover_pic'/>" +
+                    "<div><img src='" + '/' + data['data']['path'] + "' style='width: 150px;'></div></div>");
+                    bindClick();
+
+            }
+        });
+    });
+    function bindClick() {
+        $(".one_del").click(function () {
+            var url = "{:U('Product/delPhoto')}";
+            var file_path = $(this).next().val();
+            $.post(url,{file_path:file_path},function(data){
+                if(data == 1){
+                    $("#imgPreview").html("");
+                }else{
+                    alert("删除失败！请重新尝试！");
+                }
+            })
+        })
+    }
+    bindClick();
+
+    $("input[name='pic_upload']").on('change',function(){
+        ajaxPic.call(this,function(data){
+            var data = JSON.parse(data);
+            if(data['flag'] == "success"){
+                $("#imgPreviewMore").append("<div class='parents' style='float: left'>" +
+                "<div class='one_more_del'>[-]</div>" +
+                "<input type='hidden' value='"+data['data']['path']+"' name='pic[]'/>"+
+                "<div><img src='"+'/'+data['data']['path']+"' style='width: 150px;'></div></div>");
+                bindClickMore();
+            }
+        });
+    });
+
+    function bindClickMore() {
+        $(".one_more_del").off("click");
+        $(".one_more_del").click(function () {
+            var url = "{:U('Product/delPhoto')}";
+            var file_path = $(this).next().val();
+            $.post(url,{file_path:file_path},function(data){
+                if(data == 1){
+                    $(this).parent().remove();
+                }else{
+                    alert("删除失败！请重新尝试！");
+                }
+            }.bind(this))
+        })
+    }
+    bindClickMore();
+
+
+    /**三级分类*/
+    function getSecond(val){
+        if(val){
+            cate_id=[];
+            cate_id.push(val);
+            getAttr();
+        }
+        $("#second_cate").empty();
+        $("#three_cate").empty();
+        var area = "<option value=''>三级分类</option>";
+        $("#three_cate").append(area);
+        var option = "<option value=''>二级分类</option>";
+        $.ajax({
+            url:"{:U('Product/ajaxSecond')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                console.log(data);
+                if(data.length>0){
+                    for(var i=0;i<data.length;i++){
+                        option += "<option value='"+data[i].cate_id+"'>"+data[i].category+"</option>"
+                    }
+                }else{
+                    
+                }
+                $("#second_cate").append(option);
+            }
+        });
+    }
+    function getThird(val){
+        if(val){
+            cate_id.push(val);
+            getAttr()
+        }
+        $("#three_cate").empty();
+        var option = "<option value=''>三级分类</option>";
+        $.ajax({
+            url:"{:U('Product/ajaxThird')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                if(data.length>0){
+
+                    for(var i=0;i<data.length;i++){
+                        option += "<option value='"+data[i].cate_id+"'>"+data[i].category+"</option>"
+                    }
+                }else{
+                    
+                }
+                $("#three_cate").append(option);
+            }
+        });
+    }
+
+    $('#three_cate').change(function(){
+        if($(this).val()){
+            cate_id.push($(this).val());
+            getAttr();
+        };
+    })
+//获取属性
+    function getAttr(){
+        $.get("{:U('Api/Product/attributes')}",{shop_id:shop_id,cate_id:cate_id[cate_id.length-1]},function(data){
+            data=JSON.parse(data);
+            if(data.flag=="error"){
+                layer.msg(data.message);
+            }else{
+                $('.noneText').hide();
+                var result=data.data;
+                var str="";
+                if(!result.length){
+                    $('.butBox').html('暂无属性');
+                }else{
+                    for(var h in result){
+                        if(result[h].vals.length){
+                            var newstr="";
+                            for(var k in result[h].vals){
+                                newstr+='<span val_id="'+result[h].vals[k].val_id+'" style="margin-right: 10px;margin-bottom:10px;color: #333" val_id class="btn btn-default">'+result[h].vals[k].attr_value+'</span>';
+                           }
+                           str+='<div class="butMain">'
+                                    +'<blockquote>'
+                                       +'<p>'+result[h].attr_name+'</p>'
+                                    +'</blockquote>'
+                                    +'<div class="specitem" attr_id="'+result[h].attr_id+'">'
+                                    +newstr
+                                    +'</div>'
+                                +'</div>';
+                        }
+                    }
+                    if(str.length){
+                        $('.butBox').html(str);
+                    }else{
+                        $('.butBox').html('暂无属性');
+                    }
+                    
+                }
+            }
+        });
+    }
+
+// 点击属性值按钮
+    $('.butBox').on('click','span.btn',function(){
+        if($(this).hasClass('btn-success')){
+            $(this).removeClass('btn-success').css('color','#333');
+        }else{
+            $(this).addClass('btn-success').css('color','#fff');
+        }
+        showPrice();
+    });
+
+    var attrs = [];
+    function showPrice() {
+        var arr = [];
+        attrs = [];
+        $(".specitem").each(function () {
+            var arrinner = [];
+            var vals = [];
+            $(this).find('.btn-success[val_id]').each(function () {
+                if ( $(this).attr("val_id") != "" ) {
+                    vals.push($(this).attr("val_id"));
+                    arrinner.push($(this).attr("val_id")+","+$(this).text());
+                }
+            })
+            if ( arrinner.length > 0 ) {
+                arr.push(arrinner);
+            }
+            if ( vals.length > 0) {
+                var iobj = {attr:$(this).attr("attr_id"),val:vals.join("|")};
+                attrs.push( iobj );
+            }
+        });
+        console.log( arr,attrs );
+        showInput( joint( arr ) );
+    }
+
+    var cur = [];
+    var already = [];
+    function showInput( arr ) {
+        var str = '';
+        arr = arr[0];
+        cur = [];
+        if ( arr && arr.length > 0 ) {
+            for (var i = 0; i < arr.length; i++) {
+                var item = arr[i].split(",");
+                cur.push(item[0]);
+                if ( already.indexOf( item[0] ) == -1 ) {
+                    str+='<div class="showBox col-sm-5" style="border: 1px solid #E5E5E5;border-radius:5px;margin-right:10px;margin-bottom:10px;padding: 10px 10px;" idstr="'+item[0]+'" valstr="'+item[1]+'">'
+                                +'<div class="text-center">'
+                    var valus = item[1].split("|");
+                    for (var j = 0; j < valus.length; j++) {
+                        str+='<span style="margin-right: 10px;margin-bottom: 10px;" class="btn btn-default active">'+valus[j]+'</span>'
+                    }
+                    str += '</div><div class="text-center inpBox clearfix">'
+                                    +'<input class="form-control inpPic pull-left text-center" style="margin-right: 5%;width:47.5%;" '+(allPicnum.length?"value="+allPicnum[0]+"":"")+' placeholder="输入价格" type="number" name="">'
+                                    +'<input class="form-control inpNum pull-left text-center" style="width:47.5%;" '+(allPicnum.length?"value="+allPicnum[1]+"":"")+' placeholder="输入库存" type="number" name="">'
+                                +'</div></div>';
+                    already.push(item[0]);
+                }
+            }
+        }
+        if ( already && already.length > 0 ) {
+            for (var i = 0; i < already.length; i++) {
+                if ( cur.indexOf(already[i]) == -1 ) {
+                    $("[idstr='"+already[i]+"']").remove();
+                }
+            }
+        }
+        already = cur;
+        $('.showAttr').removeClass('hidden');
+        $(".showAttr").append( str );
+    }
+
+    function joint( arr ){
+        if( arr.length >= 2){
+            var tmparr = [];
+            var arr1 = arr.shift();
+            var arr2 = arr.shift();
+            for(var ind1 in arr1 ){
+                for(var ind2 in arr2 ){
+                    var new1 = arr1[ind1].split(",");
+                    var new2 = arr2[ind2].split(",");
+                    tmparr.push(new1[0]+"|"+new2[0]+","+new1[1]+"|"+new2[1]);
+                }
+            }
+            arr.unshift(tmparr);
+            arr = joint(arr);
+        }else{
+            return arr;
+        }
+        return arr;
+    }
+</script>
+
+<script  src="__WEBPUBLIC__/Common/kindeditor/kindeditor-min.js"></script>
+<script  src="__WEBPUBLIC__/Common/kindeditor/lang/zh_CN.js"></script>
+<script>
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('textarea[name="content"]', {
+            resizeType : 1,
+            uploadJson : '__WEBPUBLIC__/Common/kindeditor/php/upload_json.php',
+            fileManagerJson :
+                    '__WEBPUBLIC__/Common/kindeditor/php/file_manager_json.php',
+            allowPreviewEmoticons : false,
+            items:[
+                'source', '|', 'undo', 'redo', '|', 'cut', 'copy','|', 'justifyleft',
+                'justifycenter', 'justifyright',
+                'justifyfull', 'clearhtml', 'selectall', '|', 'formatblock',
+                'fontname', 'fontsize', '|', 'forecolor',
+                'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough','image','multiimage'
+            ],
+            afterBlur:function(){this.sync();}
+        });
+    });
+</script>

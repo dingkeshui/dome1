@@ -1,0 +1,307 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <!-- <div class="headleft" linkto="{:U('Order/order')}"><img class="wh20 y3" src="__WEBPUBLIC__/Wechat/img/back2.png" style="transform:rotate(180deg);vertical-align: sub;"></div> -->
+                	订单详情
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="padb50">
+        <div class="ih30 pad10 colb6">基本信息</div>
+        <div class="bgfff pad10">
+            <div class="flex">
+                <span class="w80">订单编号:</span><span class="textovh flex1 order_sn"></span><span class="right colred status">待付款</span>
+            </div>
+            <div class="flex">
+                <span class="w80">创建时间:</span><span class="textovh flex1 ctime"></span>
+            </div>
+            <div class="flex pay_time none">
+                <span class="w80">付款时间:</span><span class="textovh flex1 content"></span>
+            </div>
+            <div class="flex send_time none">
+                <span class="w80">发货时间:</span><span class="textovh flex1 content"></span>
+            </div>
+            <div class="flex affirm_time none">
+                <span class="w80">成交时间:</span><span class="textovh flex1 content"></span>
+            </div>
+            <div class="flex none">
+                <span class="w80">关闭时间:</span><span class="textovh flex1"></span>
+            </div>
+            <div class="flex none">
+                <span class="w80">关闭原因:</span><span class="line2 flex1"> </span>
+            </div>
+            <div class="flex">
+                <span class="w80">买家昵称:</span><span class="textovh flex1 buy_name"></span>
+            </div>
+            <div class="flex">
+                <div class="w80">买家留言:</div>
+                <div class="line2 flex1 remark"></div>
+            </div>
+        </div>
+        <div class="ih30 pad10 colb6">订单内容</div>
+        <div class="">
+            <div class="corderitem padtb10 mgb10 bgfff">
+                <!-- <div class="weui-cell fs0-8">
+                    <div class="weui-cell__bd">
+                        <div>订单号:18454534846546516</div>
+                        <div class="colb6">成交时间:5489515314545</div>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <div class="colred">已完成</div>
+                        <div class="colb6"></div>
+                    </div>
+                </div> -->
+                <div class="list">
+                    <!-- <div class="flex corderitemshop">
+                            <div class="carshopimg">
+                                <img class="w100" src="../img/img (86).png">
+                            </div>
+                            <div class="flex1 ih20 fs14">
+                                <div class="carshoptab1">
+                                    <div class="line2 h40">按时间段阿萨德看来就阿萨德阿萨德；阿斯达卡asdasdasd阿萨德点击我剪短发阿斯兰的接口打开</div>
+                                    <div class="colb6 fs12">
+                                        M；xxl；黑色 M；xxl
+                                    </div>
+                                    <div>
+                                        <span class="colred">￥159.02</span>
+                                        <span class="right colb6">x1</span>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="flex corderitemshop">
+                            <div class="carshopimg">
+                                <img class="w100" src="../img/img (86).png">
+                            </div>
+                            <div class="flex1 ih20 fs14">
+                                <div class="carshoptab1">
+                                    <div class="line2 h40">按时间段阿萨德看来就阿萨德阿萨德；阿斯达卡asdasdasd阿萨德点击我剪短发阿斯兰的接口打开</div>
+                                    <div class="colb6 fs12">
+                                        M；xxl；黑色 M；xxl
+                                    </div>
+                                    <div>
+                                        <span class="colred">￥159.02</span>
+                                        <span class="right colb6">x1</span>
+                                    </div>
+                                </div>
+                            </div>
+                    </div> -->
+                </div>
+                <div class="padlr10">
+                        <div class="after padtb10">
+                            <div class="colb6 fs14"><span>商品总价</span><span class="right">￥<span class="total_goods_price">0.00</span></span></div>
+                            <div class="colb6 fs14"><span>快递运费</span><span class="right">￥ <span class="postage_price"></span></span></div>
+                            <!-- <div class="colb6 fs14"><span>优惠券</span><span class="right">￥154.00</span></div> -->
+                            <!-- <div class="colb6 fs14"><span>众享豆</span><span class="right">￥154.00</span></div> -->
+                            <div class="fs1-2"><span>订单总价</span><span class="right">￥ <span class="total_price"></span></span></div>
+                        </div>
+                </div>
+                <div class="pad10 fs1-2">
+                   <span>需付款</span><span class="right">￥ <span class="real_price"></span></span>
+                </div>
+            </div>
+        </div>
+        <div class="ih30 pad10 colb6">收货地址</div>
+        <div class="pad10 bgfff">
+            <div class="flex">
+                <div class="w80">收货人:</div>
+                <div class="flex1"><span class="addr_name mgr5"></span><span class="addr_tel"></span></div>
+            </div>
+             <div class="flex colb6 fs0-8">
+                <div class="w80">收货地址:</div>
+                <div class="flex1 addr_address">群文件千库王嘉尔我去千库王嘉尔我去千库王嘉尔我去玩金额口群文件噢IE交钱</div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="orderbutbox bgfff orderfoot">
+        <!-- <div class="">删除订单</div>
+        <div class="">联系买家</div>
+        <div class="">查看物流</div>
+        <div class="allred">提醒付款</div>
+        <div class="allred">发货</div> -->
+    </div>
+
+</block>
+<block name="footerjs">
+    <script type="text/javascript">
+        if(isApp==1||isApp==2||isA==1||isA==2){
+            $('.orderfoot').css('bottom','0px');
+        }
+        var order_id = "{$_GET['order_id']}";
+        // 阻止事件冒泡
+        $('.orderfoot').on('click','div',function(event){
+            event.stopPropagation();
+        });
+        //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+        // 删除订单
+        // $('.orderfoot').on('click','.removeorder',function(){
+        //     var order_id=$(this).parents('.corderitem').attr('mtid');
+        //     layer.open({
+        //           content: '确定删除该订单么'
+        //           ,btn: ['确定', '取消']
+        //           ,yes: function(index, layero){
+        //             //按钮【按钮一】的回调
+        //             requestUrl("{:U('Api/ProductOrder/delOrder')}",{order_id:order_id},function(data){
+        //                 if(data.flag="success"){
+        //                     $(this).parents('.corderitem').remove();
+        //                 }else{
+
+        //                 }
+        //                 layer.msg(data.message);
+        //             },"POST");
+        //             layer.close(index); //如果设定了yes回调，需进行手工关闭
+        //           }
+        //           ,btn2: function(index, layero){
+        //             //按钮【按钮二】的回调
+                    
+        //             //return false 开启该代码可禁止点击该按钮关闭
+        //           }
+        //     });
+        // });
+        // 发货
+        $('.orderfoot').on('click','.sendgoods',function(){
+            var url="{:U('Order/choicelogistics')}/order_id/"+order_id;
+            window.location.href = url;
+        });
+        //查看物流
+        $('.orderfoot').on('click','.skwl',function(){
+            var wlnum=$(this).attr('wlnum');
+            layer.open({
+                title:'物流单号'
+              ,content: wlnum
+              ,btn: ['确定', '取消']
+              ,yes: function(index, layero){
+                //按钮【按钮一】的回调
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+              }
+              ,btn2: function(index, layero){
+                //按钮【按钮二】的回调
+                
+                //return false 开启该代码可禁止点击该按钮关闭
+              }
+            });
+        });
+        //提醒付款
+        $('.orderfoot').on('click','.txfk',function(){
+            requestUrl("{:U('Api/ProductOrder/informPushMember')}",{order_id:order_id},function(data){
+                if(data.flag=="success"){
+                    layer.msg('提醒成功！');
+                }else{
+                    layer.msg(data.message);
+                }
+            },"POST");
+        });
+        // 查看评价
+        $('.orderfoot').on('click','.lookspan',function(){
+            var url="{:U('Order/evaluatelist')}/order_id/"+order_id;
+            window.location.href = url;
+        });
+        //获取订单信息
+        requestUrl("{:U('Api/StoreOrder/orderDetail')}",{order_id:order_id},function(res){
+            if(res.flag=="success"){
+                var data=res.data;
+                $('.order_sn').html(data.order_sn);
+                $('.ctime').html(data.ctime);
+                $('.buy_name').html(data.buy_name);
+                if(data.remark){
+                    $('.remark').html(data.remark);
+                }else{
+                    $('.remark').html("未留言");
+                }
+                $('.total_price').html(data.total_price);
+                $('.real_price').html(data.real_price);
+                $('.addr_name').html(data.addr_name);
+                $('.addr_tel').html(data.addr_tel);
+                $('.addr_address').html(data.addr_address);
+                $('.postage_price').html(data.postage_price);
+                $('.total_goods_price').html(data.total_goods_price);
+                // 判断状态
+                    var newstr={};//存储状态
+                    switch(+data.status)
+                    {
+                    case 0:
+                        newstr.str1="创建";
+                        newstr.str2="待付款";
+                        newstr.str3='<div  class="allred txfk">提醒付款</div>';
+                        break;
+                    case 1:
+                        newstr.str1="付款";
+                        newstr.str2="待发货";
+                        newstr.str3='<div class="allred sendgoods">发货</div>';
+                        $('.pay_time').removeClass('none').find('.content').html(data.pay_time);
+                        break;
+                    case 2:
+                        newstr.str1="发货";
+                        newstr.str2="已发货";
+                        newstr.str3='<div class="mgr5 skwl" wlnum="'+data.delivery_number+'">查看物流</div>';
+                        $('.pay_time').removeClass('none').find('.content').html(data.pay_time);
+                        $('.send_time').removeClass('none').find('.content').html(data.send_time);
+                        break;
+                    case 3:
+                        newstr.str1="成交";
+                        newstr.str2="待评价";
+                        newstr.str3='<div class="mgr5 skwl" wlnum="'+data.delivery_number+'">查看物流</div>'; 
+                        $('.pay_time').removeClass('none').find('.content').html(data.pay_time);
+                        $('.send_time').removeClass('none').find('.content').html(data.send_time);
+                        $('.affirm_time').removeClass('none').find('.content').html(data.affirm_time);
+                        break;
+                    case 4:
+                        newstr.str1="成交";
+                        newstr.str2="已完成";
+                        newstr.str3='<div class="mgr5 lookspan">查看评价</div>'; 
+                        $('.pay_time').removeClass('none').find('.content').html(data.pay_time);
+                        $('.send_time').removeClass('none').find('.content').html(data.send_time);
+                        $('.affirm_time').removeClass('none').find('.content').html(data.affirm_time);
+                        break;
+                    case 9:
+                        newstr.str1="创建";
+                        newstr.str2="已取消";
+                        newstr.str3=''; 
+                        $('.orderbutbox').hide();
+                        break;
+                    }
+
+                $('.status').html(newstr.str2);
+                $('.orderfoot').html(newstr.str3);
+                var str="";
+                for(var shop in data.product){
+                    str+='<div class="flex corderitemshop">'
+                            +'<div class="carshopimg">'
+                                +'<img class="w100" src="'+data.product[shop].cover_pic+'">'
+                            +'</div>'
+                            +'<div class="flex1 ih20 fs14">'
+                                +'<div class="carshoptab1">'
+                                    +'<div class="line2 h40">'+data.product[shop].title+'</div>'
+                                    +'<div class="colb6 fs12">'+((data.product[shop].attr&&data.product[shop].attr!="0")?data.product[shop].attr:"暂无属性")+'</div>'
+                                    +'<div>'
+                                        +'<span class="colred">￥'+data.product[shop].price+'</span>'
+                                        +'<span class="right colb6">x'+data.product[shop].num+'</span>'
+                                    +'</div>'
+                               +'</div>'
+                            +'</div>'
+                    +'</div>';
+                }
+                $('.list').html(str);
+            }else{
+                layer.msg(res.flag);
+            }
+        });
+    </script>
+</block>

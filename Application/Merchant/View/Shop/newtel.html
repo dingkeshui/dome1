@@ -1,0 +1,87 @@
+<extend name="Public:header" />
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	绑定新手机
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="mgr10">新手机号</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input account" type="tel" placeholder="请输入新手机号"/>
+                </div>
+            </div>
+            <div class="weui-cell weui-cell_vcode">
+                <div class="weui-cell__hd mgr5">图形码</div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input verify_code" type="number" placeholder="请输入图形码"/>
+                </div>
+                <div class="weui-cell__ft">
+                    <img class="weui-vcode-img changeimg" src="{:U('Api/Login/verify')}" />
+                </div>
+            </div>
+            <div class="weui-cell weui-cell_vcode">
+                <div class="weui-cell__hd mgr5">
+                    验证码
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input telcode" type="number" placeholder="请输入短信验证码">
+                </div>
+                <div class="weui-cell__ft">
+                    <div class="weui-vcode-btn getcode">获取验证码</div>
+                </div>
+            </div>
+        </div>
+        <div class="addbut">
+            绑定
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+    <script type="text/javascript">
+        /**点击更换图片验证码*/
+        var curind = 0;
+        var url = "{:U('Api/Login/verify')}";
+        $(".changeimg").on('click',function(){
+            curind++;
+            $(this).attr("src",url+"/"+curind);
+        });
+
+        /**点击获取短信验证码*/
+        getCode("{:U('Api/Login/sendVerify')}","bind",1);
+
+        /**点击绑定*/
+        $('.addbut').click(function(){
+            var tel = $('.account').val().trim();
+            var code = $('.telcode').val().trim();
+            if(tel==""){
+                layer.msg("请输入新手机号");return;
+            }else if(!(/^1[3|4|5|7|8]\d{9}$/.test(tel))){
+                layer.msg("请输入正确的手机号");return;
+            }
+            var subData = {mixture_id:shop_id,type:1,account:tel,vc:code,vc_type:'bind'};
+            requestUrl("{:U('Api/Login/bindTel')}",subData,function(res){
+                if(res.flag=="success"){
+                    layer.msg('绑定成功');
+                    setTimeout(function(){
+                        location.href = "{:U('Shop/security')}";
+                    },1200);
+                }else{
+                    layer.msg(res.message);
+                }
+            });
+        });
+    </script>
+</block>

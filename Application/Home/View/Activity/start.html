@@ -1,0 +1,191 @@
+<extend name="Public:head"/>
+
+<block name="headdiv">
+	<style type="text/css">
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        .yb_big{
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items:center;
+        }
+        .yb_main{
+            width: 80%;
+            position: relative;
+        }
+        .yb_bgimg{
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .yb_info{
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+        }
+        .yb_w100{
+            width: 100%;
+        }
+        .yb_topimg{
+            margin-top: 25%;
+             margin-left: 15%;
+            margin-right: 15%; 
+        }
+        .yb_mid{
+            display: flex;
+            padding: 0px 3%;
+        }
+        .yb_name{
+            text-align:center;
+            margin-top:10px; 
+        }
+        .yb_foot{
+            margin: 10px 25%;
+        }
+        .yb_tab{
+            position: relative;
+            bottom: -20px;
+            left: 0px;
+            width: 100%;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+        }
+        .yb_lidiv{
+            width: 8px;
+            height: 8px;
+            display: inline-block;
+            border-radius: 50%;
+            border:1px solid #BD0000;
+            box-sizing: border-box;
+        }
+        .yb_lidiv.on{
+            background-color: #BD0000;
+        }
+        .yb_uldivbox{
+            flex:5.8;
+            height: 30%;
+            overflow: hidden;
+        }
+        .yb_uldiv{
+            width:800%;
+            display: flex;
+            transition: transform 0.4s;
+        }
+        .yb_w20{
+            flex:2.05;
+        }
+    </style>
+</block>
+<block name="main">
+   <div class="yb_big">
+       <div class="yb_main">
+           <img class="yb_bgimg bg1" src="__WEBPUBLIC__/Wechat/nowimg/bg1.png">
+           <div class="yb_info">
+               <div class="yb_topimg"><img class="yb_w100 text" src="__WEBPUBLIC__/Wechat/nowimg/text.png"></div>
+               <div class="yb_mid">
+                   <div class="yb_w20 yb_ldiv"><img class="yb_w100 imgl" src="__WEBPUBLIC__/Wechat/nowimg/l.png"></div>
+                   <div class="yb_uldivbox">
+                        <div class="yb_uldiv">
+                            <div>
+                                <img class="yb_w100 yb_ybimg bp" src="/Public/Wechat/nowimg/yb1.png">
+                                <p class="yb_name">冰皮月饼</p>
+                            </div>
+                             <div>
+                                <img class="yb_w100 yb_ybimg hds" src="/Public/Wechat/nowimg/yb2.png">
+                                <p class="yb_name">红豆沙月饼</p>
+                            </div>
+                             <div>
+                                <img class="yb_w100 yb_ybimg sg" src="/Public/Wechat/nowimg/yb3.png">
+                                <p class="yb_name">水果月饼</p>
+                            </div>
+                             <div>
+                                <img class="yb_w100 yb_ybimg ss" src="/Public/Wechat/nowimg/yb4.png">
+                                <p class="yb_name">苏氏月饼</p>
+                            </div>
+                             <div>
+                                <img class="yb_w100 yb_ybimg wr" src="/Public/Wechat/nowimg/yb5.png">
+                                <p class="yb_name">五仁月饼</p>
+                            </div>
+                             <div>
+                                <img class="yb_w100 yb_ybimg xr" src="/Public/Wechat/nowimg/yb6.png">
+                                <p class="yb_name">鲜肉月饼</p>
+                            </div>
+                             <div>
+                                <img class="yb_w100 yb_ybimg xdh" src="/Public/Wechat/nowimg/yb7.png">
+                                <p class="yb_name">咸蛋黄月饼</p>
+                            </div>
+                             <div>
+                                <img class="yb_w100 yb_ybimg yt" src="/Public/Wechat/nowimg/yb8.png">
+                                <p class="yb_name">云腿月饼</p>
+                            </div>
+                        </div>
+                    </div>
+                   <div class="yb_w20 yb_rdiv"><img class="yb_w100 imgr" src="__WEBPUBLIC__/Wechat/nowimg/r.png"></div>
+               </div>
+               <div class="yb_foot">
+                    <img onclick="goend()" class="yb_w100 goend" src="__WEBPUBLIC__/Wechat/nowimg/ok.png">
+               </div>
+               <div class="yb_tab">
+                   <span class="yb_lidiv on"></span>
+                   <span class="yb_lidiv"></span>
+                   <span class="yb_lidiv"></span>
+                   <span class="yb_lidiv"></span>
+                   <span class="yb_lidiv"></span>
+                   <span class="yb_lidiv"></span>
+                   <span class="yb_lidiv"></span>
+                   <span class="yb_lidiv"></span> 
+               </div>
+           </div>
+       </div>
+   </div>
+</block>
+<block name="footerjs">
+	<script type="text/javascript">
+	       window.onload=function(){
+	        var numa=parseInt($(".yb_big").css("width"))/parseInt($(".yb_big").css("height"));
+	        var numb=parseInt($(".yb_main").css("width"))/parseInt($(".yb_main").css("height"));
+	        console.log(numa,numb);
+	        if(numa>numb){
+	            $(".yb_main").css("width","90%");
+	        }else{
+	            $(".yb_main").css("width","80%");
+	        }
+	       };      
+	        var num=1;
+	        $(".yb_rdiv").click(function(){
+	             num=((num+1)==9?1:num+1);
+	            showstr(num);
+	        });
+	        $(".yb_ldiv").click(function(){
+	            num=((num-1)==0?8:num-1);
+	            showstr(num);
+	        });
+	        function showstr(e){
+	            $(".yb_lidiv").removeClass("on");
+	            $(".yb_lidiv").eq(e-1).addClass("on");
+	            var x=-12.5*(e-1)+"%"
+	            $(".yb_uldiv").css("transform","translateX("+x+")");
+	        }
+
+	        function goend(){
+                requestUrl("{:U('Api/Activity/chooseMoon')}",{"m_id":m_id,"yb":num},function(data){
+                    layer.closeAll();
+                    if(data.flag=="success"){
+                        var url="{:U('Activity/end')}&bgid="+num+"" ;
+                        window.location.href = url;
+                    }else{
+                        layer.msg(data.message)
+                    }
+                },"POST",true);
+	        	
+	        }
+
+            
+	</script> 
+</block>

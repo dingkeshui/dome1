@@ -1,0 +1,139 @@
+<extend name="Public:header"/>
+<block name="main">
+		
+		   <div class="weui-tab ding_tab">
+               <div class="weui-navbar">
+                    <div class="weui-navbar__item ding_on">
+                       推荐的用户
+                    </div>
+                    <div class="weui-navbar__item">
+                       推荐的商家
+                    </div>
+                </div>
+           </div>
+           <div class="xq_container">
+               <div class="weui-cells fs0-8 mat0 ">
+          
+			   </div>
+		   </div>
+
+</block>
+<block name="footerjs">
+	<script>
+	    // 切换tab
+	    $(".weui-navbar>div").click(function () {
+	     flag= true;//防止ajax请求期间，对此触发请求数据
+	     dataargs.p=1;
+       	 $(".weui-navbar>div").removeClass("ding_on");
+       	 $(this).addClass("ding_on");
+       	 if($(this).index()==0){
+            getJson("shouci");
+       	 }else{
+            getJson2("shouci");
+       	 }
+       })
+        var  num=1;
+        var dataargs = {p:1,m_id:m_id};
+		getJson("shouci");
+		var flag= true;//防止ajax请求期间，对此触发请求数据
+		//添加商品到列表
+		function putRecommend(data,args,mynum) {
+			//console.log(data);
+			if(args=="shouci"){
+                $(".xq_container").removeClass("wusj");
+				$(".xq_container").html("");
+			}
+			if(data.flag == 'success'){
+				var recommend = data.data;
+				if((!recommend || recommend.length == 0 ) && args == "shouci") {
+					$(".xq_container").addClass('wusj');
+				}else if((!recommend || recommend.length == 0 ) && args == "fenye"){
+					$(".xq_container").append('<div class="texcen">没有更多了！</div>');
+				}else{
+					var str ="";
+					for(var index in recommend){
+						var res = recommend[index];
+						str += '<div class="weui-cell">'+
+								'<div class="weui-cell__hd pad0-10">'+
+								'<img class="hnrimg" src="'+res.head_pic+'"/>'+
+								'</div>'+
+								'<div class="weui-cell__bd colbbb">'+
+								'<div class="">'+
+								'<span class="col000">'+(res.nick_name ? res['nick_name'].substr(0,4) : "众享通赢")+'</span>'+
+								'<span class="fr">推荐时间</span>'+
+								'</div>'+
+								'<div class="">'+
+								'<span class="">'+(res.account ? res.account : "未绑手机")+'</span>'+
+								'<span class="fr">'+res.time+'</span>'+
+								'</div>'+
+								'</div>'+
+								'</div>';
+					}
+					if (args == "fenye") {
+						$(".xq_container").append(str);
+					}else{
+						$(".xq_container").html(str);
+					}
+					flag= true;
+					top_linkto();
+				}
+			}else{
+				layer.msg(data.message);
+			}
+
+			if (args == "shouci") {
+				num=mynum;
+				fenye();
+			}
+		}
+
+		function getJson(args) {
+			requestUrl("{:U('Api/Member/recommend')}",dataargs,function(data){
+				putRecommend(data,args,1);
+				layer.closeAll();
+			},"GET",true);
+		}
+
+		function getJson2(args) {
+			requestUrl("{:U('Api/Member/recommendShop')}",dataargs,function(data){
+				putRecommend(data,args,2);
+				layer.closeAll();
+			},"GET",true);
+		}
+
+
+		function fenye(){
+			var $_zd = $(".weui-cell").height();//获取每个单项的高度
+			var length = 6;//定义预加载的数量，提前三个加载数据
+			var $_par = $(".xq_container");//获取包裹容器
+			var winheight = $(window).height();//获取窗口高度
+			var curpage = 1;//存储当前的页数v
+			$(function(){
+				$(window).on("scroll",function(e){
+					if($(".xq_container").hasClass("wusj")){
+
+					}else{
+						if(flag){
+						var self = $(this);
+						var scrtop = self.scrollTop() + winheight;
+						var docheight = $_par.height();
+						//console.log(scrtop + "=" + docheight + "=" + $_zd);
+						if(scrtop > docheight - ( length * $_zd ) ){
+							flag = false;
+							dataargs.p = dataargs.p +1;
+							if(num==1){
+                                getJson("fenye");
+                               
+							}else{
+                                getJson2("fenye");
+							}
+							
+						 }
+					   }
+					}
+					
+				});
+			});
+		}
+	</script>
+</block>

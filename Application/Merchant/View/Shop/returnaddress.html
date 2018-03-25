@@ -1,0 +1,235 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="headleft"><img class="wh20 y3" src="__WEBPUBLIC__/Wechat/img/back2.png" style="transform:rotate(180deg);vertical-align: sub;"></div>
+                    退货地址
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <!--<div class="pad10 bgfff mgtop10">-->
+            <!--<div><span class="mgr10">李白</span><span>18522713545</span></div>-->
+            <!--<div class="after padb5">天津市河西区南京诶爱上仨阿萨德啊数据库和奥斯卡的阿萨德阿萨德阿萨德</div>-->
+            <!--<div class="ih30 flexvcenter padtop5 re">-->
+                <!--<input class="defaultinp" type="radio" checked name="defaultaddress">-->
+                <!--<span>-->
+                    <!--<span class="bgimgspan"></span>-->
+                    <!--<label>默认地址</label>-->
+                <!--</span>-->
+                <!--<div class="flex y3 right flexvcenter">-->
+                    <!--<img class="wh20 mgr10" src="__WEBPUBLIC__/Wechat/shopimg/bj.png">-->
+                    <!--<img class="wh20" src="__WEBPUBLIC__/Wechat/shopimg/remove.png">-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+    </div>
+
+    <div class="dingfoot shopspecfoot">
+        <a class="inblock w100 h100 colfff newAddr">
+            <img class="wh20 y3" style="vertical-align: sub;" src="__WEBPUBLIC__/Wechat/shopimg/add.png">
+            新增地址
+        </a>
+    </div>
+</block>
+<block name="footerjs">
+<script>
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    var dataargs={
+        "mix_id":shop_id,
+        "type":1,
+        "p" : 1
+    };
+    var type = "{$_GET['type']}";
+    var backurl = "{:U('Shop/shopcenter')}";
+    var addurl =  "{:U('Shop/newaddress')}";
+    var editurl = "{:U('Shop/editaddress')}";
+    if(type==1){
+        var return_id = "{$_GET['return_id']}";
+        backurl = "{:U('Shop/choiceaddress')}/type/1/return_id/"+return_id;
+        addurl += "/type/1/return_id/"+return_id;
+        editurl += "/type/1/return_id/"+return_id;
+    }
+    $('.headleft').attr('linkto',backurl);
+    top_linkto();
+    
+    var flag= true;//防止ajax请求期间，对此触发请求数据      
+    function getJson(args) {
+        requestUrl("{:U('Api/Address/addressList')}",dataargs,function(data){
+            layer.closeAll();
+            putGoods(data,args);
+        });
+    }
+
+    $(function(){
+        getJson("shouci");
+    });
+
+    //添加商品到列表
+    function putGoods(data,args) {
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+               $(".xq_container").addClass('wusj');
+
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".xq_container").append('<div class="texcen nulldata">没有更多了！</div>');
+            }else{
+                $(".nulldata").remove();
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    //console.log(shop.cover_pic);
+                    str += '<div class="pad10 bgfff mgtop10 addritem">'
+                                +'<div><span class="mgr10">'+shop.name+'</span><span>'+shop.phone+'</span></div>'
+                                +'<div class="after padb5">'+shop.province+shop.city+shop.area+shop.address+'</div>'
+                                +'<div class="ih30 flexvcenter padtop5 re">';
+                    if(shop.is_default==1){
+                        str +=      '<span class="clickspan on" data-id="'+shop.addr_id+'">'
+                                        +'<span class="bgimgspan mgr5"></span>'
+                                        +'<label>默认地址</label>'
+                                    +'</span>'
+                    }else{
+                        str +=    '<span class="clickspan" data-id="'+shop.addr_id+'">'
+                                        +'<span class="bgimgspan mgr5"></span>'
+                                        +'<label>设为默认</label>'
+                                    +'</span>'
+                    }
+
+                    str +=          '<div class="flex y3 right flexvcenter">'
+                                        +'<img class="wh20 mgr10 editAddr" src="__WEBPUBLIC__/Wechat/shopimg/bj.png" data-id="'+shop.addr_id+'">'
+                                        +'<img class="wh20 delAddr" src="__WEBPUBLIC__/Wechat/shopimg/remove.png" data-id="'+shop.addr_id+'">'
+                                    +'</div>'
+                                +'</div>'
+                            +'</div>';
+                }
+                if (args == "fenye") {
+                    $('.xq_container').append(str);
+                }else{
+                    $('.xq_container').html(str);
+                }
+                flag=true;
+                top_linkto();
+            }
+        }else{
+            layer.msg(data.message);
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    function fenye(){
+        var $_zd = $(".addritem").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".xq_container");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $('.xq_container').on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+
+    /**添加新地址*/
+    $('.newAddr').click(function(){
+        if(is_readonly==1){
+            layer.msg('无操作权限');return;
+        }
+        location.href = addurl;
+    });
+
+    /**修改默认地址*/
+    $('.xq_container').on('click','.clickspan',function(){
+        if(is_readonly==1){
+            layer.msg('无操作权限');return;
+        }
+        var self = $(this);
+        var a_id = self.attr('data-id');
+        var subInfo = {mix_id:shop_id,type:1,addr_id:a_id};
+        console.log(subInfo);
+        requestUrl("{:U('Api/Address/setDefault')}",subInfo,function(res){
+            if(res.flag=="success"){
+//                $('.clickspan.on').removeClass("on").find('label').text('设为默认');
+//                self.addClass("on");
+//                self.find('label').html('默认地址');
+                setTimeout(function(){
+                    location.reload();
+                },1000);
+                layer.msg(res.message);
+            }else{
+                layer.msg(res.message);
+            }
+        });
+    });
+
+
+    /**删除地址*/
+    $('.xq_container').on('click','.delAddr',function () {
+        if(is_readonly==1){
+            layer.msg('无操作权限');return;
+        }
+        var addr_id = $(this).attr('data-id');
+        var self = $(this);
+        layer.open({
+            content: '确认删除该地址？'
+            ,btn: ['确认', '取消']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+                requestUrl("{:U('Api/Address/delAddress')}",{addr_id:addr_id},function(res){
+                      if(res.flag=="success"){
+                          layer.msg("删除成功");
+                          self.parent().parent().parent().remove();
+                      }  else{
+                          layer.msg(res.message);
+                      }
+                })
+                layer.close(index);
+            }
+            ,btn2: function(index, layero){
+            //按钮【按钮二】的回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+            ,cancel: function(){ 
+            //右上角关闭回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+        });
+    });
+
+    /**编辑地址*/
+    $('.xq_container').on('click','.editAddr',function(){
+        var id = $(this).attr('data-id');
+        var url = editurl+"/addr_id/"+id;
+        location.href = url;
+    });
+
+</script>
+</block>

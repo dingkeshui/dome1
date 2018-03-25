@@ -1,0 +1,147 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	身份验证
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cells">
+            <div class="weui-cell none tel">
+                <div class="weui-cell__hd"><label class="mgr10">手机号</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" placeholder="输入手机号"/>
+                </div>
+            </div>
+            <div class="weui-cell weui-cell_vcode">
+                <div class="weui-cell__hd mgr5">图形码</div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input imgcode" type="number" placeholder="请输入图形码"/>
+                </div>
+                <div class="weui-cell__ft">
+                    <img class="weui-vcode-img changeverify" src="{:U('Api/Login/verify')}" />
+                </div>
+            </div>
+            <div class="weui-cell weui-cell_vcode">
+                <div class="weui-cell__hd mgr5">
+                    验证码
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input telcode" type="tel" placeholder="请输入短信验证码">
+                </div>
+                <div class="weui-cell__ft">
+                    <a href="javascript:;" class="weui-vcode-btn getcode">获取验证码</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="addbut addbut1 btn_sure">
+                <span>确认</span>
+        </div>
+    </div>
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var type = "{$_GET['type']}"; //进入这个页面的来源，type=1换绑手机号，type=2修改密码，type=3忘记密码
+    var vc_type = "";
+    if(type==1){
+        vc_type = 'newBind';
+    }else if(type==2){
+        vc_type = 'edit_pass';
+    }else if(type==3){
+        vc_type = 'getPass' ; 
+        $('.tel').removeClass('none');
+    }
+    /**点击更换图片验证码*/
+    var curind = 0;
+    var url = "{:U('Api/Login/verify')}";
+    $(".changeverify").on('click',function(){
+        if(type==3){
+            if (!(/^1{1}[3|5|7|8|4]{1}[0-9]{9}$/.test($('.tel input').val()))) {
+                layer.msg("手机格式错误！");
+                return;
+            }
+        }
+        curind++;
+        $(this).attr("src",url+"/"+curind);
+    });
+    /**获取商家的账号*/
+    var account = '';
+    if(type!=3){
+        requestUrl("{:U('Api/Store/getPass')}",{shop_id:shop_id},function(res){
+            if(res.flag=="success"){
+                account = res.data.account;
+            }
+        },'GET');
+    }
+    /**点击获取短信验证码*/
+    $('.getcode').on('click',function(){
+        var self = $(this);
+        if(self.attr('disabled')) return;
+        var imgcode = $('.imgcode').val().trim();
+        if(imgcode==""){
+            layer.msg('请输入图形码');return;
+        }
+        if(type==3){
+            if (!(/^1{1}[3|5|7|8|4]{1}[0-9]{9}$/.test($('.tel input').val()))) {
+                layer.msg("手机格式错误！");
+                return;
+            }
+            account=$('.tel input').val();
+        }
+        requestUrl("{:U('Api/Login/sendVerify')}",{verify_code:imgcode,tel:account,type:vc_type,port:1},function(res){
+            if (res.flag == "success") {
+                var i = 60;
+                var time = setInterval(function(){
+                    self.text(i+"秒").attr("disabled","true");
+                    --i;
+                    if (i == 0) {
+                        clearInterval(time);
+                        self.text("获取验证码").removeAttr("disabled");
+                    }
+                },1000);
+            }else{
+                layer.msg(res.message);
+            }
+        })
+    });
+    /**点击确定按钮,验证短信验证码是否正确*/
+    $('.btn_sure').click(function(){
+        var telcode = $('.telcode').val().trim();
+        if(telcode==""){
+            layer.msg('请输入验证码');return;
+        }
+        var url = '';
+        if(type==1){
+            url = "{:U('Shop/newtel')}";//绑定新手机号
+        }else if(type==2){
+            url = "{:U('Shop/modifypas')}";//修改密码
+        }else if(type==3){
+            url = "{:U('Shop/modifypas')}&type=2&tel="+$('.tel input').val();//找回密码
+        }
+
+        if(type==3){
+            account=$('.tel input').val();
+        }
+
+        requestUrl("{:U('Api/Login/isSureCode')}",{account:account,vc:telcode,port:1,type:vc_type},function(res){
+            if(res.flag=="success"){
+                location.href = url;
+            }else{
+                layer.msg(res.message);
+            }
+        })
+    });
+</script>
+</block>

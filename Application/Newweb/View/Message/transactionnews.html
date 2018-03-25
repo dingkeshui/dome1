@@ -1,0 +1,166 @@
+<extend name="Public:head"/>
+
+<block name="main">
+<!-- 头部 -->
+     <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="addressback" linkto="{:U('Message/messagenews')}"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div>
+                    交易消息
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <div class="weui-cell__ft colfff">
+                    <p class="clearmsg" style="color:#fc8940;">清空</p>
+                </div>
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container list">
+        </div>
+</block>
+<block name="footerjs">
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.min.js"></script>
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.common.min.js"></script>
+    <script>
+    var dataargs ={m_id:m_id,type:0,p:1,is_order:1}
+         function putGoods(data,args) {
+            if(data.flag == 'success'){
+                var res = data.data;
+                if((!res || res.length == 0 ) && args == "shouci"){
+                    $(".xq_container").addClass('wusj');
+                    $('.clearmsg').hide();
+                }else if((!res || res.length == 0 ) && args == "fenye"){
+                    $(".nomore").remove();
+                    $(".list").append('<div class="texcen nomore">没有更多了！</div>');
+                }else{
+
+
+                  if ( res&&res.length != 0 ){
+                      $(".xq_container").removeClass('wusj');
+                  }
+                  var str ="";
+                  for(var i=0;i<res.length;i++){
+                    str +='<div class="item pad10 shopobj" '+(res[i].status == 1 ?"style='opacity:0.4'":"")+' linkto="{:U('Message/messagedetail')}/mess_id/'+ res[i].mess_id+'">'
+                      +'<div class="textcenter mgb10"><span class="tiemspan fs0-8">'
+                      +      res[i].time
+                      +   '</span></div>'
+                      +'<div class="newsmain bgfff" style="backgroun-color:#fff;">'
+                      +'  <div class="weui-cell">'
+                      +     '<div class="weui-cell__hd">'
+                      +     '</div>'
+                      +     '<div class="weui-cell__bd">'
+                      +         '<div class="fs1-2">'
+                      +           res[i].title
+                      +          '</div>'
+                      +         '<div class="colb6">'
+                      +            res[i].year_time
+                      +           '</div>'
+                      +     '</div>'
+                      +     '<div class="weui-cell__ft fs1-8 black">'
+                      +         res[i].price
+                      +     '</div>'
+                      +  '</div>'
+                      +  '<div class="weui-cell">'
+                      +       '<div class="weui-cell__hd">'
+                      +       '</div>'
+                      +    '<div class="weui-cell__bd textovh">'
+                      +         '<div class="">'
+                      +             '<span>付款方式:'
+                      +            payType(res[i].pay_type)
+                      +           '</span>'
+        //              +            '<span class="colb6">账户余额:</span>'
+                      +          '</div>'
+                      +          '<div class="flex">'
+                      +              '<span>交易对象:</span>'
+                      +              '<span class="flex1 textovh colb6">'
+                      +                 res[i].pay_name
+                      +             '</span>'
+                      +             '<span class="colb6">'
+                      +                res[i].pay_account
+                      +            '</span>'
+                      +         '</div>'
+                      +     '</div>'
+                      +  '</div>'
+                      + '</div>'
+                      +'</div>'
+                  }
+                  if (args == "fenye") {
+                        $('.list').append(str);
+                  }else{
+                         $('.list').html(str);
+                  }
+                  top_linkto();
+                  flag=true;
+                }
+            }else{
+                 layer.msg(data.message);
+            }
+            if (args == "shouci") {
+                fenye();
+            }
+        }   
+        function payType(data){
+            if(data==0){
+                data="余额支付"
+            }else if(data==1){
+                data="微信支付"
+            }else if(data==2){
+                data="麦穗支付"
+            }
+            return data;
+
+        }
+       
+         function getJson(args) {
+            console.log(dataargs)
+            requestUrl("{:U('Api/Message/messageList')}",dataargs,function(data,times){
+                if (new Date().getTime()-500 > times) {
+                    layer.closeAll();
+                }else{
+                    setTimeout(function () {
+                        layer.closeAll();
+                    },500);
+                }
+                putGoods(data,args);
+            },"GET",true);
+        }
+        getJson("shouci");
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+        function fenye(){
+            var $_zd = $(".shopobj").height();//获取每个单项的高度
+            var length = 3;//定义预加载的数量，提前三个加载数据
+            var $_par = $(".list");//获取包裹容器
+            var winheight = $(window).height();//获取窗口高度
+            var curpage = 1;//存储当前的页数v
+            $(function(){
+                $(window).on("scroll",function(e){
+                    if(flag){
+                        var self = $(this);
+                        var scrtop = self.scrollTop() + winheight;
+                        var docheight = $_par.height();
+                        if(scrtop > docheight - ( length * $_zd ) ){
+                            flag = false;
+                            dataargs.p = dataargs.p +1;
+                            getJson("fenye");
+                        }
+                    }
+                });
+            });
+        }
+
+        //清空消息
+    $(".clearmsg").on('click',function () {
+        if (confirm("确定要清空吗？")) {
+            requestUrl("{:U('Api/Message/delMessage')}",{m_id:m_id,type:0,msg_type:0},function ( res ) {
+                if ( res.flag=="success" ) {
+                    window.location.reload();
+                }else{
+                    layer.msg(res.message);
+                }
+            });
+        }
+    });
+    </script>
+</block>

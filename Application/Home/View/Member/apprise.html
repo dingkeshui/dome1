@@ -1,0 +1,69 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>消费评论</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container fs0-8">
+    
+        <div class="weui-cells mat0">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">商家评分</div>
+                <div class="weui-cell__ft top_rate mark_score_parent">
+                    <span class="playxing on shop_score"></span>
+                    <span class="playxing on shop_score"></span>
+                    <span class="playxing on shop_score"></span>
+                    <span class="playxing on shop_score"></span>
+                    <span class="playxing on shop_score"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <textarea class="weui-textarea content" maxlength="200" placeholder="请输入文本" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-btn-area">
+            <a class="weui-btn bgjb nobor make_sure" href="javascript:">确认</a>
+        </div>
+
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+        $(".make_sure").click(function () {
+            var content = $(".content").val();
+            if(content == ''){
+                layer.msg("请输入评价内容！");
+                return false;
+            }
+            var shop_id = "{:I('get.shop_id')}";
+            var bill_id = "{:I('get.b_id')}";
+
+            var star = $(".shop_score.on").size();
+            var dataargs = {m_id:m_id,star:star,content:content,shop_id:shop_id,bill_id:bill_id};
+            requestUrl("{:U('Api/Shop/appraise')}",dataargs,function(data){
+                if(data['flag'] == "success"){
+                    layer.msg("评价成功！");
+                    setTimeout(function () {
+                        var url = "{:U('bill/billList')}";
+                        window.location.href = url;
+                    },1000);
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+            },"POST",'');
+        })
+    </script>
+</block>

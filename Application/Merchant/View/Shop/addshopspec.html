@@ -1,0 +1,310 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd re textcenter">
+                添加商品规格
+                <a href="{:U('Shop/manageproperty')}" class="colon headright">管理</a>
+                <!-- <span class="fr tc">退出</span> -->
+            </div>
+            <!--<div class="weui-cell__ft">
+                <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+            </div>-->
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="speclist">
+            
+        </div>
+        <div class="bgfff">
+            <a class="weui-cell weui-cell_access after" href="javascript:;">
+                <div class="weui-cell__bd">
+                    <p>价格/库存</p>
+                </div>
+                <div class="weui-cell__ft allnummoney">
+                    批量设定
+                </div>
+            </a>  
+        </div>
+        <div class="specboxlist"></div>
+    </div>
+
+    <div class="dingfoot shopspecfoot confirmbtn">
+        确定
+    </div>
+
+    <!-- 批量设定弹窗 -->
+    <div id="dialog1" style="display: none;">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+            <div class="weui-dialog__hd"><strong class="weui-dialog__title">批量设定</strong></div>
+            <div class="weui-dialog__bd allnummoneybox">
+                <div class="mgb10 ih30 flex"><span class="mgr5">价格</span><input class="flex1 priceAll" placeholder="请输入价格" type="number" name=""></div>
+                <div class="flex ih30"><span class="mgr5">库存</span><input class="flex1 stockAll" placeholder="请输入库存" type="number" name=""></div>
+            </div>
+            <div class="weui-dialog__ft">
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">确认</a>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    var class_id = JSON.parse( sessionStorage.getItem("class_id") );
+    var attrs = JSON.parse( sessionStorage.getItem('attrs') );
+    var prices1 = JSON.parse( sessionStorage.getItem('prices') );
+    var all = [];//当前默认已存价格分类
+    var already = [];
+    if (prices1) {
+        var str = "";
+        for (var i = 0; i < prices1.length; i++) {
+            var item = prices1[i];
+            str += '<div class="specbox mgb10 bgfff" idstr="'+item['attr']+'" valstr="'+item['valstr']+'">'
+                        +'<div class="specboxtop pad10">';
+                    var valus = item['valstr'].split("|");
+                    for (var j = 0; j < valus.length; j++) {
+                        str += '<span>'+valus[j]+'</span>';
+                    }
+                    str += '</div>'
+                        +'<div class="specfoot padlr10 flex">'
+                            +'<div class="flex1 "><input class="price" placeholder="输入价格" type="number" name="" value="'+item['price']+'"></div>'
+                            +'<div class="flex1 "><input class="stock" placeholder="输入库存" type="number" name="" value="'+item['stock']+'"></div>'
+                        +'</div>'
+                    +'</div>';
+            all.push(item['attr']);
+            already.push(item['attr']);
+        }
+        $(".specboxlist").html( str );
+    }
+
+    var alreadyattr = [];
+    //重新组合已存在的分类
+    if ( attrs ) {
+        for (var i = 0; i < attrs.length; i++) {
+            var val = attrs[i].val;
+            if (val.indexOf("|") != -1) {
+                var obj = val.split("|");
+                for (var j = 0; j < obj.length; j++) {
+                    if (alreadyattr.indexOf(obj[j]) == -1) {
+                        alreadyattr.push( obj[j] );
+                    }
+                }
+            }else{
+                if ( alreadyattr.indexOf(val) == -1 ) {
+                    alreadyattr.push( val );
+                }
+            }
+        }
+    }
+
+    var myobj={
+        shop_id:shop_id,
+        cate_id:class_id[0]['cate_id']
+    };
+
+    $(".confirmbtn").on('click',function () {
+        if (attrs && attrs.length>0) {
+            sessionStorage.setItem('attrs',JSON.stringify(attrs));
+        }
+        var pri = /^\d{1,}(.\d{1,2}){0,1}$/;
+        var prices = [];
+        var flag = true;
+        $(".specbox[idstr]").each(function () {
+            var attr = $(this).attr("idstr");
+            var valstr = $(this).attr("valstr");
+            var price = $(this).find(".price").val();
+            var stock = $(this).find(".stock").val();
+            if ( !pri.test(price) || !/^[0-9]{1,}$/.test(stock)) {
+                layer.msg("价格和库存不合法！");
+                flag = false;
+                return;
+            }
+            var id = 0;
+            var ind = all.indexOf(attr);
+            if (ind != -1 ) {
+                id = prices1[ind]['id'];
+            }
+            prices.push({id:id,attr:attr,price:price,stock:stock,valstr:valstr});
+        })
+        if (flag) {
+            sessionStorage.setItem('prices',JSON.stringify(prices));
+            var edit = sessionStorage.getItem("edit");
+            if (edit==1) {
+                window.location.href = "{:U('Shop/edishop')}";
+            }else{
+                window.location.href = "{:U('Shop/addnewshop')}";
+
+            }
+        }
+    });
+
+    $('.allnummoney').click(function () {
+        if(!$('.specboxlist').text()){
+            layer.msg('请先选择规格');
+            return;
+        }
+        $('#dialog1').show();
+    });
+
+    // 点背景框
+    $('.weui-mask').click(function(){
+        $('#dialog1').hide();
+    });
+    // 点取消
+    $('.weui-dialog__btn_default').click(function(){
+        $('#dialog1').hide();
+    })
+    // 点确认
+    $('.weui-dialog__btn_primary').click(function(){
+        var stockAll = $(".stockAll").val();
+        var priceAll = $(".priceAll").val();
+        var pri = /^\d{1,}(.\d{1,2}){0,1}$/;
+        if ( !pri.test(priceAll) || !/^[1-9]{1}\d{0,}$/.test(stockAll) ) {
+            layer.msg("价格和库存不合法！");
+            return;
+        }
+        $(".price").val(priceAll);
+        $(".stock").val(stockAll);
+
+        $('#dialog1').hide();
+    })
+
+    requestUrl("{:U('Api/Product/attributes')}",myobj,function ( res ) {
+        if ( res.flag == "success" ) {
+            var attarr = res.data;
+            var str = '';
+            for (var i = 0; i < attarr.length; i++) {
+                var att = attarr[i];
+                str += '<div class="bgfff mgb10 specitem padlr10" attr_id="'+att.attr_id+'">'
+                            +'<div class="padtb10 ih30" attr_id="'+att.attr_id+'">'
+                                +att.attr_name+'(可选)'
+                            +'</div>'
+                            +'<div class="specitemmain">';
+                                for (var j = 0; j < att.vals.length; j++) {
+                                    var val = att.vals[j];
+                                    var curstr = alreadyattr.indexOf(val.val_id) != -1 ? "class='on'" : "";
+                                    str += '<div val_id="'+val.val_id+'" '+curstr+'>'+val.attr_value+'</div>';
+                                }
+                    str += '</div>'
+                        +'</div>';
+            }
+            $(".speclist").html( str );
+        }else{
+            layer.msg( res.message );
+        }
+    },"GET",true);
+
+    // 点规格
+    $('.speclist').on('click','.specitemmain>div',function(){
+        if($(this).hasClass('on')){
+            $(this).removeClass('on');
+        }else{
+            $(this).addClass('on');
+        }
+        showPrice();
+    });
+
+    var attrs = [];
+    function showPrice() {
+        var arr = [];
+        attrs = [];
+        $(".specitem").each(function () {
+            var arrinner = [];
+            var vals = [];
+            $(this).find('.on[val_id]').each(function () {
+                if ( $(this).attr("val_id") != "" ) {
+                    vals.push($(this).attr("val_id"));
+                    arrinner.push($(this).attr("val_id")+","+$(this).text());
+                }
+            })
+            if ( arrinner.length > 0 ) {
+                arr.push(arrinner);
+            }
+            if ( vals.length > 0) {
+                var iobj = {attr:$(this).attr("attr_id"),val:vals.join("|")};
+                attrs.push( iobj );
+            }
+        });
+        console.log( arr,attrs );
+        showInput( joint( arr ) );
+    }
+    var cur = [];
+    function showInput( arr ) {
+        var str = '';
+        arr = arr[0];
+        cur = [];
+        if ( arr && arr.length > 0 ) {
+            for (var i = 0; i < arr.length; i++) {
+                var item = arr[i].split(",");
+                cur.push(item[0]);
+                if ( already.indexOf( item[0] ) == -1 ) {
+                    str += '<div class="specbox mgb10 bgfff" idstr="'+item[0]+'" valstr="'+item[1]+'">'
+                        +'<div class="specboxtop pad10">';
+                    var valus = item[1].split("|");
+                    for (var j = 0; j < valus.length; j++) {
+                        str += '<span>'+valus[j]+'</span>';
+                    }
+                    str += '</div>'
+                        +'<div class="specfoot padlr10 flex">'
+                            +'<div class="flex1 "><input class="price" placeholder="输入价格" type="number" name=""></div>'
+                            +'<div class="flex1 "><input class="stock" placeholder="输入库存" type="number" name=""></div>'
+                        +'</div>'
+                    +'</div>';
+                    already.push(item[0]);
+                }
+            }
+        }
+        if ( already && already.length > 0 ) {
+            for (var i = 0; i < already.length; i++) {
+                if ( cur.indexOf(already[i]) == -1 ) {
+                    $("[idstr='"+already[i]+"']").remove();
+                }
+            }
+        }
+        already = cur;
+        $(".specboxlist").append( str );
+    }
+
+
+    function joint( arr ){
+        if( arr.length >= 2){
+            var tmparr = [];
+            var arr1 = arr.shift();
+            var arr2 = arr.shift();
+            for(var ind1 in arr1 ){
+                for(var ind2 in arr2 ){
+                    var new1 = arr1[ind1].split(",");
+                    var new2 = arr2[ind2].split(",");
+                    tmparr.push(new1[0]+"|"+new2[0]+","+new1[1]+"|"+new2[1]);
+                }
+            }
+            arr.unshift(tmparr);
+            arr = joint(arr);
+        }else{
+            return arr;
+        }
+        return arr;
+    }
+
+//去重
+ function unique(array){ 
+ var n = []; 
+ for(var i = 0; i < array.length; i++){ 
+ if (n.indexOf(array[i]) == -1) {
+      n.push(array[i]); 
+   } 
+  }
+ return n; 
+ }
+</script>
+</block>

@@ -1,0 +1,51 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/Ding_shop.css?1=1">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/xq_slide.css">
+</block>
+<block name="main">
+
+		<div class="header-container colfff">
+			<div class="weui-cell ih30">
+				<div class="weui-cell__hd"></div>
+				<div class="weui-cell__bd">
+					<p class="titlebox"></p>
+				</div>
+			</div>
+		</div>
+
+		<div class="xq_container dmymain">
+			<div class="weui-cell">
+		        <div class="weui-cell__bd">
+		      		<h3 style="max-height: 44px;overflow: hidden;" class="titlebox"></h3>
+		        </div>
+		        <div class="weui-cell__ft">
+		      		<div class="authorbox"></div>
+		    		<div class="d_timebox"></div>
+		    	</div>
+		   	</div>
+		   	<div class="articlebox">
+		   	</div>
+		</div>
+
+</block>
+<block name="footerjs">
+	<script>
+			var article_id = "{$_REQUEST['article_id']}";
+			if (!article_id) {
+				layer.msg("获取错误！");
+			}else{
+				requestUrl("{:U('Api/AboutUs/articleDetail')}",{article_id:article_id},function(data){
+					console.log(data);
+					if( data['flag'] == "success" ){
+						$(".articlebox").html(data['data']['content']);
+						$(".d_timebox").text(data['data']['time']);
+						$(".authorbox").text(data['data']['author']);
+						$(".titlebox").text(data['data']['title']);
+					}else if(data['flag'] == "error"){
+						alert(data['message']);
+					}
+				},"GET",true);
+			}
+	</script>
+</block>

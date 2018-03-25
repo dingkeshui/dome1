@@ -1,0 +1,79 @@
+<extend name="Public:head"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	登录
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container mh100 bgfff">
+            <div class="logintelbox">
+                <input class="logintel fs14" type="tel" name="tel" placeholder="输入手机号">
+                <span></span>
+            </div>
+            <div class="loginpasbox">
+                <input class="loginpas fs14" type="password" name="password" placeholder="请输入密码">
+                <span></span>
+            </div>
+            <div class="loginbut mgb10">
+                登录
+            </div>
+            <div class="blue ih30 padlr20">
+                <a linkto="{:U('Login/register')}" class="blue">注册</a>
+                <a linkto="{:U('Shop/identity',array('type'=>3))}" class="right blue">忘记密码?</a>
+            </div>
+
+    </div>
+
+
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    $('.loginbut').click(function () {
+        var name=$.trim($('.logintel').val());
+        var pas=$.trim($('.loginpas').val());
+        if(!name){
+            layer.msg('账号不能为空！');
+            return;    
+        }
+        if(!pas){
+            layer.msg('密码不能为空！');
+            return;    
+        }
+        if (!(/^1{1}[3|5|7|8|4]{1}[0-9]{9}$/.test(name))) {
+            layer.msg("手机格式错误！");
+            return;
+        }
+
+        requestUrl("{:U('Api/Merchant/login')}",{account:name,password:pas,is_wechat:1},function(res){
+            if(res.flag=="success"){
+                var data=res.data;
+                if(data.is_readonly==1){
+                    localStorage.setItem("is_readonly",1);
+                }
+                sessionStorage.setItem("shop_id",data.shop_id);
+                if(data.status==1&&data.sign_status==0){
+                    layer.msg('请先签约');
+                    setTimeout(function(){
+                        window.location.href="{:U('Shop/htopen')}";
+                    },1000);
+                }else{
+                    window.location.href="{:U('Shop/index')}";
+                }
+            }else{
+                layer.msg(res.message);
+            }
+        },'POST',true);
+    })
+</script>
+</block>

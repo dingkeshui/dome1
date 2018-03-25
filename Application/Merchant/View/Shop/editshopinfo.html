@@ -1,0 +1,146 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <style>
+#meditToolBar {
+    position:fixed;
+    top:50px;
+    z-index:100;
+    width:100%;
+    height:40px;
+}
+#medit {
+    padding: 10px;
+    border:1px solid #ccc;
+    height:360px;
+    margin-top:48px;
+    overflow: auto;
+}
+.btn {
+    padding: 6px 10px;
+    background: #e5e5e5;
+    border-radius: 3px;
+    margin-top: 5px;
+    text-align: center;
+}
+#autoSaveInfo{
+    padding: 10px 0;
+    text-align:right;
+    font-size:12px;
+}
+#res{
+    word-break:break-all;
+}
+</style>
+
+</block>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                    编辑商品详情
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div id="meditToolBar"></div>
+        <div id="medit" class="medit"></div>
+
+        <div id="autoSaveInfo"></div>
+        <div id="res"></div>
+
+    </div>
+    <div class="addshopfoot flex">
+        <div class="shelvesbut flex1">确认</div>
+        <div class="warehousebut flex1" onClick="getContent()">预览</div>
+    </div>
+</block>
+<block name="footerjs">
+<script src="https://medit.js.org/build/medit.min.js"></script>
+<script>
+medit.extend({
+    name: 'time',
+    icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAClklEQVRYR8WXjW0VQQyExxUAHUAFJBWQVACpgFABoQJCBZAKgAqSVECogKQCSAVABUZf8B73s393QXorPa2ebs87Httjn2nHy3Z8v1YBcPfHkp5JeiHpYfzw4Vf8LiR9NbMfvY51AXD3A0lvJbH3rCtJ78yMvbqqANwdL99LOh5ZuZGEp3PjgIOZp6OznHtlZjCUXUUA7r4n6aMkdtZnSactegP0B0kv473rAMG+WFkAcfmXiPEtnplZ1kDJs7DxKRiBgcOcjQWA8IDL8Ry6D0oURlKqxErYIlSEBQcAMQlHDgCooQ/P92rxc3eHATOrhZI8SiAuzOxozNrkxaDtWxzYb9HeAwBbM7uwMCTwHABZ+5yEM7Nx5mdD3QsgQCRmr8zsMBkcAES8fsaDJ61sD6PNEKSLIl++x/9HKbRjAHhM2d2YWSq9qoisYSAAk4gkJNoAI/+k2N2p3dehYKd1/fr7dAMA7KKoQ4jHDJAY6PyArgViAwCU8jz6xZ2s5wBMsrQGIgFAITPnqHc8Heo+egoac21m+/8TQAnnGzMjtClkeA0AOmaRgclLDQYoW4SmtI7H1eTu1RCkJDwzs5NW/Lc8d/dqEqYyHOKz5ZIGY9UyhMpVQrQGYFOIoq6TXC6axprLcmfdPdm+NDNy4W7NewEzX5LL7nJsgZs1o4nM59pxSkbql47YPWAWPCe0OMW+aHKlgWQ8RBxtBdEz3JRGMtDi+YMYtwHRnHDHDITqIbvY+h3DzYLN3kkG24gOIlUNSWQ7DSfNE4x1zJTZ93rGcsSDLpkWhgDDngZV2jcJTHazp3UWk/T6sXxGJ0YBkkbtVuJ3jfCLMmxZjaSiieDx/CuJHIERRq6ix/M7uj7NWsDu83znAP4A8SpJMGG4znIAAAAASUVORK5CYII=',
+    doWhat: function(node) {
+        console.log(node);
+        return node;
+    },
+    setting: [{
+        name: 'time',
+        icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAClklEQVRYR8WXjW0VQQyExxUAHUAFJBWQVACpgFABoQJCBZAKgAqSVECogKQCSAVABUZf8B73s393QXorPa2ebs87Httjn2nHy3Z8v1YBcPfHkp5JeiHpYfzw4Vf8LiR9NbMfvY51AXD3A0lvJbH3rCtJ78yMvbqqANwdL99LOh5ZuZGEp3PjgIOZp6OznHtlZjCUXUUA7r4n6aMkdtZnSactegP0B0kv473rAMG+WFkAcfmXiPEtnplZ1kDJs7DxKRiBgcOcjQWA8IDL8Ry6D0oURlKqxErYIlSEBQcAMQlHDgCooQ/P92rxc3eHATOrhZI8SiAuzOxozNrkxaDtWxzYb9HeAwBbM7uwMCTwHABZ+5yEM7Nx5mdD3QsgQCRmr8zsMBkcAES8fsaDJ61sD6PNEKSLIl++x/9HKbRjAHhM2d2YWSq9qoisYSAAk4gkJNoAI/+k2N2p3dehYKd1/fr7dAMA7KKoQ4jHDJAY6PyArgViAwCU8jz6xZ2s5wBMsrQGIgFAITPnqHc8Heo+egoac21m+/8TQAnnGzMjtClkeA0AOmaRgclLDQYoW4SmtI7H1eTu1RCkJDwzs5NW/Lc8d/dqEqYyHOKz5ZIGY9UyhMpVQrQGYFOIoq6TXC6axprLcmfdPdm+NDNy4W7NewEzX5LL7nJsgZs1o4nM59pxSkbql47YPWAWPCe0OMW+aHKlgWQ8RBxtBdEz3JRGMtDi+YMYtwHRnHDHDITqIbvY+h3DzYLN3kkG24gOIlUNSWQ7DSfNE4x1zJTZ93rGcsSDLpkWhgDDngZV2jcJTHazp3UWk/T6sXxGJ0YBkkbtVuJ3jfCLMmxZjaSiieDx/CuJHIERRq6ix/M7uj7NWsDu83znAP4A8SpJMGG4znIAAAAASUVORK5CYII=',
+        doWhat: function(node){
+            medit.settingPage("时间插件测试","Time test",function(){
+                
+            });
+        }
+    }],
+    focus: function(node){
+        
+    },
+    blur: function(node) {
+        
+    }
+})
+medit.nativeSetting(function(mode, modeName){
+    console.log(mode, modeName);
+})
+</script>
+<script>
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    var prevdata = "";
+    var me = medit(document.getElementById("medit"), document.getElementById("meditToolBar"));
+    function getContent(){
+         var res = me.getContent() || prevdata;
+         document.getElementById("res").innerHTML = '<hr />预览:<hr />' + res;
+    }
+     function cancel(){
+         me.clear();
+     }
+     me.autoSave("edit", function(data, time){
+        if (data != prevdata ) {
+            prevdata = data;
+            sessionStorage.setItem('content',prevdata);
+            localStorage.setItem("meditAutosaveedit",prevdata);
+            var nowtime = new Date(time);
+            document.getElementById("autoSaveInfo").innerHTML = "自动保存于：" + nowtime.getHours()+"-"+nowtime.getMinutes()+"-"+nowtime.getSeconds(); 
+        }
+    });
+     me.image({
+        path:"{:U('Api/Product/uploadImgPhone')}", // 图片上传路径
+        name:'pic', // 图片上传文件参数
+        size:102400000, // 大小限制，0为不限制大小
+        timeout:0, // 上传超时时间，0为不限制
+        ext:["jpg","jpeg","png","gif","bmp"], // 上传文件格式限制
+        success:function(res){
+            console.log(res);
+        },
+        error:function(msg){
+            alert("error : " + msg);
+        },
+        params: {
+            id: '123455',
+            name: 'echosoar'
+        }
+     });
+
+     $(".shelvesbut").on('click',function () {
+        if (document.referrer) {
+            window.location.href = document.referrer;
+        }else{
+            history.go(-1);
+        }
+        
+     })
+</script>
+</block>

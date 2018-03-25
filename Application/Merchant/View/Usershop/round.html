@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{$_REQUEST['shop_name']}的周围店铺</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script src="__WEBPUBLIC__/Wechat/js/jquery.js"></script>
+    <script src="__WEBPUBLIC__/Wechat/js/layer/layer.js"></script>
+    <script src="__WEBPUBLIC__/Wechat/js/public.js"></script>
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+            width:100%;
+
+        }
+        #container {
+            width: 100%;
+            height: 100%
+        }
+    </style>
+</head>
+
+<body>
+<div id="container" style="width:100%;height:100%"></div>
+<!--微信二维码扫描点餐js-->
+<script src="https://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+<script src="https://webapi.amap.com/maps?v=1.3&key=c5e14c05b9c3aef7d437cb31cda7313f"></script>
+<script>
+        var latitude = "{:I('get.lat')}"; // 纬度，浮点数，范围为90 ~ -90
+        var longitude = "{:I('get.lnt')}"; // 经度，浮点数，范围为180 ~ -180。
+        var dataargs = {};
+        // 根据起终点经纬度规划驾车导航路线
+        dataargs.lat = latitude;
+        dataargs.lnt = longitude;
+        requestUrl("{:U('Api/Shop/markerJson')}",dataargs,function(data){
+            //console.log(data.data);
+            var provinces = data.data;
+            var map = new AMap.Map('container',{resizeEnable: true,zoom:4});
+            var markers = []; //province见Demo引用的JS文件
+//            var icon = new AMap.Icon({
+//                image: 'https://m.zxty.me/Public/Wechat/img/hotel.png',
+//                size: new AMap.Size(24, 24)
+//            });
+            var marker;
+            for (var i = 0; i < provinces.length; i += 1) {
+                if (provinces[i].type === 0) {
+                    
+                    marker = new AMap.Marker({
+                        icon: new AMap.Icon({
+                            image: "https://m.zxty.me/Public/Wechat/img/hotel.png",
+                            size: new AMap.Size(32, 32),  //图标大小
+                            imageSize: new AMap.Size(32,32)
+                        }),
+                        position: provinces[i].center.split(','),
+                        offset: new AMap.Pixel(-12,-12),
+                        zIndex: 101,
+                        title: provinces[i].name,
+                        map: map
+                    });
+                } else {
+                    marker = new AMap.Marker({
+                        position: provinces[i].center.split(','),
+                        title: provinces[i].name,
+                        map: map,
+                        icon: new AMap.Icon({
+                            image: "https://m.zxty.me/Public/Wechat/img/hotel.png",
+                            size: new AMap.Size(32, 32),  //图标大小
+                            imageSize: new AMap.Size(32,32)
+                        })
+                    });
+                    if (provinces[i].type === 2) {
+                        var content= "<div class = 'beijing'>北京</div>";
+                        baodao = new AMap.Marker({
+                            content: content,
+                            position: provinces[i].center.split(','),
+                            title: provinces[i].name,
+                            offset: new AMap.Pixel(0,0),
+                            map: map
+                        });
+                    }
+                }
+                markers.push(marker);
+            }
+            map.setFitView();
+            layer.closeAll();
+        },"POST",true);
+
+</script>
+<script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+</body>
+</html>

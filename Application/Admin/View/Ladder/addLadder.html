@@ -1,0 +1,96 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <div class="content-box">
+
+        <ul class="breadcrumb">
+            <li><a href="/">首页</a></li>
+            <li><a href="">商城楼层管理</a></li>
+            <li class="active">商城楼层</li>
+        </ul>
+        <div class="page-header clearfix">
+            <h3>商城楼层</h3>
+            <ul class="nav nav-tabs">    
+                <li>
+                    <a href="{:U('Ladder/LadderList')}">列表</a>
+                </li>
+                <li class="active">
+                    <a href="javascript:;">添加</a>
+                </li>
+            </ul>
+        </div>
+
+        <!--表格内容-->
+        <div class="content-box-content">
+            <!--表单 start-->
+            <form action="{:U('Ladder/addLadder')}" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label"><em class="prompt-red">*</em>名称：</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" id="name" name="name" placeholder="名称" required>
+                    </div>
+                  </div>
+                <div class="form-group">
+                    <label for="sort" class="col-sm-3 control-label"><em class="prompt-red"></em>显示顺序：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="sort" name="sort" placeholder="显示顺序">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">是否显示在商城：</label>
+                    <div class="col-sm-9">
+                        是：<input type='radio' name="is_show" value="1" checked/>&nbsp;&nbsp;&nbsp;
+                        否：<input type='radio' name="is_show" value="0"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>广告图片：</label>
+                    <div class="col-sm-9">
+                        <script>
+                            function PreviewImage1(imgFile)
+                            {
+                                var filextension=imgFile.value.substring(imgFile.value.lastIndexOf("."),imgFile.value.length);
+                                filextension=filextension.toLowerCase();
+                                if ((filextension!='.jpg')&&(filextension!='.gif')&&(filextension!='.jpeg')&&(filextension!='.png')&&(filextension!='.bmp'))
+                                {
+                                    alert("对不起，系统仅支持标准格式的照片，请您调整格式后重新上传，谢谢 !");
+                                    imgFile.focus();
+                                }
+                                else
+                                {
+                                    var path;
+                                    if(document.all)//IE
+                                    {
+                                        imgFile.select();
+                                        path = document.selection.createRange().text;
+                                        document.getElementById("imgPreview1").innerHTML="";
+                                        document.getElementById("imgPreview1").style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled='true',sizingMethod='scale',src=\"" + path + "\")";//使用滤镜效果
+                                    }
+                                    else//FF
+                                    {
+                                        path=window.URL.createObjectURL(imgFile.files[0]);// FF 7.0以上
+                                        //path = imgFile.files[0].getAsDataURL();// FF 3.0
+                                        document.getElementById("imgPreview1").innerHTML = "<img id='img1'src='"+path+"' style='width:100px;height:100px'/>";
+                                        //document.getElementById("img1").src = path;
+                                    }
+                                }
+                            }
+                        </script>
+                        <input type="file" class="text-input" name="pic" onchange="PreviewImage1(this)">
+                        <!--<div class="prompt-div">轮播图的大小请设置成(835*420)</div>-->
+                        <div id="imgPreview1"></div>
+                    </div>
+                </div>
+
+                  <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                      <button type="submit" class="btn btn-default btn-primary">确认添加</button>
+                    </div>
+                  </div>
+            </form>
+            <!--表单 end-->
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>

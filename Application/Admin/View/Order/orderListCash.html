@@ -1,0 +1,158 @@
+<include file="Public:header"/>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/js/ajax-operate.js"></script>
+<!--时间-->
+<script type="text/javascript" src="__WEBPUBLIC__/Common/DatePicker/lhgcore.js"></script>
+<script type="text/javascript" src="__WEBPUBLIC__/Common/DatePicker/lhgcalendar.js"></script>
+<style type="text/css">
+    .table tr td.td {  vertical-align: middle;  }
+    .click-operate {cursor: pointer}
+    .txt-red, .txt-grren, .txt-green, .txt-blue, .txt-yellow, .txt-blue-1{font-size: 18px;}
+</style>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">订单管理</a></li>
+        <li class="active">订单列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>订单管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="{:U('Order/orderListCash',array('e_id'=>$_REQUEST['e_id']))}">订单列表</a>
+            </li>
+        </ul>
+    </div>
+    <div class="search-content">
+        <form action="{:U('Order/orderListCash',array('e_id'=>$_REQUEST['e_id']))}" method="post" class="search-form form-inline" role="form">
+            <input name="b_id" type="hidden" value="{$b_id}"/>
+            <input name="class_id" type="hidden" value="{$class_id}"/>
+            <div class="form-group">
+                <label class="sr-only" for="order_sn">订单号</label>
+                <input class="earch-input form-control" id="order_sn" type="text" name="order_sn" value="{$request['order_sn']}" placeholder="订单号"/>　
+            </div>
+            <span><input type="text" id="start-time" name="start_time" class="form-control text-input" style="width:270px;"  value="{$start_time}" placeholder="起始时间" onclick="J.calendar.get({to:'end-time,min'});" onfocus="this.blur()"/></span>　
+            <span class="text-input"><input type="text" id="end-time" name="end_time" class="form-control text-input" style="width:270px;" value="{$end_time}" placeholder="结束时间" onclick="J.calendar.get({to:'start-time,max'});"  onfocus="this.blur()" /></span>　
+            <button type="submit" class="btn derive">查询</button>
+        </form>
+    </div>
+    <div class="content-box-table content-box-content">
+        <form action="{:U('Order/deleteOrder')}" method="post" class="batch-form">
+            <table class="table table-striped table-framed table-hover">
+                <thead>
+                <tr>
+                    <th width="8%">
+                        <input class="check-all" type="checkbox" />&nbsp;&nbsp;编号
+                    </th>
+                    <th width="12%">下单时间</th>
+                    <th width="12%">订单号</th>
+                    <th width="">订单价钱</th>
+                    <!--<th width="">分成费用</th>-->
+                    <th width="">用户的名称</th>
+                    <th width="">商家的名称</th>
+                    <th width="">支付方式</th>
+                    <th width="">省</th>
+                    <th width="">市</th>
+                    <th width="">区</th>
+                    <th width="">用户IP地址</th>
+                    <!--<th width="">操作</th>-->
+                </tr>
+                </thead>
+                <tbody class="tbody">
+                <if condition="empty($Order)">
+                    <tr><td colspan="20"><span style="font-size:14px;">暂无数据</span></td></tr>
+                </if>
+                <volist name="Order" id="Order">
+                    <tr>
+                        <td><input type="checkbox" value="{$Order['o_id']}" name="o_id[]"/>&nbsp;&nbsp;{$Order['o_id']}</td>
+                        <td>{$Order['ctime']|date='Y-m-d H:i:s',###}</td>
+                        <td>{$Order['order_sn']}</td>
+                        <td>￥{$Order['total_price']}</td>
+                        <!--<td>￥{$Order['other_price']}</td>-->
+                        <td>{$Order['member']['nick_name']|default='未填写'}</td>
+                        <td>{$Order['shop']['name']|default='未填写'}</td>
+                        <td>
+                            <if condition="$Order['pay_type'] eq 0">
+                                豆
+                                <elseif condition="$Order['pay_type'] eq 1"/>
+                                支付宝
+                                <elseif condition="$Order['pay_type'] eq 2"/>
+                                微信
+                            </if>
+                        </td>
+                        <td>{$Order['province_name']}</td>
+                        <td>{$Order['city_name']}</td>
+                        <td>{$Order['area_name']}</td>
+                        <td>{$Order['ip']}</td>
+                        <!--<td>-->
+                            <!--<a href="#" title="删除" class="delete-delete">-->
+                                <!--<span class="icon glyphicon glyphicon-remove"></span>-->
+                            <!--</a><input type="hidden" value="{:U('Order/deleteOrder',array('o_id'=>$Order['o_id']))}">-->
+                        <!--</td>-->
+                    </tr>
+                </volist>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="20">
+                        <div class="bulk-actions fl">
+                            <div style="width: 600px">
+                                <span style="font-size: 16px;color: red">★★★请选择订单日期，之后核对后打款</span><br><br>
+                                <span style="font-size: 16px;color: green">总的销售额：{$sum_price|default="0.00"}元</span>&nbsp;&nbsp;&nbsp;
+                                <span style="font-size: 16px;color: green">应打款为：{$deduct_price|default="0.00"}元</span>&nbsp;&nbsp;&nbsp;
+                                <span style="font-size: 16px;color: green">推荐所应付金额：{$recommend_price|default="0.00"}元</span><br /><br /><br />
+                                <span>
+                                    <span style="font-size: 16px;color: green">最近打款的日期</span>：<input type="text" name="" class="period_time" id="" value="{$period_time}" placeholder="请手动输入日期">
+                                    <input type="hidden" name="" value="<php>echo $_REQUEST['e_id'];</php>">
+                                </span>
+                            </div>
+                        </div>
+                        <!--<div class="bulk-actions fl">-->
+                            <!--<a href="{:U('Order/orderXLS')}" style="text-decoration: none;color: #ffffff"><input type="button" url="{:U('Article/add')}" class="btn" value="导出订单列表" style="background: green">　</a>-->
+                        <!--</div>-->
+                        <div class="fr">
+                            {$page}
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $('.sort_Order').change(function(){
+            var id = $(this).next('input').val();
+            var sort = $(this).val();
+            var url = "{:U('Order/ajaxSort')}";
+            $.post(url,{'id':id,'sort':sort},function(data){
+                if(data==1){
+                    alert("修改成功");
+                    window.location.reload();
+                }else{
+                    alert("修改失败");
+                }
+            });
+
+        });
+    });
+    $(document).ready(function(){
+        $('.period_time').change(function(){
+            var e_id = $(this).next('input').val();
+            var period_time = $(this).val();
+            var url = "{:U('Cash/period')}";
+            $.post(url,{'e_id':e_id,'period_time':period_time},function(data){
+                if(data==1){
+                    alert("修改成功");
+                    window.location.reload();
+                }else{
+                    alert("修改失败");
+                }
+            });
+        });
+    });
+</script>
+<include file="Public:footer"/>
+

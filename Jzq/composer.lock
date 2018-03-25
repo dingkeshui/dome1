@@ -1,0 +1,51 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "ec5cb012d62d0212a8766be0f09e04c2",
+    "packages": [
+        {
+            "name": "ebq/rop_client",
+            "version": "1.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://gitee.com/huhu/ebq_rop.git",
+                "reference": "22d1de7c451c4077e50950cbe94ea93e488476ca"
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "org\\ebq\\api\\": "src/org/ebq/api"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "huhu",
+                    "email": "3811970@qq.com"
+                }
+            ],
+            "description": "php rop_client",
+            "homepage": "https://git.oschina.net/huhu/ebq_rop/",
+            "time": "2017-08-08T01:30:34+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=5.3.3"
+    },
+    "platform-dev": []
+}

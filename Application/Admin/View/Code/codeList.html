@@ -1,0 +1,93 @@
+<include file="Public:header"/>
+<!--时间-->
+<!-- 统计图主题 可自行开发 -->
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/laydate/laydate.js"></script>
+<script type="text/javascript" src="__WEBPUBLIC__/Common/Highcharts/exporting.js"></script>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">支付错误信息管理</a></li>
+        <li class="active">短信验证码</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>短信验证码管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="{:U('Code/CodeList')}">短信验证码</a>
+            </li>
+        </ul>
+    </div>
+    <div class="search-content">
+        <form action="{:U('Code/codeList')}" method="post" class="search-form form-inline" role="form">
+            <div class="form-group">
+                <label class="sr-only" for="account">账号</label>
+                <input class="earch-input form-control" id="account" type="text" name="account" value="{$account}" placeholder="账号"/>　
+            </div>
+            <style>
+                #laydate_ys{
+                    overflow: hidden;!important;
+                }
+                .laydate_body .laydate_bottom{
+                    height: 40px;!important;
+                }
+            </style>
+            &nbsp;&nbsp;
+            <input placeholder="请输入开始日期" name="start_time" value="{$start_time}" class="laydate-icon" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="width: 180px;height:30px">
+            <input placeholder="请输入结束日期" name="end_time" value="{$end_time}" class="laydate-icon" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="width: 180px;height:30px">
+            &nbsp;&nbsp;
+            <button type="submit" class="btn derive">查询</button>
+        </form>
+    </div>
+    <div class="content-box-table content-box-content">
+        <form action="{:U('Code/deleteCode')}" method="post" class="batch-form">
+            <table class="table table-striped table-framed table-hover">
+                <thead>
+                <tr>
+                    <th width="8%">
+                        <input class="check-all" type="checkbox" />&nbsp;&nbsp;编号
+                    </th>
+                    <th>手机号</th>
+                    <th>验证码</th>
+                    <th>时间</th>
+                    <th>type</th>
+                    <th>类型</th>
+                </tr>
+                </thead>
+                <tbody class="tbody">
+                <if condition="empty($list)">
+                    <tr><td colspan="20"><span style="font-size:14px;">暂无数据</span></td></tr>
+                </if>
+                <volist name="list" id="vo">
+                    <tr>
+                        <td><input type="checkbox" value="{$vo['id']}" name="id[]"/>&nbsp;&nbsp;{$vo['id']}</td>
+                        <td>{$vo['way']}</td>
+                        <td>{$vo['vc']}</td>
+                        <td>{$vo['ctime']|date='Y-m-d H:i:s',###}</td>
+                        <td>{$vo['type']}</td>
+                        <td>{$vo['type_value']}</td>
+                    </tr>
+                </volist>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="20">
+                        <div class="fr">
+                            {$page}
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+<include file="Public:footer"/>
+<script>
+    ;!function(){
+        laydate({
+            elem: '#demo'
+        })
+    }();
+</script>

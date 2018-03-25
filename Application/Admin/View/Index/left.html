@@ -1,0 +1,435 @@
+<include file="Public:header"/>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/js/menu.simpla.jquery.js"></script>
+    <div id="sidebar" class="sidebar" style="overflow-y: scroll;">
+        <div class="sidebar-inner">
+            <ul class="nav nav-list" id="left-menu">
+                <li>
+                    <a href="{:U('Index/main')}" target="main"  class="nav-top-item no-submenu active">
+                        <span class="icon glyphicon glyphicon-home"></span>
+                        <span class="hidden-minibar">首页</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-user"></span>
+                        <span class="hidden-minibar">用户信息</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('Member/memberList',$action_admin)">
+                            <li>
+                                <a href="{:U('Member/memberList')}" target="main">用户列表</a>
+                            </li>
+                        </if>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-shopping-cart"></span>
+                        <span class="hidden-minibar">订单管理</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('Order/orderList',$action_admin)">
+                            <li>
+                                <a href="{:U('Order/orderList')}" target="main">买单订单列表</a>
+                            </li>
+                        </if>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-user"></span>
+                        <span class="hidden-minibar">商家管理</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('Shop/shopList',$action_admin)">
+                            <li>
+                                <a href="{:U('Shop/shopList')}" target="main">商家列表</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Class/classList',$action_admin)">
+                            <li>
+                                <a href="{:U('Class/classList')}" target="main">商家分类</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Advert/advertList',$action_admin)">
+                            <li>
+                                <a href="{:U('Advert/advertList')}" target="main">商家广告图</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Shop/appraise',$action_admin)">
+                            <li>
+                                <a href="{:U('Shop/appraise')}" target="main">商家评价</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('ApprovePrice/approvePriceList',$action_admin)">
+                            <li>
+                                <a href="{:U('ApprovePrice/approvePriceList')}" target="main">认证费列表</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('ApprovePrice/approveOrderList',$action_admin)">
+                            <li>
+                                <a href="{:U('ApprovePrice/approveOrderList')}" target="main">缴纳认证费列表</a>
+                            </li>
+                        </if>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-credit-card"></span>
+                        <span class="hidden-minibar">加盟商管理</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('Cash/cashList',$action_admin)">
+                            <li>
+                                <a href="{:U('Cash/cashList')}" target="main">加盟商列表</a>
+                            </li>
+                        </if>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-book"></span>
+                        <span class="hidden-minibar">信息管理</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('Feedback/feedList',$action_admin)">
+                            <li>
+                                <a href="{:U('Feedback/feedList')}" target="main">反馈信息列表</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Message/messageList',$action_admin)">
+                            <li>
+                                <a href="{:U('Message/messageList')}" target="main">站内信列表</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Article/articleList',$action_admin)">
+                            <li>
+                                <a href="{:U('Article/articleList')}" target="main">文章列表</a>
+                            </li>
+                        </if>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-usd"></span>
+                        <span class="hidden-minibar">财务管理</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('Income/income',$action_admin)">
+                            <li>
+                                <a href="{:U('Income/income')}" target="main">平台收入（曲线图）</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Price/priceList',$action_admin)">
+                            <li>
+                                <a href="{:U('Price/priceList')}" target="main">平台收入</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Transfer/transfer',$action_admin)">
+                            <li>
+                                <a href="{:U('Transfer/transfer')}" target="main">转账记录</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Transfer/hxUserList',$action_admin)">
+                            <li>
+                                <a href="{:U('Transfer/hxUserList')}" target="main">客户号列表</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Pool/poolList',$action_admin)">
+                            <li>
+                                <a href="{:U('Pool/poolList')}" target="main">资金列表（用户消费）</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('DivideLog/divideLog',$action_admin)">
+                            <li>
+                                <a href="{:U('DivideLog/divideLog')}" target="main">用户商家分成列表（签到获取钱数）</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('DayDivide/dayDivide',$action_admin)">
+                            <li>
+                                <a href="{:U('DayDivide/dayDivide')}" target="main">每天分成的金额</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Divide/total',$action_admin)">
+                            <li>
+                                <a href="{:U('Divide/total')}" target="main">资金池</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Divide/selectEarn',$action_admin)">
+                            <li>
+                                <a href="{:U('Divide/selectEarn')}" target="main">股数列表</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Withdraw/withdrawList',$action_admin)">
+                            <li>
+                                <a href="{:U('Withdraw/withdrawList')}" target="main">提现管理</a>
+                            </li>
+                        </if>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-th"></span>
+                        <span class="hidden-minibar">积分商城管理</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('IntegralCategory/categoryList',$action_admin)">
+                            <li>
+                                <a href="{:U('IntegralCategory/categoryList')}" target="main">商品分类</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Goods/goodsList',$action_admin)">
+                            <li>
+                                <a href="{:U('Goods/goodsList')}" target="main">兑换商品列表</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Goods/integralOrder',$action_admin)">
+                            <li>
+                                <a href="{:U('Goods/integralOrder')}" target="main">积分订单管理</a>
+                            </li>
+                        </if>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-shopping-cart"></span>
+                        <span class="hidden-minibar">众享商城管理</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('Category/categoryList',$action_admin)">
+                            <li>
+                                <a href="{:U('Category/categoryList')}" target="main">商品分类</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('DeliveryCompany/deliveryList',$action_admin)">
+                            <li>
+                                <a href="{:U('DeliveryCompany/deliveryList')}" target="main">物流列表</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Attr/attrList',$action_admin)">
+                            <li>
+                                <a href="{:U('Product/productList')}" target="main">商品列表</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('ProductOrder/orderList',$action_admin)">
+                            <li>
+                                <a href="{:U('ProductOrder/orderList')}" target="main">商城的订单</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Attr/attrList',$action_admin)">
+                            <li>
+                                <a href="{:U('Attr/attrList')}" target="main">商品属性</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Ladder/ladderList',$action_admin)">
+                            <li>
+                                <a href="{:U('Ladder/ladderList')}" target="main">商城楼层图标</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('ShopAdvert/shopAdvertList',$action_admin)">
+                            <li>
+                                <a href="{:U('ShopAdvert/shopAdvertList')}" target="main">楼层下方广告图</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('ReturnReason/reasonList',$action_admin)">
+                            <li>
+                                <a href="{:U('ReturnReason/reasonList')}" target="main">退货原因管理</a>
+                            </li>
+                        </if>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-gift"></span>
+                        <span class="hidden-minibar">抽奖管理</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('Draw/drawList',$action_admin)">
+                            <li>
+                                <a href="{:U('Draw/drawList')}" target="main">奖品</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Type/typeList',$action_admin)">
+                            <li>
+                                <a href="{:U('Type/typeList')}" target="main">奖品的分类</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Draw/selectDrawLog',$action_admin)">
+                            <li>
+                                <a href="{:U('Draw/selectDrawLog')}" target="main">获奖记录</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Draw/detailList',$action_admin)">
+                            <li>
+                                <a href="{:U('Draw/detailList')}" target="main">抽奖记录</a>
+                            </li>
+                        </if>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-th-large"></span>
+                        <span class="hidden-minibar">活动管理</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('Coupon/couponList',$action_admin)">
+                            <li>
+                                <a href="{:U('Coupon/couponList')}" target="main">优惠券列表</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Activity/deskList',$action_admin)">
+                            <li>
+                                <a href="{:U('Activity/deskList')}" target="main">桌台背景</a>
+                            </li>
+                        </if>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-user"></span>
+                        <span class="hidden-minibar">管理员信息</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('Admin/adminList',$action_admin)">
+                            <li>
+                                <a href="{:U('Admin/adminList')}" target="main">管理员列表</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Admin/actionList',$action_admin)">
+                            <li>
+                                <a href="{:U('Admin/actionList')}" target="main">管理员权限组名称</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Admin/groupList',$action_admin)">
+                            <li>
+                                <a href="{:U('Admin/groupList')}" target="main">管理员权限</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Group/groupList',$action_admin)">
+                        <li>
+                            <a href="{:U('Group/groupList')}" target="main">权限管理</a>
+                        </li>
+                        </if>
+                        <if condition="in_array('Admin/editPass',$action_admin)">
+                            <li>
+                                <a href="{:U('Admin/editPass')}" target="main">修改密码</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Error/errorList',$action_admin)">
+                            <li>
+                                <a href="{:U('Error/errorList')}" target="main">支付错误信息</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Code/codeList',$action_admin)">
+                            <li>
+                                <a href="{:U('Code/codeList')}" target="main">验证码</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Withdraw/paySuccess',$action_admin)">
+                            <li>
+                                <a href="{:U('Withdraw/paySuccess')}" target="main">打款成功记录</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Withdraw/errorPayList',$action_admin)">
+                            <li>
+                                <a href="{:U('Withdraw/errorPayList')}" target="main">打款失败错误原因记录</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('ForbidAction/forbidActionList',$action_admin)">
+                            <li>
+                                <a href="{:U('ForbidAction/forbidActionList')}" target="main">禁止的方法</a>
+                            </li>
+                        </if>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-qrcode"></span>
+                        <span class="hidden-minibar">微信相关</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('WeiXinArticle/menuList',$action_admin)">
+                            <li>
+                                <a href="{:U('WeiXinArticle/menuList')}" target="main">微信菜单</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Wechat/materList',$action_admin)">
+                            <li>
+                                <a href="{:U('Wechat/materList')}" target="main">微信公众号图片素材</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Mater/materList',$action_admin)">
+                            <li>
+                                <a href="{:U('Mater/materList')}" target="main">随机图片</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('WeiXinArticle/returnList',$action_admin)">
+                            <li>
+                                <a href="{:U('WeiXinArticle/returnList')}" target="main">文本回复</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('WeiXinArticle/wechatList',$action_admin)">
+                            <li>
+                                <a href="{:U('WeiXinArticle/wechatList')}" target="main">图文回复</a>
+                            </li>
+                        </if>
+                        <if condition="in_array('Wechat/codeList',$action_admin)">
+                            <li>
+                                <a href="{:U('Wechat/codeList')}" target="main">场景二维码</a>
+                            </li>
+                        </if>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="nav-top-item">
+                        <span class="icon glyphicon glyphicon-cog"></span>
+                        <span class="hidden-minibar">系统设置</span>
+                        <span class="arrow glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul>
+                        <if condition="in_array('Config/config',$action_admin)">
+                        <li>
+                            <a href="{:U('Config/config')}" target="main">网站设置</a>
+                        </li>
+                        </if>
+                    </ul>
+                </li>
+                <if condition="in_array('Easemob/index',$action_admin)">
+                    <li>
+                        <a href="/Easemob/index.html#username=YWRtaW4" target="_blank"  class="nav-top-item no-submenu">
+                            <span class="icon glyphicon glyphicon-comment"></span>
+                            <span class="hidden-minibar">登录聊天系统</span>
+                        </a>
+                    </li>
+                </if>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    function manage(){
+        $(document).ready(function(){
+            $("ul").each(function(){
+                if($.trim($(this).html()) == ""){
+                    $(this).parent().remove();
+                }
+            });
+        });
+    }
+    manage();
+</script>

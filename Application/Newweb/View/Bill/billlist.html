@@ -1,0 +1,217 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" type="text/css" href="__WEBPUBLIC__/Wechat/css/oldtop.css">
+</block>
+<block name="main">
+	<div class="header-container z5 colfff">
+		<div class="weui-cell ih30">
+			<div class="weui-cell__hd"></div>
+			<div class="weui-cell__bd">
+				<p>账单</p>
+			</div>
+			<div class="weui-cell__ft colfff pore">
+				筛选
+				<select class="opainput billtype">
+                    <option value="">全部</option>
+					<option value="1">转账</option>
+                    <option value="2">收益</option>
+					<option value="3">消费</option>
+                    <option value="4">兑换</option>
+                    <option value="5">提现</option>
+                    <!--<option value="6">退款</option>-->
+                    <option value="7">抽奖</option>
+                    <option value="9">商城商品订单</option>
+                    <option value="10">商城退款</option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<div class="xq_container padb80">
+		<div class="pad10 fs12">
+			<span>全部</span>
+			<span class="fr icon riliicon pore">
+				查看其它月份
+				<input type="month" name="" class="opainput billmonth">
+			</span>
+		</div>
+
+		<div class="weui-cells fs12 mat0 billList">
+			
+		</div>
+	</div>
+</block>
+<block name="footerjs">
+	<script type="text/javascript">
+
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+    var dataargs = {p:1,m_id:m_id};
+    //添加商品到列表
+    function putGoods(data,args) {
+        console.log(data);
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $(".billList").html('');
+                $(".billList").addClass('wusj');
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".billList").append('<div class="texcen nomore">没有更多了！</div>');
+            }else{
+                $(".billList").removeClass('wusj');
+                var str ="";
+                for(var index in shops){
+                	var shop = shops[index];
+                    str += '<div class="weui-cell bill">'
+					+'<div class="weui-cell__hd texcen">'
+						+'<div class="colbbb">'+shop.year_time+'</div>'
+						+'<div class="borad4 bgjb colfff">'+shop.time+'</div>'
+					+'</div>'
+					+'<div class="weui-cell__hd w60 textcenter pad0-10">'
+						+'<img style="max-height:40px;max-width:40px;" src="'+shop.head_pic+'"/>'
+					+'</div>'
+					+'<div class="weui-cell__bd">'
+						+'<div>'+shop.price+'</div>'
+						+'<div class="colbbb">'+shop.name+'-'+showtype(shop.type)+'</div>'
+					+'</div>'
+					+'<div class="weui-cell__ft">'
+                        +(shop.type == 3 && shop.pay_type == 2 && shop.status == 2 ? '<div class="icon iconedi confirm" b_id="'+shop.b_id+'" return_price="'+shop.return_price+'">确认退款</div>' : '')
+                        +(shop.type == 3 && shop.pay_type == 2 && shop.status == 3 ? '<div class="icon">退款成功</div>' : '')
+                        +(shop.type == 3 && shop.is_appraise == 0? '<span class="icon iconedi" linkto="{:U('Member/apprise')}/b_id/'+shop.b_id+'/shop_id/'+shop.shop_id+'">消费评价</span>' : '')
+
+					+'</div>'
+				+'</div>';
+                }
+                if (args == "fenye") {
+                    $('.billList').append(str);
+                }else{
+                    $('.billList').html(str);
+                }
+                top_linkto();
+                flag=true;
+            }
+        }else{
+            layer.msg(data.message);
+        }
+
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    $(".billList").on('click','.confirm',function () {
+        var b_id = $(this).attr("b_id");
+        var return_price = $(this).attr("return_price");
+        if (confirm("请确认商家给您退款"+return_price+"元！")) {
+            requestUrl("{:U('Api/Back/makeSure')}",{m_id:m_id,b_id:b_id},function (res) {
+                if ( res.flag == "success" ) {
+                    layer.msg("已成功！");
+                    location.reload();
+                }else{
+                    layer.msg(res.message);
+                }
+            });
+        }
+        
+    })
+
+
+    function showtype( status ) {
+        switch(status){
+            case "1":
+            return "转账";
+            case "2":
+            return "收益";
+            case "3":
+            return "消费";
+            case "4":
+            return "兑换";
+            case "5":
+            return "提现";
+            case "6":
+            return "退款";
+            case "7":
+            return "抽奖";
+            case "9":
+            return "商城商品订单";
+            case "10":
+            return "商城退款";
+        }
+    }
+    
+    function getJson(args) {
+        requestUrl("{:U('Api/Bill/billList')}",dataargs,function(data){
+        	layer.closeAll();
+            putGoods(data,args);
+        },"GET",true);
+    }
+
+    getJson("shouci");
+    $(".billtype").on("change",function () {
+        var type = $(this).val();
+        dataargs.p = 1;
+        dataargs.type = type;
+        getJson("shouci");
+    });
+    $(".billmonth").on("change",function () {
+        var month = $(this).val();
+        dataargs.p = 1;
+        dataargs.month = month;
+        $(this).parent().prev().text(month);
+        getJson("shouci");
+    });
+
+    
+    function fenye(){
+        var $_zd = $(".bill").height();//获取每个单项的高度
+        var length = 2;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".billList");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).off("scroll");
+            $(window).on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+
+    function setupWebViewJavascriptBridge(callback) {
+        if (window.WebViewJavascriptBridge) {
+            return callback(WebViewJavascriptBridge); }
+        if (window.WVJBCallbacks) {
+            return window.WVJBCallbacks.push(callback); }
+        if (!window.WebViewJavascriptBridge) {
+             document.addEventListener(
+            'WebViewJavascriptBridgeReady'
+            , function() {
+                callback(WebViewJavascriptBridge)
+            },
+            false
+        );
+        }
+        window.WVJBCallbacks = [callback];
+        var WVJBIframe = document.createElement('iframe');
+        WVJBIframe.style.display = 'none';
+        WVJBIframe.src = 'https://__bridge_loaded__';
+        document.documentElement.appendChild(WVJBIframe);
+        setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+
+        bridge.callHandler('drawAction', {}, function(response) {
+            console.log("yes");
+        })
+    })
+</script>
+</block>

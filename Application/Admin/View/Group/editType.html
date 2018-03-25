@@ -1,0 +1,43 @@
+<include file="Public:header"/>
+<link rel="stylesheet" href="__WEBPUBLIC__/Uploadify/uploadify.css" type="text/css" />
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active"><a href="">菜场类型管理</a></li>
+        <li class="active">修改菜场类型</li>
+    </ul>
+
+    <div class="page-header clearfix">
+        <h3>修改菜场类型</h3>
+        <ul class="nav nav-tabs">
+            <li  class="">
+                <a href="{:U('Type/typeList')}">菜场类型列表</a>
+            </li>
+            <li  class="">
+                <a href="{:U('Type/addType')}">添加菜场类型</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div id="tabs-content" class="content-box-content">
+        <div class="ul">
+            <form action="{:U('Type/editType')}" method="post" class="form-horizontal" enctype="multipart/form-data">
+                <input type="hidden" name="type_id" value="{$list['type_id']}">
+                <div class="form-group">
+                    <label for="type_name" class="col-sm-3 control-label"><em class="prompt-red">*</em>类型名称：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="type_name" name="type_name" value="{$list['type_name']}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                      <button type="submit" class="btn btn-default btn-primary">确认修改</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<include file="Public:footer"/>

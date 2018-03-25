@@ -1,0 +1,62 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	转账
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cells">
+             <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">对方账号</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input account" type="number" pattern="[0-9]*" placeholder="输入对方的会员账号"/>
+                </div>
+            </div>
+        </div>
+        <div class="loginbut setupfoot">
+                下一步
+        </div>
+    </div>
+
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var type="{$_GET['type']}";//判断进来的方式。1为转给用户，2为转给商家
+
+    $('.setupfoot').click(function(){
+        var account=$('.account').val();
+        if(!$.trim(account)){
+            layer.msg('请填写账号');
+            return;
+        }
+        
+        var mydata={account:account,type:1};
+        if(type==2){
+            mydata.type=0;
+        }
+
+        requestUrl("{:U('Api/Member/is_set')}",mydata,function(res){
+            if(res.flag=="success"){
+                var url="{:U('Accounts/transferuser')}&account="+account+"&type="+type;
+                window.location.href = url;    
+            }else{
+                layer.msg(res.message);
+            }
+        },'GET',true);
+        
+    })
+	
+</script>
+</block>

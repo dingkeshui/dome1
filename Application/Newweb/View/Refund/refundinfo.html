@@ -1,0 +1,265 @@
+<extend name="Public:head"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                    <!-- <div class="addressback" linkto="{:U('Refund/refundlist')}"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div> -->
+                	<span>退款详情</span>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
+            </div>
+    </div>
+
+
+    <!-- 内容 -->
+        <div class="xq_container listbox padb50">
+        <div class="returninfotop">
+            <div>等待商家处理</div>
+        </div>
+        <div class="bgfff none refun1nav mgtop10 pad10">
+            <div class="ih30 after padtb10">您已成功发起退款申请，请耐心等待</div>
+            <div class="carshoptab1tk padtb10">
+                <span class="but cxsq">撤销申请</span>
+                <span class="but xgsq">修改申请</span>
+            </div>
+        </div>
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>退款总金额</p>
+                </div>
+                <div class="weui-cell__ft colred">
+                    ￥ <span class="price"></span>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>退款原因</p>
+                </div>
+                <div class="weui-cell__ft reason">
+                </div>
+            </div>
+            <a class="weui-cell weui-cell_access gohistory">
+                <div class="weui-cell__bd">
+                    <p>协商历史</p>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
+            </a>
+        </div>
+        <div class="bgfff mgtop10">
+            <div class="pad10 ih30">
+                退款信息
+            </div>
+            <div class="pad10 bgf9 flex">
+                <div class="returnimgbox mgr5 bgfff"><img class="w100 pic" src=""></div>   
+                <div class="flex1">
+                    <div class="line2 title"></div>
+                    <div class="colb6 attr_val"></div>
+                </div>   
+            </div>
+            <div class="bgfff pad10 colb6">
+                <div>退款原因:<span class="reason"></span></div>
+                <div>退款金额:￥<span class="price">0</span></div>
+                <div>退款编号:<span class="return_sn"></span></div>
+                <div>申请时间:<span class="ctime"></span></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="returnfootbox bgfff">
+        <span class="but lxsj none showtel">联系商家</span>
+        <a class="but ptkf" linkto="tel:022-60868499">平台客服</a>
+        <span class="but ptkf none" andtel="022-60868499">平台客服</span>
+        <span class="but qkqx none">钱款去向</span>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    //如果是ios
+    if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    var return_id="{$_GET['return_id']}";
+    var p_id="";//仅退款或其他
+    var shop_id="";
+    var order_id="";
+    var attr_group="";
+    requestUrl("{:U('Api/ReturnOrder/returnOrderDetail')}",{return_id:return_id},function(data){
+                if(data['flag'] == "success"){
+                    var shops=data.data;
+                    p_id=shops.goods_id;
+                   switch(+shops.status)
+                        {
+                        case 0:
+                            $('.returninfotop div').html("<p>请等待商家处理</p><p>还剩"+shops.residue_time+"自动同意</p>");
+                            $('.refun1nav,.lxsj').removeClass('none');
+                            break;
+                        case 1:
+                            $('.returninfotop div').html("<p>退款中</p>");
+                            $('.lxsj').removeClass('none');
+                            break;
+                        case 2:
+                            $('.returninfotop div').html("<p>商家拒绝</p>");
+                            $('.lxsj').removeClass('none');
+                            break;
+                        case 3:
+                            $('.returninfotop div').html("<p>退款成功</p>");
+                            $('.qkqx').removeClass('none');
+                            break;
+                        case 9:
+                            $('.returninfotop div').html("<p>已撤销</p>");
+                            break;
+                        }
+                    gettel(shops.shop_id);
+                    shop_id=shops.shop_id;
+                    order_id=shops.order_id;
+                    attr_group=shops.attr_val;
+                    $('.attr_val').html((shops.attr_val&&shops.attr_val!="0")?shops.attr_val:"暂无属性");
+                    $('.name').html(shops.name);
+                    $('.ctime').html(shops.ctime);
+                    $('.price').html(shops.price);
+                    $('.reason').html(shops.reason);
+                    $('.title').html(shops.title);
+                    $('.pic').attr('src',shops.cover_pic);
+                    $('.return_sn').text(shops.return_sn);
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+    },"POST",true);
+    // 去协商历史
+    $('.gohistory').click(function(){
+        var url="{:U('Refund/consultativehistory')}/return_id/"+return_id+"/shop_id/"+shop_id;
+        location.href=url;
+    });
+    // 撤销申请
+    $('.cxsq').click(function(){
+        //询问框
+        layer.open({
+            content: '您确定要撤销申请吗？'
+            ,btn: ['确定', '取消']
+            ,yes: function(index){
+                requestUrl("{:U('Api/ReturnOrder/backOutReturnOrder')}",{return_id:return_id,status:9},function(data){
+                    if(data['flag'] == "success"){
+                        layer.msg('撤销成功！');
+                        setTimeout(function(){
+                            location.href="{:U('Refund/refundlist')}";
+                        },1500);  
+                    }else if(data['flag'] == "error"){
+                        layer.msg(data['message']);
+                    }
+                },"POST",true);      
+                layer.close(index);
+            }
+        });
+    });
+    //点击修改申请
+    $('.xgsq').click(function(){
+        var url="{:U('Refund/refundindex')}/return_id/"+return_id+"/status/2/order_id/"+order_id+"/p_id/"+p_id+"/attr_group/"+attr_group;
+        location.href=url;
+    });
+    // 客服电话
+    var telstr="";
+    $('.showtel').on('click',function(){
+        layer.open({
+          type: 1,
+          title: false,
+          closeBtn: 0,
+          shadeClose: true,
+          // skin: 'yourclass',
+          content: telstr
+        });
+        top_linkto();
+    });
+    //钱款去向
+    $('.qkqx').click(function(){
+        layer.msg('退款已到您的钱包内');
+    });
+    // 获取客服电话
+    function gettel(e){
+        requestUrl("{:U('Api/Store/shopTel')}",{shop_id:e},function(data){
+                if(data['flag'] == "success"){
+                   var datas=data.data;
+                   telstr="<div class='bgfff telbox ih30'>"+
+                    "<div class='fw padtb10 after'>拨打电话</div>"+
+                    "<div class='telmain'>";
+                    if(datas.length!=0||datas!=''){
+                        if(datas.tel_one!=""){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_one+'"><span class="mgr5">客服1</span><span>'+datas.tel_one+'</span></div>';
+                        }
+                        if(datas.tel_two!=""){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_two+'"><span class="mgr5">客服2</span><span>'+datas.tel_two+'</span></div>';
+                        }
+                        if(datas.tel_three!=""){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_three+'"><span class="mgr5">客服3</span><span>'+datas.tel_three+'</span></div>';
+                        }
+                        if(datas.tel_four!=""){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_four+'"><span class="mgr5">客服4</span><span>'+datas.tel_four+'</span></div>';
+                        }
+                        if(datas.tel_five!=""){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_five+'"><span class="mgr5">客服5</span><span>'+datas.tel_five+'</span></div>';
+                        }
+//                        for(var i in datas){
+//                            telstr+="<div class='padtb10 after'><span class='mgr5'>客服"+i+1+"</span><a href='/'>"+datas[i]+"</a></div>";
+//                        };
+                    }else{
+                        telstr+="<div class='padtb10'>暂无客服电话</div>";
+                    }
+                   telstr+="</div></div>";
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+        },"POST",true);
+    };
+</script>
+<script type="text/javascript">
+    function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+        if(/android/i.test(navigator.userAgent)){
+            $("a.ptkf").hide();
+            $("span.ptkf").removeClass('none');
+        };
+        $('.ptkf').on('click',function(){
+            var zxtytel=$(this).attr('andtel');
+            bridge.callHandler('chartZxty', {data:zxtytel}, function(response) {
+                        //处理oc过来的回调
+                        layer.closeAll();
+            });
+        });
+        $('.showtel').off('click');
+        $('.showtel').on('click',function(){
+            bridge.callHandler('chartShop',{shop_id:shop_id}, function(response) {
+                        //处理oc过来的回调
+                        layer.closeAll();
+            });
+        });
+    })
+</script>
+</block>

@@ -1,0 +1,9 @@
+*/Runtime
+.DS_Store
+.idea/
+*.xlsx
+*.log
+*/Common/Conf/config.php
+/Uploads
+/newweb
+*/.project

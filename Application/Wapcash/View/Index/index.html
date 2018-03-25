@@ -1,0 +1,74 @@
+<extend name="Public:header"/>
+<block name="headdiv"></block>
+<!-- 头部 -->
+<block name="main">
+<div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd">
+            	众享通赢
+            	<span class="fr tc">退出</span>
+            </div>
+            <!--<div class="weui-cell__ft">
+                <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+            </div>-->
+        </div>
+</div>
+<!-- 主体 -->
+<div class="xq_container">
+	<div class="bgimg re">
+		<div class="ab1 colfff">众享通赢 <span class="ename"></span> 招商</div>
+		<div class="ab2 colfff"><img src="__WEBPUBLIC__/Wechat/img/money.png"><span class="inblock"><div class="fs1 textleft">总收益:</div><div class="fs1-4 eprice"></div></span></div>
+		<img src="__WEBPUBLIC__/Wechat/cusimg/img (162).png">
+		<div class="ab">
+			<div class="bgfff weui-flex texcen pad20-0 dingtop">
+            <div class="weui-flex__item">
+                <div class="colff0 d_integral fs1 texovh"></div>
+                <div class="fs0-8 colccc">昨日商家增长量</div>
+            </div>
+            <div class="weui-flex__item">
+                <div class="colff0 d_shares fs1 texovh"></div>
+                <div class="fs0-8 colccc">昨日收益</div>
+            </div>
+            
+        </div>
+		</div>
+	</div>
+</div>
+
+<div class="bgjb footer-container texcen ih50" linkto="{:U('Index/getpass')}" style="bottom: 50px">
+			<img class="img20" src="__WEBPUBLIC__/Wechat/img/sz.png">
+			<span>修改密码</span>
+</div>
+
+</block>
+<block name="footerjs">
+	<script type="text/javascript">
+		requestUrl("{:U('Api/Cash/index')}",{"e_id":e_id},function(data){
+			layer.closeAll();				    
+			if(data.flag="success"){
+				var shops=data.data;
+				$(".ename").html(shops.area_name);
+				$(".eprice").html(shops.deduct_price);
+				$(".d_shares").html(shops.yesterday_price);
+				$(".d_integral").html(shops.recommend_count);
+			}else{
+
+			}        
+	    },"POST",true);
+
+
+		$(".tc").click(function(){
+			requestUrl("{:U('Api/Cash/loginOut')}","",function(data){
+			layer.closeAll();				    
+			if(data.flag="success"){
+				console.log(data);
+				window.location.href = "{:U('Login/login')}";
+			}else{
+
+			}        
+	    },"GET",true);
+		})	    
+	</script>
+</block>

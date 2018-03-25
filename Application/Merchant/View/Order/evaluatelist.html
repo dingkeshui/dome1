@@ -1,0 +1,110 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                   
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="headleft" linkto="javascript:history.go(-1);"><img class="wh20 y3" src="__WEBPUBLIC__/Wechat/img/back2.png" style="transform:rotate(180deg);vertical-align: sub;"></div>
+                	查看评价
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!-- <div class="weui-cell__ft">
+                    
+                </div> -->
+            </div>
+    </div>
+
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cell bgfff mgb10">
+                <div class="weui-cell__hd mgr5">
+                    <div class="headimgbox mgr5 headimgbg fs0">
+                        <!-- <img class="w100" src=""> -->
+                    </div>
+                </div>
+                <div class="weui-cell__bd">
+                    <div class="name"></div>
+                </div>
+        </div>
+        <div class="list">
+            <!-- <div class="pjbox bgfff mgb10 flex">
+                    <div class="pjheadimg">
+                        <img class="w100" src="../img/img (127).png">
+                    </div>
+                    <div class="flex1"> 
+                        <div class="textovh"></div>
+                        <div class="startbox">
+                            <div class="startboxtop">
+                               <img class="w15" src="../img/img (104).png">
+                                <img class="w15" src="../img/img (104).png">
+                                <img class="w15" src="../img/img (104).png">
+                                <img class="w15" src="../img/img (105).png">
+                                <img class="w15" src="../img/img (105).png"> 
+                            </div>
+                            <div class="right colb6 ctime"></div>
+                        </div>
+                        <div class="pjtext">
+                           
+                        </div>
+                        <div class="pjimgbox">
+                           
+                        </div>
+                    </div>
+            </div> -->
+        </div>
+    </div>
+
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var order_id = "{:I('get.order_id')}";
+    requestUrl("{:U('Api/StoreOrder/appraiseOrderList')}",{order_id:order_id},function(data){
+        console.log(data);
+        if(data.flag=='success'){
+            var shops=data.data;
+            $('.headimgbox').attr('style','background-image:url('+shops.mem_res.head_pic+')');
+            $('.name').html(shops.mem_res.nick_name);
+            var shoplist=shops.appraise_list;
+            var str="";
+            for(var i in shoplist){
+                var minstr="";
+                for(var k in shoplist[i].pics){
+                    minstr+='<div><img class="w100" src="'+shoplist[i].pics[k]+'"></div>'
+                }
+                str+='<div class="pjbox bgfff mgb10 flex">'
+                    +'<div class="pjheadimg" style="background:url('+shoplist[i].cover_pic+') no-repeat;background-size:cover;background-position: 0px 0px;">'
+//                        +'<img class="w100" src="'+shoplist[i].cover_pic+'">'
+                    +'</div>'
+                    +'<div class="flex1">'
+                        +'<div class="line2">'+shoplist[i].goods_name+'</div>'
+                        +'<div class="startbox">'
+                            +'<div class="startboxtop">'
+                                +'<img class="w15" src="__WEBPUBLIC__/Wechat/shopimg/img (10'+(1<=shoplist[i].star?4:5)+').png">'
+                                +'<img class="w15" src="__WEBPUBLIC__/Wechat/shopimg/img (10'+(2<=shoplist[i].star?4:5)+').png">'
+                                +'<img class="w15" src="__WEBPUBLIC__/Wechat/shopimg/img (10'+(3<=shoplist[i].star?4:5)+').png">'
+                                +'<img class="w15" src="__WEBPUBLIC__/Wechat/shopimg/img (10'+(4<=shoplist[i].star?4:5)+').png">'
+                                +'<img class="w15" src="__WEBPUBLIC__/Wechat/shopimg/img (10'+(5<=shoplist[i].star?4:5)+').png">'
+                            +'</div>'
+                            +'<div class="right colb6 ctime">'+shoplist[i].ctime+'</div>'
+                        +'</div>'
+                        +'<div class="pjtext">'+shoplist[i].content+'</div>'
+                        +'<div class="pjimgbox">'+minstr+'</div>'
+                    +'</div>'
+            +'</div>';
+            }
+            $('.list').append(str);
+        }else{
+            layer.msg(data.message);
+        }
+    },"POST");
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+</script>
+</block>

@@ -1,0 +1,84 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd textcenter">
+                商品类型
+                <!-- <span class="fr tc">退出</span> -->
+            </div>
+            <!--<div class="weui-cell__ft">
+                <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+            </div>-->
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+
+        <div class="weui-cells weui-cells_radio">
+            <label class="weui-cell weui-check__label">
+                <div class="weui-cell__hd">
+                    <input type="radio" class="weui-check good_type" name="radio1" value="0">
+                    <span class="weui-icon-checked"></span>
+                </div>
+                <div class="weui-cell__bd">
+                    <p>实物商品</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <p>物流发货</p>
+                </div>
+            </label>
+        </div>
+
+        <div class="pad10 colb3 fs12">
+            实物商品:买家下单后，卖家需要选择物流公司并安排发货
+        </div>
+
+        <div class="weui-cells weui-cells_radio">
+            <label class="weui-cell weui-check__label">
+                <div class="weui-cell__hd">
+                    <input type="radio" class="weui-check good_type" name="radio1" value="1">
+                    <span class="weui-icon-checked"></span>
+                </div>
+                <div class="weui-cell__bd">
+                    <p>电子卡劵</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <p>无/有物流</p>
+                </div>
+            </label>
+        </div>
+        <div class="pad10 colb3 fs12">
+            虚拟商品:买家下单后,卖家根据情况确定是否需要发货。
+        </div>
+
+    </div>
+</block>
+<block name="footerjs">
+<script>
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    var status="{$_GET['status']}";//进页面的方式 2为编辑商品
+    var type = sessionStorage.getItem("type");
+    if (type==1 || type=="1") {
+        $(".good_type").eq(1).click();
+    }else{
+        $(".good_type").eq(0).click();
+    }
+    $(".good_type").on('click',function () {
+        var val = $(this).val();
+        console.log(val);
+        sessionStorage.setItem("type",val);
+        if(status==2){
+            window.location.href = "{:U('Shop/edishop')}";
+        }else{
+            window.location.href = "{:U('Shop/addnewshop')}";
+        }
+    });
+</script>
+</block>

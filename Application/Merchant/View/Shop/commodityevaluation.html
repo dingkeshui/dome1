@@ -1,0 +1,164 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd">
+               
+            </div>
+            <div class="weui-cell__bd textcenter">
+                商品评价
+                <!-- <span class="fr tc">退出</span> -->
+            </div>
+            <!-- <div class="weui-cell__ft">
+                
+            </div> -->
+        </div>
+    </div>
+
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="appraiselist">
+
+            
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script>
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    $('.divclass').click(function () {
+        if($(this).hasClass('on')){
+            $(this).removeClass('on');
+            $(this).find('img').attr('src','../img/class1.png');
+            $('.shoplist').removeClass('shoplist2');
+        }else{
+            $(this).addClass('on');
+            $(this).find('img').attr('src','../img/class2.png');
+            $('.shoplist').addClass('shoplist2');
+        }
+    })
+
+
+
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+    var shop_id = shop_id;
+    var p_id = "{$_REQUEST['p_id']}";
+
+        var dataargs = {"p":1};
+        if (shop_id && p_id) {
+            dataargs.shop_id = shop_id;
+            dataargs.p_id = p_id;
+        }
+        getJson("shouci");
+
+        function getJson(args) {
+            console.log(dataargs);
+            requestUrl("{:U('Api/Product/appraise')}",dataargs,function(data){
+                layer.closeAll();
+                putGoods(data,args);
+            },"POST",true);
+        }
+
+         //添加评论到列表
+        function putGoods(data,args) {
+            console.log(data);
+            if(data.flag == 'success'){
+                var shops = data.data.list;
+                if((!shops || shops.length == 0 ) && args == "shouci"){
+                    $(".xq_container").addClass('wusj');
+                }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                    $(".appraiselist").append('<div class="texcen">没有更多了！</div>');
+                }else{
+                    var str ="";
+                    for(var index in shops){
+                        var shop = shops[index];
+                        if (index == "count") {
+                            $(".pingcount").text(shop);
+                        }else{
+                            str +='<div class="pad10 fs14 bgfff mgb10 flex appraise">'
+                                        +'<div class="pjheadimg">'
+                                            +'<img class="w100" src="'+shop.head_pic+'">'
+                                        +'</div>'
+                                        +'<div class="flex1">'
+                                            +'<div class="textovh">'+shop.nick_name+'</div>'
+                                            +'<div class="startbox">'
+                                                +'<div class="startboxtop inblock">'
+                                                + showXing(shop.star)
+                                                +'</div>'
+                                                +'<div class="right colb3 inblock">'+shop.ctime+'</div>'
+                                            +'</div>'
+                                            +'<div class="pjtext">'
+                                                +shop.content
+                                            +'</div>'
+                                            +'<div class="pjimgbox">';
+                                                if (shop['pics'] && shop['pics'].length>0) {
+                                                    for (var i = 0; i < shop['pics'].length; i++) {
+                                                        str +='<div>'
+                                                                +'<img class="w100" src="'+shop['pics'][i]+'">'
+                                                            +'</div>';
+                                                    }
+                                                }
+                                            str += '</div>'
+                                        +'</div>'
+                                    +'</div>';  
+                        }
+                    }
+                    if (args == "fenye") {
+                        $('.appraiselist').append(str);
+                    }else{
+                        $('.appraiselist').html(str);
+                    }
+                    top_linkto();
+                }
+            }else{
+                 layer.msg(data.message);
+            }
+
+            if (args == "shouci") {
+                fenye();
+            }
+        }
+
+        // 星星数量
+        function showXing( num,num2 ) {
+        var str ="";
+        for (var i = 0; i < num; i++) {
+            str += '<img class="w15" src="__WEBPUBLIC__/Wechat/img/xing.png"/>';
+        }
+        if(num2){
+            for (var k = 0; k < 5-num; k++) {
+               str += '<img class="w15" src="__WEBPUBLIC__/Wechat/img/D_star2.png"/>';
+            }
+        }
+        return str;
+    }
+    //分页
+    function fenye(){
+        var $_zd = $(".appraise").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".appraiselist");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+</script>
+</block>

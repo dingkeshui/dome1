@@ -1,0 +1,121 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active"><a href="">商品管理</a></li>
+        <li class="active">商品商城楼层</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>商品商城楼层</h3>
+        <ul class="nav nav-tabs">    
+            <li class="active">
+                <a href="javascript:;">商城楼层列表</a>
+            </li>
+            <li>
+                <a href="{:U('Ladder/addLadder')}">添加商城楼层</a>
+            </li>
+        </ul>
+    </div>
+    <div class="search-content">
+        <form action="{:U('Ladder/ladderList')}" method="post" class="search-form form-inline" role="form">
+            <div class="form-group">
+                <div class="col-sm-9">
+                    <select name="is_show" id="" class="form-control input-small form-control-select" style="width: 200px">
+                        <option value="">是否显示...</option>
+                        <option value="1" <if condition="$is_show eq 1">selected</if>>否</option>
+                        <option value="2" <if condition="$is_show eq 2">selected</if>>是</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn derive">查询</button>
+        </form>
+    </div>
+    <div class="content-box-table">
+        <form action="{:U('Ladder/deleteCate')}" method="post" class="batch-form">
+            <table class="table table-striped table-framed table-hover">
+                <thead>
+                    <tr>
+                        <th width="4%">
+                            <input class="check-all" type="checkbox" />
+                        </th>
+                        <th>ID</th>
+                        <th>商城楼层名称</th>
+                        <th>商城楼层图片</th>
+                        <th>是否显示</th>
+                        <th>显示顺序</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+                    <if condition="empty($list)">
+                        <tr style="font-size:14px;text-align:center;"><td colspan="20">暂无数据</td></tr>
+                    </if>
+                    <volist name="list" id="v">
+                        <tr>
+                            <td><input type="checkbox" value="{$v['l_id']}" name="l_id[]"/>&nbsp;&nbsp;{$v['l_id']}</td>
+                            <td>{$v['l_id']}</td>
+                            <td>{$v['name']|default="未填写"}</td>
+                            <td><img src="/Uploads/{$v['pic']}" alt="" width="60px" height="60px"></td>
+                            <td>
+                                <if condition="$v['is_show'] eq 1">
+                                    <span style="color: green">是</span>
+                                    <else />
+                                    <span style="color: red">否</span>
+                                </if>
+                            </td>
+                            <td><input type="number" name="sort" id="{$v['l_id']}" value="{$v['sort']}"></td>
+                            <td>{$v['ctime']|date="Y-m-d H:i:s",###}</td>
+                            <td>
+                                <a href="{:U('Ladder/editLadder',array('l_id'=>$v['l_id']))}" title="编辑" class="modify">
+                                   <span class="icon glyphicon glyphicon-pencil"></span>
+                                </a>&nbsp;
+                                <a href="#" title="删除" class="delete-delete">
+                                    <span class="icon glyphicon glyphicon-remove"></span>
+                                </a><input type="hidden" value="{:U('Ladder/deleteLadder',array('l_id'=>$v['l_id']))}">
+                            </td>
+                        </tr>
+                    </volist>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="20">
+                            <div class="bulk-actions fl">
+                                <!-- <input type="button" class="btn delete-batch" value="批量删除">　
+                                <a href="#excel" title="导出EXCEL" rel="modal">-->
+                                    <!--<input type="button" class="btn derive" value="导出EXCEL" data-toggle="modal" data-target="#excel">-->
+                                    <!--</a>-->
+                            </div>
+                            <div class="fr">
+                                {$page}
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $('input[name="sort"]').each(function(){
+            var oldnum = $(this).val();
+            var id = $(this).attr('id');
+            $(this).blur(function(){
+                var num = $(this).val();
+                if(num!=oldnum){
+                    $.post("{:U('Ladder/updateSort')}",{l_id:id,sort:num},function(data){
+                        if(data == 1){
+                            layer.msg('修改成功！');
+                        }else{
+                            layer.msg('修改失败！');
+                        }
+                    },'json');
+                }
+            });
+        });
+    })
+</script>
+<include file="Public:footer"/>

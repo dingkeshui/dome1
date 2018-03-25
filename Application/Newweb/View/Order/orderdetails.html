@@ -1,0 +1,709 @@
+<extend name="Public:head"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z5">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <!-- <div class="addressback" linkto="{:U('Order/myorder')}"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div> -->
+                	<span>订单详情</span>
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container padb50">
+        <div class="bgfff pad10">
+            <div class="border2">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <!-- 待付款187 待发货182 已发货75  交易成功(未评价)189 交易成功(已评价)98 交易关闭57 -->
+                        <img src="/Public/Wechat/cusimg/img (57).png" alt="" style="width:25px;margin-right:5px;display:block">
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p></p>
+                    </div>
+                    <div class="weui-cell__ft fs14 zxbox">
+                        <!-- 等待买家付款 等待卖家发货 卖家已付款  交易成功 交易关闭 -->
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bgfff pad10 mgtop10">
+            <div class="flex after padb5 mgb10 wldiv none">
+                 <div class="flex flexcenter mgr10">
+                    <img class="w15" src="/Public/Wechat/cusimg/img (44).png">
+                </div>
+                <div class="flex1 fs14">
+                    <div class="flex">
+                        <div class="w65">快递公司:</div>
+                        <div class="flex1"><span class="company_name"></span></div>
+                    </div>
+                    <div class="flex">
+                        <div class="w65">快递单号:</div>
+                        <div class="flex1 delivery_number"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex after padb5">
+                 <div class="flex flexcenter mgr10">
+                    <img class="w15" src="/Public/Wechat/cusimg/img (1).png">
+                </div>
+                <div class="flex1 fs14">
+                    <div class="flex">
+                        <div class="w65">收货人:</div>
+                        <div class="flex1"><span class="mgr5 name"></span><span class="tel"></span></div>
+                    </div>
+                    <div class="flex">
+                        <div class="w65">收货地址:</div>
+                        <div class="flex1 address"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bgfff padlr10">
+            <div class="flex padlr10 fs14">
+                <div class="mgr5">
+                    <img class="w20" src="/Public/Wechat/cusimg/img (50).png">
+                </div>
+                <div class="mgr5">买家留言:</div>
+                <div class="flex1 colb6 ly"></div>
+            </div>
+        </div>
+        <div class="mgtop10">
+            <div class="corderitem mgb20 bgfff">
+                <div class="flex flexvcenter goshop pad10 ih30">
+                    <img class="w15 mgr5" src="/Public/Wechat/cusimg/img (6).png">
+                    <span class="shopname">asdjk暗红色的</span>
+                    <img class="w15" src="/Public/Wechat/cusimg/img (20).png">
+                </div>
+                <div class="list">
+                    <!-- <div class="flex corderitemshop">
+                            <div class="carshopimg">
+                                <img class="w100" src="../img/img (86).png">
+                            </div>
+                            <div class="flex1 ih20 fs14">
+                                <div class="carshoptab1">
+                                    <div class="line2 h40">按时间段阿萨德看来就阿萨德阿萨德；阿斯达卡asdasdasd阿萨德点击我剪短发阿斯兰的接口打开</div>
+                                    <div class="colb6 fs12">
+                                        M；xxl；黑色 M；xxl
+                                    </div>
+                                    <div>
+                                        <span class="colred">￥159.02</span>
+                                        <span class="right colb6">x1</span>
+                                    </div>
+                                    <div class="carshoptab1tk">
+                                        <span class="">退款</span>
+                                        <span class="">申请售后</span>
+                                    </div>
+                                </div>
+                            </div>
+                    </div> -->
+                </div>
+                <div class="padlr10">
+                        <div class="after padtb10">
+                            <div class="colb6 fs14"><span>商品总价</span><span class="right goods_total_price">￥154.00</span></div>
+                            <div class="colb6 fs14"><span>快递运费</span><span class="right postage_price"></span></div>
+                            <div class="colb6 fs14"><span>优惠券</span><span class="right cou_scale_price"></span></div>
+                            <div class="colb6 fs14"><span>众享豆</span><span class="right wallet_scale_price"></span></div>
+                            <div class="fs1-2"><span>订单总价</span><span class="right total_price"></span></div>
+                        </div>
+                </div>
+                <div class="pad10 fs1-2">
+                   <span>需付款</span><span class="real_price right"></span>
+                </div>
+            </div>
+        </div>
+        <div class="mgtop10 bgfff pad10">
+            <div class="ih30">返回麦穗<span class="colred real_price2"></span>个  </div>
+            <div class="scboxfoot mgtop10 flex ih30">
+                <a class="flex1 colblack flex flexcenter showtel">
+                        <img class="w15 mgr5" src="/Public/Wechat/img/img (42).png">
+                        联系商家
+                </a>
+                <a class="flex1 colon flex flexcenter goshop">
+                        <img class="w15 mgr5" src="/Public/Wechat/img/img (7).png">
+                        进店逛逛
+                </a>
+            </div>
+        </div>
+        <div class="mgtop10 mgb10 pad10 bgfff bhbox colb6">
+           <!--  <div><span>订单编号:</span><span>8456465456464564564564</span></div>
+            <div><span>创建时间:</span><span>2017-12-5</span></div>
+            <div><span>付款时间:</span><span>2017-12-09</span></div>
+            <div><span>发货时间:</span><span>2017-12-09</span></div>
+            <div><span>成交时间:</span><span>2017-12-09</span></div>
+            <div><span>关闭原因:</span><span>我不想买了</span></div> -->
+        </div>
+    </div>
+
+    <div class="pad10 bgfff z5 orderfoot">
+      <!--   <span class="qxdnspan">取消订单</span>
+        <span class="fkspan">付款</span>
+        <span class="txspan">提醒发货</span>
+        <span class="ckspan">查看物流</span>
+        <span class="qrspan">确认收货</span>
+        <span class="scspan">删除订单</span> -->
+    </div>
+
+    <!-- 取消订单 -->
+    <div id="actionSheet_wrap" style="display: none;">
+            <div class="weui-mask_transparent actionsheet__mask bg0-6"  style="opacity: 1" id="mask"></div>
+            <div class="weui-actionsheet weui-actionsheet_toggle" id="weui-actionsheet">
+                <div class="weui-actionsheet__menu myweuigg">
+                    <div class="weuimenutop after pad10 ih30 textcenter">请选择取消订单的理由</div>
+                    <div class="weuimenumid minh300">
+                        <div class="weui-cells nocells weui-cells_radio">
+                            <label class="weui-cell weui-check__label" for="x11">
+                                <div class="weui-cell__bd">
+                                    <p>我不想买了</p>
+                                </div>
+                                <div class="weui-cell__ft">
+                                    <input type="radio" mytext="我不想买了" class="weui-check" name="radio1" id="x11">
+                                    <span class="weui-icon-checked"></span>
+                                </div>
+                            </label>
+                            <label class="weui-cell weui-check__label" for="x12">
+
+                                <div class="weui-cell__bd">
+                                    <p>其他原因</p>
+                                </div>
+                                <div class="weui-cell__ft">
+                                    <input type="radio" name="radio1" mytext="其他原因" class="weui-check" id="x12" checked="checked">
+                                    <span class="weui-icon-checked"></span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui-actionsheet__action flex ih30 textcenter">
+                    <!-- <div class="weui-actionsheet__cell" id="actionsheet_cancel">确认规格</div> -->
+                    <div class="weuifootleft flex1 padtb10">确认</div>
+                    <div class="weuifootright flex1 padtb10">取消</div>
+                </div>
+            </div>
+    </div>
+
+    <!-- 删除订单 -->
+    <div id="actionSheet_wrap2" style="display: none;">
+            <div class="weui-mask_transparent actionsheet__mask bg0-6"  style="opacity: 1" id="mask2"></div>
+            <div class="weui-actionsheet weui-actionsheet_toggle" id="weui-actionsheet">
+                <div class="weui-actionsheet__menu myweuigg">
+                    <div class="weuimenutop after pad10 ih30 textcenter">确定删除订单？</div>
+                    <div class="weuimenumid pad10 minh300">
+                        订单删除后不可恢复！
+                    </div>
+                </div>
+                <div class="weui-actionsheet__action flex ih30 textcenter">
+                    <!-- <div class="weui-actionsheet__cell" id="actionsheet_cancel">确认规格</div> -->
+                    <div class="weuifootleft flex1 padtb10">确认</div>
+                    <div class="weuifootright flex1 padtb10">取消</div>
+                </div>
+            </div>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var order_id="{$_GET['order_id']}";
+    var pay={type:'',money:'',dou:''};//type:支付方式1为豆子0为钱  money:''
+    var shop_id="";
+    var order_sn="";
+    var isok=true;//是否可以点击付款
+    var max_price = +"{$res['max_price']}";
+    var delivery_number=0;//物流单号
+    requestUrl("{:U('Api/ProductOrder/orderDetail')}",{order_id:order_id},function(data){
+        console.log(data);
+                if(data['flag'] == "success"){
+                    var shops=data.data;
+                    order_sn=shops.order_sn;
+                    $('.name').html(shops.addr_name);
+                    $('.tel').html(shops.addr_tel);
+                    if(shops.remark){
+                        $('.ly').html(shops.remark);
+                    }else{
+                        $('.ly').html("未留言");
+                    };
+                    $('.address').html(shops.addr_address);
+                    $('.shopname').html(shops.shop_name);
+                    $('.goods_total_price').html('￥'+shops.goods_total_price);
+                    $('.real_price').html('￥'+shops.real_price);
+                    $('.real_price2').html(shops.real_price);
+                    $('.total_price').html('￥'+shops.total_price);
+                    $('.postage_price').html('￥'+shops.postage_price);
+                    $('.cou_scale_price').html('-￥'+(shops.cou_money_show.cou_scale_price?( +shops.cou_money_show.cou_scale_price).toFixed(2):0));
+                    $('.wallet_scale_price').html('-￥'+(shops.cou_money_show.wallet_scale_price?(+shops.cou_money_show.wallet_scale_price).toFixed(2):0));
+                    $('.goshop').attr("linkto","{:U('Shop/shopdetail')}&shop_id="+shops.shop_id);
+                    if(shops.real_price>0){
+                        // 微信支付
+                        pay={type:0,money: +shops.real_price,dou: +shops.cou_money_show.wallet_scale_price,c_m_id: +shops.cou_money_show.cou_scale_price};
+                    }else{
+                        //豆支付
+                        pay={type:1,money: +shops.real_price,dou: +shops.cou_money_show.wallet_scale_price,c_m_id: +shops.cou_money_show.cou_scale_price};
+                    }
+                    var newstr={};
+                    // 获取客服电话
+                    shop_id=shops.shop_id;
+                    gettel(shops.shop_id);
+                    switch(+shops.status)
+                        {
+                        case 0:
+                            $('.border2 img').attr('src','/Public/Wechat/cusimg/img (187).png');
+                            newstr.str1="<div>等待买家付款</div>";
+                            newstr.str2='<span is_cou="'+shops.is_cou+'" class="mgr5 qxdnspan">取消订单'+(shops.cou_money_show.wallet_scale_price?"(退豆)":"")+'</span><span class="allred fkspan">付款</span>';
+                            newstr.str3='<div><span>订单编号:</span><span>'+shops.order_sn+'</span></div><div><span>创建时间:</span><span>'+shops.ctime+'</span></div>';
+                            break;
+                        case 1:
+                            $('.border2 img').attr('src','/Public/Wechat/cusimg/img (182).png');
+                            newstr.str1="<div>等待卖家发货</div>";
+                            newstr.str2='<span class="mgr5 txspan">提醒发货</span>';
+                            newstr.str3='<div><span>订单编号:</span><span>'+shops.order_sn+'</span></div>'
+                                        +'<div><span>创建时间:</span><span>'+shops.ctime+'</span></div>'
+                                        +'<div><span>付款时间:</span><span>'+shops.pay_time+'</span></div>';
+                            break;
+                        case 2:
+                            $('.border2 img').attr('src','/Public/Wechat/cusimg/img (75).png');
+                            $('.wldiv').removeClass('none');
+                            $('.company_name').html(shops.company_name);
+                            $('.delivery_number').html(shops.delivery_number);
+                            delivery_number=shops.delivery_number;
+                            newstr.str1="<div>卖家已发货</div><div class='colred'>还剩"+shops.make_sure_time+"自动确认</div>";
+                            newstr.str2='<span class="mgr5 ckspan">查看物流</span><span class="allred qrshspan">确认收货</span>';
+                            newstr.str3='<div><span>订单编号:</span><span>'+shops.order_sn+'</span></div>'
+                                        +'<div><span>创建时间:</span><span>'+shops.ctime+'</span></div>'
+                                        +'<div><span>付款时间:</span><span>'+shops.pay_time+'</span></div>'
+                                        +'<div><span>发货时间:</span><span>'+shops.send_time+'</span></div>';
+                            // newstr.str4='<div class="carshoptab1tk"><span class="tkspan">退款</span></div>';
+                            break;
+                        case 3:
+                            $('.border2 img').attr('src','/Public/Wechat/cusimg/img (189).png');
+                            $('.wldiv').removeClass('none');
+                            $('.company_name').html(shops.company_name);
+                            delivery_number=shops.delivery_number;
+                            $('.delivery_number').html(shops.delivery_number);
+                            newstr.str1="<div>交易成功</div>";
+                            newstr.str2='<span class="mgr5 ckspan">查看物流</span><span class="allred mgr5 pjspan">立即评价</span>'+(shops.is_account==1?"":"<span class='allred ljjs'>立即结算</span>");
+                            newstr.str3='<div><span>订单编号:</span><span>'+shops.order_sn+'</span></div>'
+                                        +'<div><span>创建时间:</span><span>'+shops.ctime+'</span></div>'
+                                        +'<div><span>付款时间:</span><span>'+shops.pay_time+'</span></div>'
+                                        +'<div><span>发货时间:</span><span>'+shops.send_time+'</span></div>'
+                                        +'<div><span>成交时间:</span><span>'+shops.affirm_time+'</span></div>';
+                            break;
+                        case 4:
+                            $('.border2 img').attr('src','/Public/Wechat/cusimg/img (98).png');
+                            newstr.str1="<div>交易成功</div>";
+                            newstr.str2="<span class='scspan mgr5'>删除订单</span>"+(shops.is_account==1?"":"<span class='allred ljjs'>立即结算</span>");
+                            newstr.str3='<div><span>订单编号:</span><span>'+shops.order_sn+'</span></div>'
+                                        +'<div><span>创建时间:</span><span>'+shops.ctime+'</span></div>'
+                                        +'<div><span>付款时间:</span><span>'+shops.pay_time+'</span></div>'
+                                        +'<div><span>发货时间:</span><span>'+shops.send_time+'</span></div>'
+                                        +'<div><span>成交时间:</span><span>'+shops.affirm_time+'</span></div>';
+                            break;
+                        case 9:
+                            $('.border2 img').attr('src','/Public/Wechat/cusimg/img (57).png');
+                            newstr.str1="<div>交易关闭</div>";
+                            newstr.str2="<span class='scspan'>删除订单</span>";
+                            newstr.str3='<div><span>订单编号:</span><span>'+shops.order_sn+'</span></div>'
+                                        +'<div><span>创建时间:</span><span>'+shops.ctime+'</span></div>'
+                                        +'<div><span>关闭时间:</span><span>'+shops.cancel_time+'</span></div>'
+                                        +'<div><span>关闭原因:</span><span>'+shops.cancel_reason+'</span></div>';  
+                            break;
+                        }
+                        var minstr='';
+                        // var shoptknum=0;
+                        for(var k in shops.product){
+                            newstr.str4="";
+                                switch(shops.product[k].status)
+                                {
+                                    case '0':
+                                        newstr.str4='<div class="textright carshoptab1tk goreturn colred" return_id="'+shops.product[k].return_id+'"><span>退款审核中</span></div>';
+                                            // shoptknum++;
+                                    break;
+                                    case '1':
+                                        newstr.str4='<div class="textright carshoptab1tk goreturn colred" return_id="'+shops.product[k].return_id+'"><span>退款中</span></div>';
+                                            // shoptknum++;
+                                    break;
+                                    case '2':
+                                        newstr.str4='<div class="textright carshoptab1tk goreturn colred" return_id="'+shops.product[k].return_id+'"><span>商家拒绝退款</span></div>';
+                                    break;
+                                    case '3':
+                                        newstr.str4='<div class="textright carshoptab1tk goreturn colred" return_id="'+shops.product[k].return_id+'"><span>退款完成</span></div>';
+                                            // shoptknum++;
+                                    break;
+                                    default:
+                                        if(shops.is_account!=1){
+                                            if(shops.status==1||((shops.status==3||shops.status==4)&&shops.refund_time<7)){
+                                              newstr.str4='<div class="carshoptab1tk"><span attr_group="'+shops.product[k].attr_group+'" class="tkspan">退款</span></div>'
+                                            };
+                                        }
+                                }
+                            minstr+='<div class="flex corderitemshop" p_id="'+shops.product[k].p_id+'">'
+                                        +'<div class="carshopimg">'
+                                            +'<img class="w100" src="'+shops.product[k].cover_pic+'">'
+                                        +'</div>'
+                                        +'<div class="flex1 ih20 fs14">'
+                                            +'<div class="carshoptab1">'
+                                                +'<div class="line2 h40">'+shops.product[k].title+'</div>'
+                                                +'<div class="colb6 fs12">'+((shops.product[k].attr&&shops.product[k].attr!="0")?shops.product[k].attr:"")+'</div>'
+                                                +'<div>'
+                                                    +'<span class="colred">￥'+shops.product[k].price+'</span>'
+                                                    +'<span class="right colb6">x'+shops.product[k].num+'</span>'
+                                                +'</div>'
+                                                +(newstr.str4?newstr.str4:'')
+                                        +'</div>'
+                                        +'</div>'
+                                    +'</div>';
+                        }
+                        // if(shoptknum==shops.product.length){
+                        //     newstr.str2='<div class="colred">已选择退款</div>';
+                        // };
+                        if(shops.is_show_button!=1){
+                            if(newstr.str2.indexOf('删除订单')!=-1){
+                                newstr.str2='<span class="scspan">删除订单</span>';
+                            }else{
+                                newstr.str2='<div class="colred">已选择退款</div>';
+                            }
+                        }
+                        $('.list').html(minstr);
+                        $('.zxbox').html(newstr.str1);
+                        $('.orderfoot').html(newstr.str2);
+                        $('.bhbox').html(newstr.str3);
+                        top_linkto();
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                    layer.closeAll();
+                }
+    },"POST",true);
+    //立即结算
+    $('.orderfoot').on('click','.ljjs',function(){
+        layer.open({
+            title:'确认立即结算?'
+            ,content:"确认立即得麦穗，将放弃退货权益。"
+            ,btn: ['确认', '取消']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+                requestUrl("{:U('Api/SettlePrice/advancePrice')}",{p_o_id:order_id},function(data){
+                    if(data.flag=="success"){
+                        layer.msg('结算成功');
+                        setTimeout(function(){
+                            location.reload()
+                        },1000);
+                    }else{
+                        layer.msg(data.message);
+                    }
+                },'POST',true);
+                layer.close(index);
+            }
+            ,btn2: function(index, layero){
+            //按钮【按钮二】的回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+            ,cancel: function(){ 
+            //右上角关闭回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+        });
+    });
+    //查看物流
+    $('.orderfoot').on('click','.ckspan',function(){
+        layer.open({
+            title:'物流单号'
+            ,content:delivery_number?delivery_number:"暂无单号"
+            ,btn: ['确认', '取消']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+                layer.close(index);
+            }
+            ,btn2: function(index, layero){
+            //按钮【按钮二】的回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+            ,cancel: function(){ 
+            //右上角关闭回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+        });
+    });
+    // 进入退款详情
+    $('.list').on('click','.goreturn',function(){
+        location.href="{:U('Refund/refundinfo')}/return_id/"+$(this).attr('return_id');
+    });
+    //点击付款
+    $('.orderfoot').on('click','.fkspan',function(){
+        if (isok) {
+            isok=false;
+            if(pay.type){
+                //豆支付
+                doupay();
+            }else{
+                hxpay()
+            }
+        }
+    });
+    //微信支付
+    function hxpay(e){
+        requestUrl("{:U('Pay/getHxShopOrderApi')}",{order_sn:order_sn,type:1},function(data){
+            if(data.flag=="success"){
+                console.log(data.data);
+                document.getElementsByTagName("body")[0].innerHTML = data.data;
+                document.forms['ipspaysubmit'].submit();
+            }else{
+                layer.msg(data.flag);
+            }
+        },'POST',true);
+    }
+    //豆子支付
+    function doupay(){
+        layer.open({
+            content: '确认使用豆支付？'
+            ,btn: ['立即支付', '稍后支付']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+                requestUrl("{:U('Api/BeanPay/BeanShopOneOrder')}",{order_sn:order_sn,price:0},function(data){
+                    if(data.flag=="success"){
+                        console.log(data.data);
+                        layer.msg('支付成功！');
+                        setTimeout(function(){
+                            location.href="{:U('Order/myorder')}/type/2";
+                        },1000);
+                    }else{
+                        layer.msg(data.message);
+                    }
+                },'POST',true);
+            }
+            ,btn2: function(index, layero){
+                // location.href="{:U('Order/myorder')}/type/1";
+            }
+            ,cancel: function(){ 
+                // location.href="{:U('Order/myorder')}/type/1";
+            }
+        });
+    }
+    // 退款
+    $('.list').on('click','.tkspan',function(){
+        location.href="{:U('Refund/refundindex')}/order_id/"+order_id+"/p_id/"+$(this).parents('.corderitemshop').attr('p_id')+"/shop_id/"+shop_id+"/attr_group/"+$(this).attr('attr_group');
+    });
+    // 点击取消订单
+    $('.orderfoot').on('click','.qxdnspan',function () {
+        var is_cou=$(this).attr('is_cou');
+        if(is_cou==1){
+            layer.open({
+                title:'取消订单'
+                ,content: '<div>取消该订单会导致使用同一优惠券的订单都会被取消</div>'
+                ,btn: ['确认', '取消']
+                ,yes: function(index, layero){
+                //按钮【按钮一】的回调
+                    $('#actionSheet_wrap').css('display','block');
+                    layer.close(index);
+                }
+                ,btn2: function(index, layero){
+                    // location.href="{:U('Order/myorder')}/type/1";
+                }
+                ,cancel: function(){ 
+                    // location.href="{:U('Order/myorder')}/type/1";
+                }
+            });
+        }else{
+            $('#actionSheet_wrap').css('display','block');
+        }  
+    });
+    $('#mask,#actionSheet_wrap .weuifootright,#actionSheet_wrap .weuifootleft').click(function(){
+        $('#actionSheet_wrap').hide();
+    });
+
+    // 确认取消
+    $('#actionSheet_wrap .weuifootleft').click(function(){
+        var cancel_reason=$('.weui-check[name=radio1]').attr('mytext');
+        requestUrl("{:U('Api/ProductOrder/cancelOrder')}",{order_id:order_id,cancel_reason:cancel_reason},function(data){
+                if(data['flag'] == "success"){
+                   layer.msg('取消成功!');
+                    setTimeout(function(){
+                        location.href="{:U('Order/myorder')}";
+                   },1500);
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+        },"POST",true);
+    });
+    // 提醒发货
+    $('.orderfoot').on("click",".txspan",function(){
+        requestUrl("{:U('Api/ProductOrder/informPush')}",{order_id:order_id},function(data){
+                    if(data['flag'] == "success"){
+                       layer.msg('提醒成功!');
+                    }else if(data['flag'] == "error"){
+                        layer.msg(data['message']);
+                    }
+        },"POST",true);
+    });
+    // 立即评价
+    $('.orderfoot').on("click",".pjspan",function(){
+        var url="{:U('Order/releasecomment')}/order_id/"+order_id;
+        location.href=url;
+    });
+    //确认收货
+    $('.orderfoot').on('click','.qrshspan',function () {
+        layer.open({
+            content: '确认收货？'
+            ,btn: ['确认', '取消']
+            ,yes: function(index, layero){
+            //按钮【按钮一】的回调
+                requestUrl("{:U('Api/ProductOrder/makeSure')}",{order_id:order_id},function(data){
+                    if(data['flag'] == "success"){
+                       layer.msg('收货成功!');
+                       setTimeout(function(){
+                            location.href="{:U('Order/myorder')}";
+                       },1500);
+                    }else if(data['flag'] == "error"){
+                        layer.msg(data['message']);
+                    }
+                },"POST",true);
+                layer.close(index);
+            }
+            ,btn2: function(index, layero){
+            //按钮【按钮二】的回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+            ,cancel: function(){ 
+            //右上角关闭回调
+            
+            //return false 开启该代码可禁止点击该按钮关闭
+            }
+        });
+    });
+    // 点击删除订单
+    $('.orderfoot').on('click','.scspan',function () {
+        $('#actionSheet_wrap2').css('display','block');
+    });
+    $('#mask2,#actionSheet_wrap2 .weuifootright,#actionSheet_wrap2 .weuifootleft').click(function(){
+        $('#actionSheet_wrap2').hide();
+    });
+    // 删除订单
+    $('#actionSheet_wrap2 .weuifootleft').click(function () {
+        requestUrl("{:U('Api/ProductOrder/delOrder')}",{order_id:order_id},function(data){
+                if(data['flag'] == "success"){
+                   layer.msg('删除成功!');
+                   setTimeout(function(){
+                        location.href="{:U('Order/myorder')}";
+                   },1500);
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+        },"POST",true);
+    });
+    // 客服电话
+    var telstr="";
+    $('.showtel').click(function(){
+        layer.open({
+          type: 1,
+          title: false,
+          closeBtn: 0,
+          shadeClose: true,
+          // skin: 'yourclass',
+          content: telstr
+        });
+        top_linkto();
+    });
+    // 获取客服电话
+    function gettel(e){
+        requestUrl("{:U('Api/Store/shopTel')}",{shop_id:e},function(data){
+                if(data['flag'] == "success"){
+                   var datas=data.data;
+                   telstr="<div class='bgfff telbox ih30'>"+
+                    "<div class='fw padtb10 after'>拨打电话</div>"+
+                    "<div class='telmain'>";
+                    var ret= /^(0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8})|(400|800)([0-9\\-]{7,10})|(([0-9]{4}|[0-9]{3})(-| )?)?([0-9]{7,8})((-| |转)*([0-9]{1,4}))?$/;
+                    if(datas.length!=0||datas!=''){
+                        if(datas.tel_one!=""&&ret.test(datas.tel_one)){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_one+'"><span class="mgr5">客服1</span><span>'+datas.tel_one+'</span></div>';
+                        }
+                        if(datas.tel_two!=""&&ret.test(datas.tel_two)){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_two+'"><span class="mgr5">客服2</span><span>'+datas.tel_two+'</span></div>';
+                        }
+                        if(datas.tel_three!=""&&ret.test(datas.tel_three)){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_three+'"><span class="mgr5">客服3</span><span>'+datas.tel_three+'</span></div>';
+                        }
+                        if(datas.tel_four!=""&&ret.test(datas.tel_four)){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_four+'"><span class="mgr5">客服4</span><span>'+datas.tel_four+'</span></div>';
+                        }
+                        if(datas.tel_five!=""&&ret.test(datas.tel_five)){
+                            telstr += '<div class="padtb10 after" linkto="tel:'+datas.tel_five+'"><span class="mgr5">客服5</span><span>'+datas.tel_five+'</span></div>';
+                        }
+//                        for(var i in datas){
+//                            telstr+="<div class='padtb10 after'><span class='mgr5'>客服"+i+1+"</span><a href='/'>"+datas[i]+"</a></div>";
+//                        };
+                    }else{
+                        telstr+="<div class='padtb10'>暂无客服电话</div>";
+                    }
+                    telstr+="</div></div>";
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+        },"POST",true);
+    };
+</script>
+<script type="text/javascript">
+    function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+            $(".orderfoot").off('click','.fkspan');
+            $(".orderfoot").on('click','.fkspan',function ( e ) {
+                e.preventDefault();
+                if (isok) {
+                    isok=false;
+                    if(pay.type){
+                        //豆支付
+                        doupay();
+                    }else{
+                        if( +pay.money>3000){
+                            layer.msg('实际支付金额大于30000<br>请分开支付');
+                            isok=true;
+                            return;
+                        };
+                        layer.msg("正在唤起微信！");
+                        bridge.callHandler('loginAction',{order_sn:order_sn,type:1}, function(response) {
+                            //处理oc过来的回调
+                            layer.closeAll();
+                        });
+                    }
+                }
+            });
+            $('.showtel').off('click');
+            $('.showtel').on('click',function(){
+                bridge.callHandler('chartShop',{shop_id:shop_id}, function(response) {
+                     //处理oc过来的回调
+                    layer.closeAll();
+                });
+            });
+    });
+</script>
+</block>

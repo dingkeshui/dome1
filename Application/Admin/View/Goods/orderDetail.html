@@ -1,0 +1,81 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <div class="content-box">
+        <ul class="breadcrumb">
+            <li><a href="{:U('Index/main')}">首页</a></li>
+            <li><a href="#">订单详情管理</a></li>
+            <li class="active">订单详情</li>
+        </ul>
+        <style>
+            table tr td {
+                padding: 2px;
+                border: 1px solid #CCCCCC;
+                text-align: center;
+            }
+        </style>
+        <!--表格内容-->
+        <div class="content-box-content;">
+            <table style="width:98%;height:300px;margin:30px 20px;border:1px solid #CCCCCC;font: 微软雅黑">
+                <tr>
+                    <td>商品名称</td>
+                    <td>商品的图片</td>
+                    <td>商品的价格</td>
+                    <td>商品的邮费</td>
+                    <td>商品的数量</td>
+                </tr>
+                <tr>
+                    <td>{$res['goods']['name']}</td>
+                    <td><img src="/{$res['goods']['cover_pic']}" alt="" style="width:150px;height:auto"></td>
+                    <td>{$res['goods']['price']}</td>
+                    <td>{$res['goods']['freight']}</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>订单的编号</td>
+                    <td>收货人的名称</td>
+                    <td>收货人的地址</td>
+                    <td>收货人的联系电话</td>
+                    <td>订单的状态</td>
+                </tr>
+                <tr>
+                    <td>{$res['order_sn']}</td>
+                    <td>{$res['name']}</td>
+                    <td>{$res['address']}</td>
+                    <td>{$res['tel']}</td>
+                    <td>
+                        <if condition="$res['status'] eq 0">
+                            <span style="color: red">未付款</span>
+                            <elseif condition="$res['status'] eq 1"/>
+                            <span style="color: red">支付成功(待发货)</span>
+                            <elseif condition="$res['status'] eq 2"/>
+                            <span style="color: red">发货成功</span>
+                            <elseif condition="$res['status'] eq 3"/>
+                            <span style="color: green">待评价</span>
+                            <elseif condition="$res['status'] eq 4"/>
+                            <span style="color: red">申请退货</span>
+                            <elseif condition="$res['status'] eq 5"/>
+                            <span style="color: green">退货成功</span>
+                            <elseif condition="$res['status'] eq 6"/>
+                            <span style="color: green">已完成</span>
+                        </if>
+                    </td>
+                </tr>
+                <tr >
+                    <td>退货时间</td>
+                    <td colspan="5">退货的原因</td>
+                </tr> 
+                <tr>
+                    <td><if condition="$res['t_time'] neq 0">{$res['t_time']|date="Y-m-d H:i:s",###}<else/>无</if></td>
+                    <td colspan="5" style="font-weight: bold;color:red;">{$res['reason']|default="无"}</td>
+                </tr>
+                <tr >
+                    <td>订单备注</td>
+                    <td colspan="5">{$res['remark']|default="无"}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>

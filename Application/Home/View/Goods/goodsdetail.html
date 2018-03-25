@@ -1,0 +1,114 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/Ding_shop.css?1=1">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/xq_slide.css">
+</block>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>商品详情</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        <div style="width: 100%;height: 10rem;margin: 0 auto;max-width: 100%;">
+            <div class="xq_slide_out">
+                <ul class="xq_slide_in more_pic">
+                </ul>
+            </div>
+        </div>
+        <div class="bgfff pad10">
+            <div class="texovh goods_title">
+                <!--<span>众享通赢</span>
+                <span class="fr fs0-8 colccc goods_freight">运费:10</span>-->
+            </div>
+            <div class="colccc fs0-8">
+                <span class="colff0 fs1-2 goods_price"></span>
+                <span class="d_type">众享豆</span>
+                <span class="fr goods_sales"></span>
+            </div>
+        </div>
+
+        <div class="gdesc pad10 bgfff">
+            <div class="colccc">商品信息</div>
+            <p class="goods_desc d_d40">商品详情</p>
+        </div>
+    </div>
+     <div class="bgjb footer-container colfff texcen ih50 exchange" style="bottom: 50px">
+        立即兑换
+    </div>
+</block>
+<block name="footerjs">
+    <script src="__WEBPUBLIC__/Wechat/slide/js/xq_slide.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+        
+    </script>
+    <!--获取商品的详情linkto="{:U('Goods/exchange',array('g_id'=>$_REQUEST['g_id']))}"-->
+    <script>
+        $(".exchange").click(function () {
+                var g_id1 = "{:I('get.g_id')}";
+                if (type != 1) {
+                    location.href = "{:U('Goods/exchange')}/money/"+money+"/g_id/"+g_id1+"/type/"+type;
+                    return;
+                }
+                var dataargs1 = {g_id:g_id1,mix_id:m_id,"type":0,"exchange_type":type};
+                requestUrl("{:U('Api/Goods/isTrue')}",dataargs1,function(data){
+                    layer.closeAll();
+                    if(data['flag'] == "success"){
+                        location.href = "{:U('Goods/exchange')}/money/"+money+"/g_id/"+g_id1+"/type/"+type;
+                    }else if(data['flag'] == "error"){
+                        layer.msg(data['message']);
+                    }
+                },"POST",true);
+        })
+
+        var g_id = "{:I('get.g_id')}";
+        var dataargs = {g_id:g_id};
+        var type;
+        var money = "";
+        requestUrl("{:U('Api/Goods/goodsDetail')}",dataargs,function(data){
+            //console.log(data);
+            var res = data.data;
+            type = res.type;
+            var str1 = '';
+            if ( type != 1) {
+                $(".exchange").text("立即购买");
+                if (res.is_send == 1) {
+                    str1 = '<img src="__WEBPUBLIC__/Wechat/img/fahuo.jpg"/>';
+                }
+            }
+
+
+            if(data['flag'] == "success"){
+                var str = "";
+                for(var index in res.pic){
+                    str += "<li><a href=''><img src=/"+res.pic[index]+" /></a></li>";
+                }
+                money = +res.price + (+res.freight);
+                $(".more_pic").html(str);
+                $(".goods_title").html('<span>'+res.name+'</span><span class="fr fs0-8 colccc goods_freight">运费:'+res.freight+'</span>');
+                $(".goods_price").text(res.price);
+                $(".d_type").html(res.type==1?"麦穗":"元");
+                var d_icon=(res.type==1?"iconmaisui":"iconzuan");
+                $(".goods_price").addClass(d_icon);
+                $(".goods_sales").text("销量:"+res.sales+ res.unit);
+                $(".goods_desc").html(str1 + res.desc);
+                $(".xq_slide_out").xq_slide({
+                    type: "h", //轮播方式  h水平轮播；v垂直轮播；o透明切换
+                    vatical: false, //图片描述性文本 true 显示 false不显示
+                    choseBtn: false, //是否显示上下切换按钮
+                    speed: 2000, //动画间隔的时间，以毫秒为单位。
+                    mousestop: true, //当鼠标移上去是否停止循环,针对PC端
+                    showbar: true, //是否显示轮播导航bar
+                    openmb: true //是否开启移动端支持
+                });
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+            }
+            layer.closeAll();
+        },"GET",true);
+    </script>
+</block>

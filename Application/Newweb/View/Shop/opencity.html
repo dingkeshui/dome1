@@ -1,0 +1,112 @@
+<extend name="Public:header"/>
+<block name="main">
+     <!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd searchimgbox">
+                <form action="/index.php/Newweb/Shop/opencity/city_name/{$_REQUEST['city_name']}" method="get">
+                    <img class="searchimg" src="__WEBPUBLIC__/Wechat/cusimg/search.png">
+                    <input class="search_input2" type="text" name="area_name" placeholder="输入城市搜索" value="{$_REQUEST['area_name']}">
+                </form>
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="pad10 ih30 bgfff">
+                当前城市 <span class="colon city_name">{$_GET['area_name']}</span>
+                <span class="right showcounty"><span class="mgr5">选择县区</span><img class="y3" src="__WEBPUBLIC__/Wechat/cusimg/img (15).png"></span>
+        </div>
+        <div class="pad10 bgfff citybox2 none"> 
+        </div>
+        <div class="ih30 pad10">
+            已开通城市
+        </div>
+        <div class="list citybox">
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+//    console.log(localStorage);
+    var city_id = "{$_GET['city_id']}";
+    var cityname = "{$_GET['city_name']}";
+    if (localStorage.getItem('city_id')){
+        city_id = localStorage.getItem('city_id');
+        cityname = localStorage.getItem('city_name');
+    }
+    $('.city_name').text(cityname);
+    var dataargs = {};
+    dataargs.area_name = "{$_REQUEST['area_name']}";
+    requestUrl("{:U('Api/Shop/openCity')}",dataargs,function ( res ) {
+        if (res.flag == "success") {
+            var str = "",citylist = res.data;
+            for(var index in citylist){
+                var city = citylist[index];
+                str += '<div class="textovh" city_id="'+city.city+'">'+city.city_name+'</div>';
+            }
+            $(".citybox").html(str);
+            $(".textovh").on('click',function () {
+                var city_name = $(this).text();
+                city_id = $(this).attr("city_id");
+                localStorage.setItem('city_id',city_id);
+                localStorage.setItem('city_name',city_name);
+                $('.city_name').text(city_name);
+                $('.city_name').attr('linkto',"{:U('Shop/shopindex')}/city_id/"+city_id+"/city_name/"+city_name);
+                top_linkto();
+                showArea();
+                $('.showcounty').show();
+//                window.location.href = "{:U('Shop/shoplist')}/city_id/"+city_id+"/city_name/"+city_name;
+            });
+        }else{
+            layer.msg(res.message);
+        }
+    },"POST",true);
+$(function(){
+   showArea();
+});
+    //显示区县
+    function showArea(){
+        requestUrl("{:U('Api/Shop/region')}",{city_id:city_id},function ( res ) {
+            if (res.flag == "success") {
+                var str = "";
+                arealist = res.data;
+                str += '<div class="textovh areaclass" area_id="">全城</div>';
+                for(var index in arealist){
+                    var area = arealist[index];
+                    str += '<div class="textovh areaclass" area_id="'+area.area+'">'+area.area_name+'</div>';
+                }
+                $(".citybox2").html(str).removeClass('none');
+                $(".areaclass").on('click',function () {
+                    var area_name = $(this).text();
+                    var area_id = $(this).attr("area_id");
+                    localStorage.setItem('area_id',area_id);
+                    localStorage.setItem('area_name',area_name);
+                    window.location.href = "{:U('Shop/shopindex')}/city_id/"+city_id+"/city_name/"+$('.city_name').text()+"/area_name/"+area_name;
+                });
+            }else{
+                $('.showcounty').hide();
+//                layer.msg(res.message);
+            }
+        },"GET",true);
+    }
+
+    $('.showcounty').click(function () {
+        if($('.citybox2').hasClass('none')){
+            $('.citybox2').removeClass('none');
+            $(this).find('img').attr('src','__WEBPUBLIC__/Wechat/cusimg/img (17).png');
+ 
+        }else{
+            $('.citybox2').addClass('none');
+            $(this).find('img').attr('src','__WEBPUBLIC__/Wechat/cusimg/img (15).png');
+        }
+    })
+
+</script>
+        
+</block>

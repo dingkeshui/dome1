@@ -1,0 +1,50 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <div class="content-box">
+
+        <ul class="breadcrumb">
+            <li><a href="/">首页</a></li>
+            <li><a href="">商品管理</a></li>
+            <li class="active">商品退货原因</li>
+        </ul>
+        <div class="page-header clearfix">
+            <h3>商品退货原因</h3>
+            <ul class="nav nav-tabs">    
+                <li>
+                    <a href="{:U('ReturnReason/reasonList')}">退货原因列表</a>
+                </li>
+                <li class="active">
+                    <a href="javascript:;">添加退货原因</a>
+                </li>
+            </ul>
+        </div>
+
+        <!--表格内容-->
+        <div class="content-box-content">
+            <!--表单 start-->
+            <form action="{:U('ReturnReason/addReason')}" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title" class="col-sm-3 control-label"><em class="prompt-red">*</em>退货原因名称：</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" id="title" name="title" placeholder="退货原因名称" required>
+                    </div>
+                  </div>
+                <div class="form-group">
+                    <label for="sort" class="col-sm-3 control-label"><em class="prompt-red"></em>显示顺序：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="sort" name="sort" placeholder="显示顺序">
+                    </div>
+                </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                      <button type="submit" class="btn btn-default btn-primary">确认添加</button>
+                    </div>
+                  </div>
+            </form>
+            <!--表单 end-->
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>

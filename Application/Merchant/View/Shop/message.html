@@ -1,0 +1,132 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>消息列表</p>
+            </div>
+            <div class="weui-cell__ft colfff">
+                <p class="clearmsg">清空</p>
+            </div>
+        </div>
+    </div>
+    <div class="xq_container">
+        <div class="pad0-10 message">
+
+        </div>
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+        $(function () {
+            getJson("shouci");
+        })
+        var flag= true;//防止ajax请求期间，对此触发请求数据
+        var dataargs = {p:1,m_id:shop_id,type:1};
+        //添加商品到列表
+        function putRecommend(data,args) {
+            console.log(data);
+            if(data.flag == 'success'){
+                var message = data.data;
+                if((!message || message.length == 0 ) && args == "shouci"){
+                    $(".xq_container").addClass('wusj');
+                }else if((!message || message.length == 0 ) && args == "fenye"){
+                    $(".message").append('<div class="texcen">没有更多了！</div>');
+                }else{
+                    var str ="";
+                    for(var index in message){
+                        var res = message[index];
+                        if(res.price != '0.00'){
+                            var price = res.price;
+                        }else{
+                            var price = "";
+                        }
+
+                        var url = "/index.php/Merchant/Shop/messageinfo/mess_id/"+res['mess_id'];
+                        str += '<div class="sub_message '+ (res.status ==1 ? "opac" : "") +'">' +
+                                    '<div class="pad10 colfff fs0-8 texcen">'+
+                                        '<span class="pad0-10 bgbbb borad4">'+res.time+'</span>'+
+                                    '</div>'+
+                                    '<div class="weui-cells mat0 borad4" linkto="'+url+'">'+
+                                        '<div class="weui-cell">'+
+                                            '<div class="weui-cell__bd fs1">'+
+                                                '<div class="">'+res.title+'</div>'+
+                                                '<div class="fs0-8 colbbb">'+res.year_time+'</div>'+
+                                            '</div>'+
+                                            '<div class="weui-cell__ft">'+
+                                                '<span class="fs1-2 col000">'+price+'</span>'+
+                                            '</div>'+
+                                        '</div>'+
+                                        '<div class="weui-cell">'+
+                                            '<div class="weui-cell__bd fs0-8">'+
+                                                '<div class="">'+res.title+'</div>'+
+                                                '<div class="">'+res.content+'</div>'+
+                                            '</div>'+
+                                        '</div>'+
+                                    '</div>'+
+                                '</div>';
+                    }
+                    if (args == "fenye") {
+                        $('.message').append(str);
+                    }else{
+                        $('.message').html(str);
+                    }
+                    flag= true;
+                    top_linkto();
+                }
+            }else{
+                layer.msg(data.message);
+            }
+
+            if (args == "shouci") {
+                fenye();
+            }
+        }
+
+        function getJson(args) {
+            requestUrl("{:U('Api/Message/messageList')}",dataargs,function(data){
+                putRecommend(data,args);
+                layer.closeAll();
+            },"GET",true);
+        }
+
+
+        function fenye(){
+            var $_zd = $(".sub_message").height();//获取每个单项的高度
+            var length = 6;//定义预加载的数量，提前三个加载数据
+            var $_par = $(".message");//获取包裹容器
+            var winheight = $(window).height();//获取窗口高度
+            var curpage = 1;//存储当前的页数v
+            $(function(){
+                $(window).on("scroll",function(e){
+                    if(flag){
+                        var self = $(this);
+                        var scrtop = self.scrollTop() + winheight;
+                        var docheight = $_par.height();
+                        //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                        if(scrtop > docheight - ( length * $_zd ) ){
+                            flag = false;
+                            dataargs.p = dataargs.p +1;
+                            getJson("fenye");
+                        }
+                    }
+                });
+            });
+        }
+
+        $(".clearmsg").on('click',function () {
+            if (confirm("确定要清空吗？")) {
+                requestUrl("{:U('Api/Message/delMessage')}",{m_id:shop_id,type:1},function ( res ) {
+                   if ( res.flag=="success" ) {
+                    window.location.reload();
+                   }else{
+                    layer.msg(res.message);
+                   }
+                });
+            }
+        });
+    </script>
+</block>

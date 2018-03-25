@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=Edge"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0"/>
+    <title>IM-DEMO</title>
+    <script src="../Public/Wechat/js/jquery.js"></script>
+    <script>
+        //保存发送的信息
+        function saveTextinfo(info){
+//            console.log(info);
+            $.post('/index.php/Admin/HXChat/addTextInfo',info).success(function(data){
+//                console.log(data);
+            });
+        }
+        //获取聊天记录
+        function getInfos(objinfo){
+            $.ajax({
+                url:"/index.php/Admin/HXChat/chatInfo",
+                data:objinfo,
+                dataType:"json",
+                type:"get",
+                success:function(data){
+                    if(data.length>0){
+                        var str = '';
+                        for(var i=0;i<data.length;i++){
+                            str += '<div class="webim-msg-container rel">';
+                            if(data[i].sender==objinfo.nowuser){
+                                str+='<div class="rel right">\
+                        <div class="webim-avatar-icon right small">';
+                            }else{
+                                str+='<div class="rel left">\
+                        <div class="webim-avatar-icon left small">';
+                            }
+                            str+='<img class="w100" src="./demo/images/default.png">\
+                            </div>';
+                            if(data[i].sender==objinfo.nowuser){
+                                str+='<p class="right">';
+                            }else{
+                                str+='<p class="left">';
+                            }
+                            str+=' <span>'+data[i].sender+'</span>\
+                            <span> </span>\
+                            <span>'+data[i].time+'</span>\
+                    </p>\
+                    <div class="clearfix">\
+                            <div class="webim-msg-value">';
+                            if(data[i].sender==objinfo.nowuser){
+                                str+='<span class="webim-msg-icon font">I</span>';
+                            }else{
+                                str+='<span class="webim-msg-icon font">H</span>';
+                            }
+                            str+=' <pre>'+data[i].content+'</pre>\
+                            </div>\
+                            <div class="webim-msg-error hide">\
+                            <span class="webim-file-icon font smaller red" title="">k</span>\
+                            </div>\
+                            </div>\
+                            </div>\
+                            </div>';
+
+                        }
+                        $('.webim-chatwindow-msg').append(str);
+                    }
+                    //滑动到聊天记录的最底部
+                    setTimeout(function(){
+                        var divll = document.getElementById('wrapper'+objinfo.touser);
+                        divll.scrollTop = divll.scrollHeight;
+                    },500);
+
+                }
+            });
+
+        }
+    </script>
+    <!-- HTML5 element  -->
+    <script src="./demo/javascript/dist/browser-polyfill.min.js"></script>
+</head>
+<body>
+<section id='main' class='w100'>
+    <article id='demo'></article>
+    <article id='components'></article>
+</section>
+<!--config-->
+<script src="./demo/javascript/dist/webim.config.js"></script>
+<script>
+    if (WebIM.config.isWindowSDK) {
+        document.title = "环信Demo";
+    }
+    if (WebIM.config.isDebug) {
+        document.write("<script src='./sdk/dist/strophe-1.2.8.js'><\/script>");
+    } else {
+        <!--A JavaScript library for XMPP over Websocket-->
+        document.write("<script src='./sdk/dist/strophe-1.2.8.min.js'><\/script>");
+    }
+</script>
+<!--sdk-->
+<script src='./sdk/dist/websdk-1.4.12.js'></script>
+<!--webrtc-->
+<script>
+    if (WebIM.config.isWebRTC) {
+        document.write("<script src='./webrtc/dist/adapter.js'><\/script>");
+        document.write("<script src='./webrtc/dist/webrtc-1.4.12.js'><\/script>");
+    }
+</script>
+<!--[if lte IE 9]>
+<script src="./demo/javascript/dist/swfupload/swfupload.min.js"></script>
+<![endif]-->
+
+<!--demo javascript-->
+<script src="./demo/javascript/dist/demo-1.4.12.js"></script>
+<script>
+        var nowuser = Demo.user;//当前登录用户
+        var touser = Demo.selected;//对应聊天的用户
+        var type = Demo.selectedCate;//聊天类型
+        getInfos({nowuser:nowuser,touser:touser,type:type});
+</script>
+
+</body>
+</html>

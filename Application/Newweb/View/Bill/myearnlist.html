@@ -1,0 +1,140 @@
+<extend name="Public:head"/>
+<block name="headdiv">
+    <link rel="stylesheet" type="text/css" href="__WEBPUBLIC__/Wechat/css/oldtop.css">
+</block>
+<block name="main">
+     <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="addressback" linkto="javascript:history.go(-1);"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div>
+                    我的收益
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="benefitstop textcenter">
+            <div class="colfff d_last">
+                <!--<span class="fs1-8">0</span>-->
+                <!--<span class="">.00</span>-->
+            </div>
+            <div class="colfff2 fs0-8">昨日收益(众享豆)</div>
+            <div class="mgtop20 colfff2">累计收益 <span class="d_sum">0</span>众享豆</div>
+        </div>
+        <div class="weui-cell">
+                <div class="weui-cell__bd d_month">
+                    全部
+                </div>
+                <div class="weui-cell__ft re benefitsmid">
+                   <img class="w20 y2" src="__WEBPUBLIC__/Wechat/img/img (60).png">
+                   <input class="month" type="month" name="">
+                </div>
+        </div>
+        <div class="list bgfff">
+            <!--<div class="weui-cell">-->
+                <!--<div class="weui-cell__bd">-->
+                    <!--<div>收益众享豆</div>-->
+                    <!--<div class="colb6 fs12"> <span>昨天</span><span>13:36</span> </div>-->
+                <!--</div>-->
+                <!--<div class="weui-cell__ft fs1-2 colyellow">-->
+                    <!--+40.00-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+
+</block>
+<block name="footerjs">
+<script>
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+   $(function(){
+      getJson("shouci");
+   })
+
+   var dataargs={"m_id":m_id,p:1};
+
+   function getJson(args) {
+        requestUrl("{:U('Api/Bill/myEarnList')}",dataargs,function(data){
+            layer.closeAll();
+            putGoods(data,args);
+        },"GET",true);
+    }
+
+    //添加商品到列表
+    function putGoods(data,args) {
+        if(data.flag == 'success'){
+            var d_data=data.data;
+            var d_price=d_data.price;
+            var d_lastspan= '<span class="fs1-8">'+d_price[0]+'</span><span class="">.'+d_price[1]+'</span>';
+            $(".d_last").html(d_lastspan);
+            $(".d_sum").html(d_data.count_price?d_data.count_price:0.00);
+            var shops = d_data.list;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $(".list").html('');
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".list").append('<div class="texcen">没有更多了！</div>');
+            }else{
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    str += '<div class="weui-cell">\
+                                <div class="weui-cell__bd">\
+                                    <div>收益众享豆</div>\
+                                    <div class="colb6 fs12"> <span>'+shop.ctime+'</span> </div>\
+                                </div>\
+                                <div class="weui-cell__ft fs1-2 colyellow">+'+shop.price+'</div>\
+                            </div>';
+                }
+                if (args == "fenye") {
+                    $('.list').append(str);
+                }else{
+                    $('.list').html(str);
+                }
+                flag = true;
+                top_linkto();
+            }
+        }else{
+             layer.msg(data.message);
+        }
+
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+function fenye(){
+    var $_zd = $(".d_list").height();//获取每个单项的高度
+    var length = 3;//定义预加载的数量，提前三个加载数据
+    var $_par = $(".d_listbox");//获取包裹容器
+    var winheight = $(window).height();//获取窗口高度
+    var curpage = 1;//存储当前的页数v
+    $(function(){
+        $(window).on("scroll",function(e){
+            if(flag){
+                var self = $(this);
+                var scrtop = self.scrollTop() + winheight;
+                var docheight = $_par.height();
+                if(scrtop > docheight - ( length * $_zd ) ){
+                    flag = false;
+                    dataargs.p = dataargs.p +1;
+                    getJson("fenye");
+                }
+            }
+        });
+    });
+}
+
+    $('.month').change(function(){
+        dataargs.time = $(this).val();
+        dataargs.p = 1;
+        $('.d_month').html($(this).val());
+        getJson('shouci');
+    });
+</script>
+</block>

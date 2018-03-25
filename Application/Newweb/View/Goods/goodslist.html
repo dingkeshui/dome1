@@ -1,0 +1,264 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                   
+                </div>
+                <div class="weui-cell__bd searchimgbox mgr5">
+                    <img class="searchimg" src="__WEBPUBLIC__/Wechat/img/search.png">
+                        <input placeholder="搜索商品" type="search" name="name" class="search_input goodname" value="" onchange="handler()"/>
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <div class="weui-cell__ft flex flexcenter" linkto="{:U('Goods/order')}">
+                    <img class="w20" src="__WEBPUBLIC__/Wechat/img/img (35).png">
+                    <span class="colblack fs0-8">兑换记录</span>
+                </div>
+            </div>
+    </div>
+
+    <!-- 选择分类导航 -->
+    <div class="classnav flex bgfff ih30">
+        <div class="flex1 flex">
+            <div class="flex1 classnav1">
+                <!-- <span class="allclass on">全部分类</span> -->
+                <select class="allclass">
+
+                </select>
+                <div>全部分类</div>
+            </div>
+            <div class="flex1 classnav2">
+                
+                <!-- <span class="zhclass">综合排序</span> -->
+                <select class="zhclass">
+                    <option value="1">综合排序</option>
+                    <option value="2">销量最高</option>
+                    <option value="3">价格最低</option>
+                </select>
+                <div>综合排序</div>
+            </div>
+        </div>
+        <div class="divclass">
+            <img class="" src="__WEBPUBLIC__/Wechat/img/class1.png">
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container padtop100">
+        <div class="list ovh">
+            <!--<div class="shoplist">-->
+                <!--<div><img class="listimg1" src="../img/img (133).png"></div>-->
+                <!--<div>-->
+                    <!--<div class="ih20 line2 mgb5"><span class="mssclogo fs12">麦穗商城</span>巴黎欧莱雅巴黎欧莱雅巴黎欧雅巴黎欧莱雅巴黎欧雅巴黎欧莱雅巴黎欧莱雅巴黎欧莱雅</div>-->
+                    <!--<div class="listdiv3 ">-->
+                        <!--<div class="ih20">-->
+                            <!--<div class="colb6 fs12">月售<span>588</span>件</div>-->
+                            <!--<div class="colred flex flexvcenter"><img class="w20" src="../img/img (143).png"><span>189.00</span></div>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<img class="listimg2" src="../img/img (155).png">-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var cate_id = "{$_GET['cate_id']}";
+    var name = "{$_GET['name']}";
+    var dataargs = {p:1};
+    if(name!=""){
+        dataargs.title = name;
+    }
+	$('.divclass').click(function () {
+        if($(this).hasClass('on')){
+            $(this).removeClass('on');
+            $(this).find('img').attr('src','__WEBPUBLIC__/Wechat/img/class1.png');
+            $('.shoplist').removeClass('shoplist2');
+        }else{
+            $(this).addClass('on');
+            $(this).find('img').attr('src','__WEBPUBLIC__/Wechat/img/class2.png');
+            $('.shoplist').addClass('shoplist2');
+        }
+    });
+    if(isApp){
+        $('.searchimgbox').css('margin-left','30px');
+    }
+    dataargs.sort = $('.zhclass').find("option:selected").val();
+    $('.zhclass').next('div').text($('.zhclass').find("option:selected").text());
+    $('.allclass,.zhclass').change(function(){
+        var claName = $(this).attr('class');
+        var option = $(this).find("option:selected");
+        $(this).next('div').html(option.text());
+        if(claName=="allclass"){
+            dataargs.cate_id = option.val();
+        }else{
+            dataargs.sort = option.val();
+        }
+        dataargs.p = 1;
+        getJson('shouci');
+    })
+
+    /**显示所有分类*/
+    requestUrl("{:U('Api/Goods/integralCate')}",{},function(res){
+        if(res.flag=="success"&&res.data){
+            var cates = res.data;
+            var str = '<option value="">全部分类</option>';
+            for(var i in cates){
+                var cate = cates[i];
+                var sel = '';
+                if(dataargs.cate_id==cate.cate_id){
+                    sel = ' selected';
+                }
+                str += '<option value="'+cate.cate_id+'" '+sel+'>'+cate.category+'</option>';
+                if(cate_id==cate.cate_id){
+                    dataargs.cate_id = cate_id;
+                    $('.allclass').next('div').html(cate.category);
+                }
+            }
+            $('.allclass').append(str);
+        }
+    },"GET");
+
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+    function getJson(args) {
+        requestUrl("{:U('Api/Goods/goodsList')}",dataargs,function(data){
+            layer.closeAll();
+            putGoods(data,args);
+        },'GET');
+    }
+
+    $(function(){
+        getJson("shouci");
+    });
+
+    //添加商品到列表
+    function putGoods(data,args) {
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $('.list').html('');
+                $(".nulldata").remove();
+                $(".list").addClass('wusj');
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".xq_container").append('<div class="nulldata ih30" style="text-align:center">没有更多了！</div>');
+            }else{
+                $(".list").removeClass('wusj');
+                $(".nulldata").remove();
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    var img="";
+                    if(shop.cover_pic.indexOf("{:C('API_URL')}/")!=-1){
+                        img=shop.cover_pic;
+                    }else{ 
+                        img = "{:C('API_URL')}/"+shop.cover_pic;
+                    }
+                    var url = "{:U('Goods/goodsinfo')}/g_id/"+shop.g_id;
+                    str += '<div class="shoplist '+($(".divclass").hasClass("on")?"shoplist2":"")+'" linkto="'+url+'">\
+                                <div><img class="listimg1" src="'+img+'"></div>\
+                                <div>\
+                                    <div class="ih20 line2 mgb5 h40"><span class="mssclogo fs12">麦穗商城</span>'+shop.name+'</div>\
+                                    <div class="listdiv3 ">\
+                                        <div class="ih20">\
+                                            <div class="colb6 fs12">月售<span>'+shop.sales+'</span>件</div>\
+                                            <div class="colred flex flexvcenter"><img class="w20" src="__WEBPUBLIC__/Wechat/img/img (143).png"><span>'+shop.price+'</span></div>\
+                                        </div>\
+                                        <div>\
+                                            <img data-id="'+shop.g_id+'" class="listimg2" src="__WEBPUBLIC__/Wechat/img/img (155).png">\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            </div>';
+                }
+                if (args == "fenye") {
+                    $('.list').append(str);
+                }else{
+                    $('.list').html(str);
+                }
+                flag=true;
+            }
+            top_linkto();
+        }else{
+            layer.msg(data.message);
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    /**点击直接去兑换*/
+    $('.list').on('click','.listimg2',function(){
+        var url = "{:U('Goods/confirmorder')}/g_id/"+$(this).attr('data-id');
+        location.href = url;
+    });
+
+    function fenye(){
+        var $_zd = $(".shoplist").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".xq_container");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+//                    console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+
+    /**搜索框搜索商品*/
+    function handler(){
+        dataargs.title = $(".goodname").val();
+        dataargs.p = 1;
+        getJson("shouci");
+        return false;
+    }
+
+</script>
+<script type="text/javascript">
+    function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+            $('.back').off('click');
+            $('.back').on('click',function(){
+                bridge.callHandler('iosBack',{data:"click iosback"}, function(response) {
+                    //处理oc过来的回调
+                    layer.closeAll();
+                })
+            });
+    });
+</script>
+</block>

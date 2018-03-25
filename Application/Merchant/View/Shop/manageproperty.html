@@ -1,0 +1,270 @@
+<extend name="Public:header"/>
+<block name="main">
+    <div class="body1">
+        <!-- 头部 -->
+        <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    管理属性组
+                    <span class="colon headright">保存</span>
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+        </div>
+        <!-- 内容 -->
+        <div class="xq_container">
+            <div class="list">
+                <!-- 属性样式 -->
+                <!-- <div class="weui-cells">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <p>X</p>
+                        </div>
+                        <div class="weui-cell__ft flex flexcenter">
+                            <img class="wh20 removeimg" src="/Public/Wechat/shopimg/remove.png">
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <div class="addbut addbut1">
+                <img class="wh20 mgr10" src="/Public/Wechat/shopimg/add.png">
+                <span>添加属性组</span>
+            </div>
+        </div>
+    </div>
+    <div class="body2 none">
+        <!-- 头部 -->
+        <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <span class="headleft y3"><img class="wh20" src="/Public/Wechat/img/back2.png" style="transform: rotate(180deg)"></span>
+                    管理属性值
+                    <span class="colon headright">保存</span>
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+        </div>
+        <!-- 内容 -->
+        <div class="xq_container">
+            <div class="list2">
+                
+            </div>
+            <div class="addbut addbut2">
+                <img class="wh20 mgr10" src="/Public/Wechat/shopimg/add.png">
+                <span>添加属性</span>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    var cur_attr_id;
+    $('.list').on('click','.mpbj',function () {
+        var str='';
+        cur_attr_id = $(this).attr("attr_id");
+        var index = $(this).parents(".weui-cells").index();
+        if (!catelist[index]) {
+            layer.msg("该项未添加!");
+            return;
+        }
+        var vals = catelist[index]['vals'];
+        for(var i=0; i< vals.length; i++){
+            var val = vals[i];
+            str+=' <div class="weui-cells">'+
+                '<div class="weui-cell">'+
+                    '<div class="weui-cell__bd">'+
+                        '<p><input class="mpinp" type="text" value="'+val.attr_value+'" name="" val_id="'+val.val_id+'"></p>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+        }
+        $('.body2').removeClass('none');
+        $('.body1').addClass('none');
+        $('.list2').html(str);
+    });
+   // 属性返回属性组
+   $('.headleft').click(function(){
+        $('.body1').removeClass('none');
+        $('.body2').addClass('none');
+   });
+
+   // 添加属性组
+   $('.addbut1').click(function(){
+        $('.list').append('<div class="weui-cells">'+
+                '<div class="weui-cell">'+
+                    '<div class="weui-cell__bd">'+
+                        '<p><input class="mpinp" type="text" placeholder="请输入属性组名称" name="" attr_id="0"></p>'+
+                    '</div>'+
+                    '<div class="weui-cell__ft flex flexcenter">'+
+                        '<img class="wh20 mgr10 mpbj" src="/Public/Wechat/shopimg/bj.png">'+
+                    '</div>'+
+                '</div>'+
+            '</div>');
+   })
+
+   // 添加属性值
+   $('.addbut2').click(function(){
+        $('.list2').append('<div class="weui-cells">'+
+                '<div class="weui-cell">'+
+                    '<div class="weui-cell__bd">'+
+                        '<p><input class="mpinp" type="text" placeholder="请输入属性值" name="" val_id="0"></p>'+
+                    '</div>'+
+                '</div>'+
+            '</div>');
+   });
+
+   $('.removeimg').on('click',function(){
+        $(this).parents('.weui-cells').remove();
+   })
+
+   var class_id = JSON.parse( sessionStorage.getItem("class_id") );
+
+    var myobj={
+        shop_id:shop_id,
+        cate_id:class_id[0]['cate_id']
+    };
+    var catelist = [];
+    function getJson() {
+        requestUrl("{:U('Api/Product/attributes')}",myobj,function ( res ) {
+            if ( res.flag == "success" ) {
+                catelist = res.data;
+                var str = '';
+                for (var i = 0; i < catelist.length; i++) {
+                    cateitem = catelist[i];
+                    str += '<div class="weui-cells">'
+                        +'<div class="weui-cell">'
+                            +'<div class="weui-cell__bd">'
+                                +'<p><input class="mpinp" type="text" value="'+cateitem.attr_name+'" name="" attr_id="'+cateitem.attr_id+'"></p>'
+                            +'</div>'
+                            +'<div class="weui-cell__ft flex flexcenter">'
+                                +'<img class="wh20 mgr10 mpbj" src="/Public/Wechat/shopimg/bj.png" attr_id="'+cateitem.attr_id+'">'
+                            +'</div>'
+                        +'</div>'
+                    +'</div>';
+                }
+                $(".list").html( str );
+            }else{
+                layer.msg( res.message );
+            }
+       },"GET",true);
+    }
+   
+
+    // 保存属性值
+    var bcflag2=true;
+    $('.body2 .headright').click(function(){
+        if(!bcflag2){
+            return;
+        }
+        bcflag2=false;
+        var attr_val = [];
+        var names = [];
+        var flag = true;
+        var attr_value;
+        $("[val_id]").each(function () {
+            var id = $(this).attr('val_id');
+            attr_value = $.trim($(this).val());
+            if (id && attr_value) {
+                if (names.indexOf(attr_value) == -1 ) {
+                    attr_val.push({id:id,attr_value:attr_value});
+                    names.push(attr_value);
+                }else{
+                    flag = false;
+                    return;
+                }
+            }
+        });
+
+        if (!flag) {
+            layer.msg(attr_value+"出现重复！");
+            return;
+
+        }
+        requestUrl("{:U('Api/Product/addAttrEditValue')}",{shop_id:shop_id,attr_id:cur_attr_id,attr_val:JSON.stringify(attr_val)},function ( res ) {
+            bcflag2=true;
+            if ( res.flag == "success" ) {
+                layer.msg( res.message );
+                var vals = res.data.attr_list;
+                var str = '';
+                for(var i=0; i< vals.length; i++){
+                    var val = vals[i];
+                    str+=' <div class="weui-cells">'+
+                        '<div class="weui-cell">'+
+                            '<div class="weui-cell__bd">'+
+                                '<p><input class="mpinp" type="text" value="'+val.attr_value+'" name="" val_id="'+val.val_id+'"></p>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>';
+                }
+                $('.list2').html(str);
+                setTimeout(function () {
+                    layer.closeAll();
+                },500);
+            }else{
+                layer.msg( res.message );
+            }
+        })
+   });
+
+      // 保存属性组
+    var bcflag=true;//是否可以点击保存
+   $('.body1 .headright').click(function(){
+        if(!bcflag){
+            return;
+        }
+        bcflag=false;
+        cate_id = myobj.cate_id;
+        var attr_name = [];
+        var names = [];
+        var flag = true;
+        var attr;
+        $("[attr_id]").each(function () {
+            var id = $(this).attr('attr_id');
+            attr = $.trim($(this).val());
+            if (id && attr) {
+                if (names.indexOf(attr) == -1 ) {
+                    attr_name.push({id:id,attr:attr});
+                    names.push(attr);
+                }else{
+                    flag = false;
+                    return;
+                }
+            }
+        })
+        if (!flag) {
+            layer.msg(attr+"出现重复！");
+            return;
+
+        }
+        requestUrl("{:U('Api/Product/addEditAttr')}",{shop_id:shop_id,cate_id:cate_id,attr_name:JSON.stringify(attr_name)},function ( res ) {
+            bcflag=true;
+            if ( res.flag == "success" ) {
+                layer.msg( res.message );
+                getJson();
+                setTimeout(function () {
+                    layer.closeAll();
+                },500);
+            }else{
+                layer.msg( res.message );
+            }
+        })
+   });
+
+
+   //初始化页面调用数据
+   getJson();
+</script>
+</block>

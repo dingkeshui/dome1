@@ -1,0 +1,169 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                	个人资料
+                    <span class="colon addressgl">确定</span>
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cells">
+            <div class="weui-cell weui-cell_access">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd">
+                    头像
+                </div>
+                 <div class="weui-cell__ft">
+                    <div class="headimgbox2 re fs0">
+                        <img class="w100 head_pic" src="">
+                        <input type="file" onchange="mychange(this)" class="headimginp" name="">
+                    </div>
+                </div>   
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd">
+                    昵称
+                </div>
+                <div class="weui-cell__ft">
+                   <span class="name m20" contenteditable="true">阿贵去</span>
+                </div>   
+            </div>
+        </div>
+    </div>
+
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var oldname='';
+	requestUrl("{:U('Api/Member/memberCenter')}",{m_id:m_id},function(res){
+            if(res.flag=="success"){
+                var data=res.data;
+                $('.name').html(data.nick_name);
+                oldname=data.nick_name;
+                $('.head_pic').attr('src',data.head_pic);
+            }else{
+                layer.msg(res.flag)
+            }
+    },'GET');
+
+    var mydata={m_id:m_id};
+    // 点击确定
+    $('.addressgl').click(function(){
+        var name=$('.name').html();
+        if(!$.trim($('.name').html())){
+            layer.msg('名字不能为空！');
+            return;
+        }
+
+        if(imgarr.length==0&&name==oldname){
+            // 无修改点确定
+        }else {
+            // 有修改点确定
+            if(imgarr.length!=0&&name==oldname){
+                mydata.head_pic=imgarr[0].pic;
+            }else if(imgarr.length==0&&name!=oldname){
+                mydata.nick_name=name;
+            }else{
+                mydata.head_pic=imgarr[0].pic;
+                mydata.nick_name=name;
+            }
+            requestUrl("{:U('Api/Member/configMember')}",mydata,function(res){
+                if(res.flag=="success"){
+                   layer.msg('修改成功');
+                }else{
+                    layer.msg(res.flag);
+                }
+            },'POST');
+        }
+        
+    })
+
+     // 图片数组
+    var imgarr=[];
+    // 点击添加多图图片
+    function mychange (data) {
+        var fileimg=data.files; 
+        // var arrnum=imgarr.length;
+        // var num=arrnum+fileimg.length;
+        // for(var i =0;i<fileimg.length;i++){    
+            /*图片转Base64 核心代码*/  
+            var file = fileimg[0];  
+            //这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件  
+            if (!/image\/\w+/.test(file.type)) {  
+                layer.msg("请确保文件为图像类型");  
+                return false;  
+            }  
+            var reader = new FileReader(); 
+            (function(x){
+                    reader.onload = function (e) {  
+                        render(this.result,x,1);
+                    }  
+            })(file.name); 
+            
+            reader.readAsDataURL(file);  
+        // }
+    };
+
+    var MAX_HEIGHT = 1000;
+// 渲染
+function render(src,picname,datanum) {
+    // 创建一个 Image 对象
+    var image = new Image();
+    // 绑定 load 事件处理器，加载完成后执行
+    image.onload = function() {
+        // 获取 canvas DOM 对象
+        var canvas = document.createElement("canvas");
+        // 如果高度超标
+        if (image.height > MAX_HEIGHT && image.height >= image.width) {
+            // 宽度等比例缩放 *=
+            image.width *= MAX_HEIGHT / image.height;
+            image.height = MAX_HEIGHT;
+        }
+        if (image.width > MAX_HEIGHT && image.width > image.height) {
+            // 宽度等比例缩放 *=
+            image.height *= MAX_HEIGHT / image.width;
+            image.width = MAX_HEIGHT;
+        }
+        // 获取 canvas的 2d 环境对象,
+        // 可以理解Context是管理员，canvas是房子
+        var ctx = canvas.getContext("2d");
+        // canvas清屏
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // 重置canvas宽高
+        canvas.width = image.width;
+        canvas.height = image.height;
+        // 将图像绘制到canvas上
+        ctx.drawImage(image, 0, 0, image.width, image.height);
+        // !!! 注意，image 没有加入到 dom之中
+//        document.getElementById('img').src = canvas.toDataURL("image/png");
+        var blob = canvas.toDataURL("image/jpeg");
+        imgarr=[{"pic":blob,"pic_name":picname}];
+        $('.headimgbox2 img').attr('src',blob);
+        // var fd = new FormData();
+        // fd.append("image", blob, "image.png");
+        // imgCompressUpload(canvas.toDataURL("image/png"));
+       
+    };
+    // 设置src属性，浏览器会自动加载。
+    // 记住必须先绑定事件，才能设置src属性，否则会出同步问题。
+    image.src = src;
+};
+
+</script>
+</block>

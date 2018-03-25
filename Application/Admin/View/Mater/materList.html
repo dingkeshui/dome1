@@ -1,0 +1,75 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active"><a href="">图片管理</a></li>
+        <li class="active">图片</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>商品图片</h3>
+        <ul class="nav nav-tabs">    
+            <li class="active">
+                <a href="javascript:;">图片列表</a>
+            </li>
+            <li>
+                <a href="{:U('Mater/addMater')}">添加图片</a>
+            </li>
+        </ul>
+    </div>
+    <div class="content-box-table">
+        <form action="{:U('Mater/deleteMater')}" method="post" class="batch-form">
+            <table class="table table-striped table-framed table-hover">
+                <thead>
+                    <tr>
+                        <th width="4%">
+                            <input class="check-all" type="checkbox" />
+                        </th>
+                        <th>ID</th>
+                        <th>mer_id</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+                    <if condition="empty($list)">
+                        <tr style="font-size:14px;text-align:center;"><td colspan="20">暂无数据</td></tr>
+                    </if>
+                    <volist name="list" id="v">
+                        <tr>
+                            <td><input type="checkbox" value="{$v['id']}" name="id[]"/>&nbsp;&nbsp;</td>
+                            <td>{$v['id']}</td>
+                            <td>{$v['mer_id']|default="未填写"}</td>
+                            <td>{$v['ctime']|date="Y-m-d H:i:s",###}</td>
+                            <td>
+                                <a href="{:U('Mater/editMater',array('id'=>$v['id']))}" title="编辑" class="modify">
+                                   <span class="icon glyphicon glyphicon-pencil"></span>
+                                </a>&nbsp;
+                                <a href="#" title="删除" class="delete-delete">
+                                    <span class="icon glyphicon glyphicon-remove"></span>
+                                </a><input type="hidden" value="{:U('Mater/deleteMater',array('id'=>$v['id']))}">
+                            </td>
+                        </tr>
+                    </volist>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="20">
+                            <div class="bulk-actions fl">
+                                <!-- <input type="button" class="btn delete-batch" value="批量删除">　
+                                <a href="#excel" title="导出EXCEL" rel="modal">-->
+                                    <!--<input type="button" class="btn derive" value="导出EXCEL" data-toggle="modal" data-target="#excel">-->
+                                    <!--</a>-->
+                            </div>
+                            <div class="fr">
+                                {$page}
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+<include file="Public:footer"/>

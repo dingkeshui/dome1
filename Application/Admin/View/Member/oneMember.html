@@ -1,0 +1,219 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <div class="content-box">
+        <ul class="breadcrumb">
+            <li><a href="{:U('Index/main')}">首页</a></li>
+            <li><a href="{:U('Member/memberList')}">会员管理</a></li>
+            <li class="active">会员详情</li>
+        </ul>
+        <div class="page-header clearfix">
+            <h4>会员管理</h4>
+            <ul class="nav nav-tabs">
+                <li>
+                    <a href="{:U('Member/memberList')}">会员列表</a>
+                </li>
+                <li class="active">
+                    <a href="{:U('Member/oneMember')}">会员详情</a>
+                </li>
+            </ul>
+        </div>
+        <style>
+            table tr td {
+                padding: 2px;
+            }
+        </style>
+        <!--表格内容-->
+        <div class="content-box-content">
+            <table style="width: 500px;height: auto;margin:0 20px;font: 微软雅黑">
+                <tr>
+                    <td><h4><strong>用户昵称（微信昵称）：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['nick_name']|default="用户"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>联系电话：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['account']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>钱包：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['wallet']|default="0"}元</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>最新收益钱数：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['earn_price']|default="0"}元</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>分成比例：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['devide']|default="0"}%</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>推荐人：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['referrer']|default="无"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>身份证：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['hx_mess']['identity']|default="无"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>真实姓名：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['hx_mess']['username']|default="无"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>手机号：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['hx_mess']['mobiephone']|default="无"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>ips客户号：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['hx_mess']['customer_code']|default="无"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>ips登陆名称：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['hx_mess']['	ips_username']|default="无"}</td>
+                </tr>
+
+                <!--<tr>-->
+                    <!--<td><h4><strong>身份证照片：</strong></h4></td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<td><img src="{$res['ident_pic']}" alt="身份证照片" width="150px" height="auto"/></td>-->
+                <!--</tr>-->
+                <tr>
+                    <td><h4><strong>微信头像：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td><img src="{$res['head_pic']}" alt="微信头像" width="150px" height="auto"/></td>
+                </tr>
+                <tr>
+                    <td><h4><strong>省级：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['province']|default="无"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>市级：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['city']|default="无"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>地区：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['area']|default="无"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>注册时间：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['ctime']|date='Y-m-d H:i:s',###}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>最后登录时间：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['last_login_time']|date='Y-m-d H:i:s',###}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>最后登录IP：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td>{$res['last_login_ip']}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>分享的二维码：</strong></h4></td>
+                </tr>
+                <tr>
+                    <td><img src="/{$res['code']}" alt="" style="width: 200px;height:200px;"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>
+<!--地区的三级联动-->
+<script type="text/javascript">
+    var ajax_url = "{:U('Firm/getArea')}";
+    function loadArea(areaId, areaType) {
+        $.post(ajax_url, {'areaId': areaId}, function (data) {
+            if (areaType == 'city') {
+                $('#' + areaType).html('<option value="-1">市/县</option>');
+                $('#district').html('<option value="-1">区/镇</option>');
+            } else if (areaType == 'district') {
+                $('#' + areaType).html('<option value="-1">区/镇</option>');
+            }
+            if (areaType != 'null') {
+                $.each(data, function (no, items) {
+                    $('#' + areaType).append('<option value="' + items.area_id + '">' + items.area_name + '</option>');
+                });
+            }
+        });
+    }
+</script>
+<script>
+    var url = "{:U('Member/oneMember')}";
+    $(document).ready(function () {
+        $("#account").change(function () {
+            var numbers = $("#account").val();
+            $.post(url, {'numbers': numbers}, function (data) {
+                if (data) {
+                    alert("会员账号存在");
+
+                } else {
+
+                }
+            });
+        });
+
+
+    });
+</script>
+<!--判断手机的格式-->
+<script>
+    //    $(document).ready(function(){
+    //        $("#account").blur(function(){
+    //            var phone = $("#account").val();
+    //            if(checkMobile(phone)){
+    //
+    //            }else{
+    //                alert("手机格式错误");
+    //            }
+    //
+    //        });
+    //        function checkMobile(str) {
+    //            var re = /^1\d{10}$/;
+    //            if (re.test(str)) {
+    //                return true;
+    //            } else {
+    //                return false;
+    //            }
+    //        }
+    //        $(".btn").click(function(){
+    //            if(checkMobile(phone)){
+    //                $(".form").submit();
+    //            }
+    //        });
+    //    });
+</script>

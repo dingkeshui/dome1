@@ -1,0 +1,388 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">商品管理</a></li>
+        <li class="active">商品列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>商品管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="">
+                <a href="{:U('Product/productList')}">商品列表</a>
+            </li>
+            <li class="">
+                <a href="{:U('Product/addProduct')}">添加商品</a>
+            </li>
+        </ul>
+    </div>
+    <!--表格内容-->
+    <div class="content-box-content">
+        <!--表单 start-->
+        <form action="{:U('Product/editProduct')}" method="post" class="form-horizontal form"  enctype="multipart/form-data">
+            <input type="hidden" name="p_id" value="{$res['p_id']}">
+            <input name="p" type="hidden" value="{$_REQUEST['p']}"/>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商品名称：</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control goods"  name="title" placeholder="商品名称" value="{$res['title']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商家id：</label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control shoe-quantity"  name="shop_id" placeholder="商家id" value="{$res['shop_id']?$res['shop_id']:224}">
+                </div>
+            </div>
+            <div class="form-group">
+                <labe class="col-sm-3 control-label"><em class="prompt-red">*</em>商品邮费：</labe>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control shoe-quantity"  name="postage" placeholder="商品邮费" value="{$res['postage']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商品分类：</label>
+                <div class="col-sm-9">
+                    <select onchange="getSecond(this.value)"  style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="parent_id">
+                        <option value="">一级分类</option>
+                        <volist name="list" id="vo">
+                            <option value="{$vo['cate_id']}" <if condition="$res['parent_id'] eq $vo['cate_id']">selected</if>>{$vo['category']}</option>
+                        </volist>
+                    </select>
+                    <select id="second_cate" onchange="getThird(this.value)" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="second_id">
+                        <option value="">二级分类</option>
+                        <if condition="!empty($res['second_id'])">
+                            <volist name="second_list" id="second">
+                                <option value="{$second.cate_id}" <if condition="$res['second_id'] eq $second['cate_id']">selected</if>>{$second.category}</option>
+                            </volist>
+                        </if>
+                    </select>
+                    <select id="three_cate" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="three_id">
+                        <option value="">三级分类</option>
+                        <if condition="!empty($res['three_id'])">
+                            <volist name="three_list" id="three">
+                                <option value="{$three.cate_id}" <if condition="$res['three_id'] eq $three['cate_id']">selected</if>>{$three.category}</option>
+                            </volist>
+                        </if>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商品销量：</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control shoe-quantity"  name="sales" placeholder="商品销量" value="{$res['sales']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商品库存：</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control shoe-quantity"  name="stock" placeholder="商品库存" value="{$res['stock']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">是否上架：</label>
+                <div class="col-sm-6">
+                        <span>上架：<input type="radio" class=""  name="is_sale" <if condition="$res['is_sale'] eq 1">checked</if> value="1" checked>&nbsp;&nbsp;
+                        下架：<input type="radio" class=""  name="is_sale" value="0" <if condition="$res['is_sale'] eq 0">checked</if>></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商品排序：</label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control shoe-quantity"  name="sort" placeholder="商品排序" value="{$res['sort']}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商品类型：</label>
+                <div class="col-sm-6">
+                        <span>电子卡券：<input type="radio" class=""  name="type" value="1" <if condition="$res['type'] eq 1">checked</if>>&nbsp;&nbsp;
+                        实物商品：<input type="radio" class=""  name="type" value="0"  <if condition="$res['type'] eq 0">checked</if>></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商品价格（电子商品填）：</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control shoe-quantity"  name="price" placeholder="商品价格" <if condition="$res['type'] eq 1">value="{$res['price']}"</if>>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商品规格（电子商品填）：</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control shoe-quantity"  name="goods_attr" placeholder="商品规格（电子商品填）" value="{$res.goods_attr}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商品来源地址：</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control shoe-quantity"  name="url" placeholder="商品来源地址" value="{$res['url']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="content" class="col-sm-3 control-label"><em class="prompt-red">*</em><empty name="res['url']">商品描述<else/><a href="{$res['url']}" target="_blank">商品描述</a>：</empty></label>
+                <div class="col-sm-9">
+                    <textarea name="content" class="form-control" id="content" style="width:auto;height:300px;visibility:hidden;" >{$res['content']}</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商品封面图片：</label>
+                <div id="imgPreview">
+                    <div class='parents' style="float: left">
+                        <if condition="!empty($res['cover_pic'])">
+                            <div class='one_del'>[-]</div>
+                            <input type='hidden' value="{$res['cover_pic']}" name='cover_pic'/>
+                            <img src="{$res['cover_pic']}" alt="" style="width: 150px;height: auto">
+                        </if>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-4">
+                    <input type="file" name="head_pic_upload"/>
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" class="singelimg"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商品的多图展示：</label>
+                <div id="imgPreviewMore">
+                    <if condition="!empty($res['list_img'][0])">
+                        <volist name="res['list_img']" id="vo">
+                            <div class='parents' style="float: left">
+                                <div class='one_more_del'>[-]</div>
+                                <input type='hidden' value="{$vo}" name='pic[]'/>
+                                <img src="{$vo}" alt="" style="width: 150px;height: auto">
+                            </div>
+                        </volist>
+                    </if>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-4">
+                    <input type="file" name="pic_upload" multiple/>
+                    <span style="color: red">框选上传多张图片</span>
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" class="playimg"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <button type="submit" class="btn btn-default btn-primary add-to-here make_sure">确认修改</button>
+                </div>
+            </div>
+        </form>
+        <!--表单 end-->
+    </div>
+</div>
+</div>
+<include file="Public:footer"/>
+<!--商品的封面图和商品的多图的展示-->
+<script>
+    $(".playimg").on('change',function () {
+        var imgsrc = $(this).val().split(",");
+        imgsrc.forEach(function (val,idx) {
+            $("#imgPreviewMore").append("<div class='parents' style='float: left'>" +
+                    "<div class='two_del'>[-]</div>" +
+                    "<input type='hidden' value='"+val+"' name='pic[]'/>"+
+                    "<div><img src='"+val+"' style='width: 150px;'></div></div>");
+        });
+    })
+
+    $(".singelimg").on('change',function () {
+        var imgsrc = $(this).val().split(",");
+        if (imgsrc.length>1) {
+            layer.msg("默认取第一张！");
+        }
+        $("#imgPreview").append(" <div class='parents'><div class='two_del'>[-]</div><input type='hidden' value='"+imgsrc[0]+"' name='cover_pic'/>"+
+                "<div><img src='"+imgsrc[0]+"' style='width: 150px;'></div></div>");
+    });
+    $(".make_sure").click(function () {
+        var name = $('input[name="title"]').val();
+        var freight = $('input[name="postage"]').val();
+        var content = $('textarea[name="content"]').val();
+        if(!name){
+            alert("商品名称不能为空!");return false;
+        }
+
+//        if(!content){
+//            alert("商品的描述不能为空!");return false;
+//        }
+        $(".form").submit();
+    })
+
+    function ajax(){
+        var filesize = this.files[0].size;
+        if (filesize > 10000*1024) {
+            alert("请上传大小在500k以下的图片");
+            return false;
+        }
+        var files = this.files;
+        var i = '';
+        $("#imgPreview").html(" ");
+        for(i=0;files.length;i++){
+            var picname = files[i].name;
+            var reader = new FileReader();
+            reader.onload = function(e){
+                var src = e.target.result;
+                $.ajax({
+                    type:"post",
+                    url:"{:U('Product/uploadPic')}",
+                    data: {"pic":src,"pic_name":picname},
+                    dataType : "json",
+                    success : function(data){
+                        var data = JSON.parse(data);
+                        if(data['flag'] == "success"){
+                            $("#imgPreview").append(" <div class='parents'><div class='one_del'>[-]</div><input type='hidden' value='"+data['data']['path']+"' name='cover_pic'/>"+
+                                    "<div><img src='"+'/'+data['data']['path']+"' style='width: 150px;'></div></div>");
+                            bindClick();
+                        }
+                    }
+                });
+            }
+            reader.readAsDataURL(files[i]);
+        }
+    }
+    $("input[name='head_pic_upload']").on('change',ajax);
+    function bindClick() {
+        $(".one_del").click(function () {
+            var url = "{:U('Product/delPhoto')}";
+            var file_path = $(this).next().val();
+            var p_id = "{$res['p_id']}";
+            $.post(url,{p_id:p_id,file_path:file_path,type:1},function(data){
+                if(data == 1){
+                    $("#imgPreview").html("");
+                }else{
+                    alert("删除失败！请重新尝试！");
+                }
+            })
+        })
+    }
+    bindClick();
+    /**三级分类*/
+
+    function getSecond(val){
+        $("#second_cate").empty();
+        $("#three_cate").empty();
+        var area = "<option value=''>三级分类</option>";
+        $("#three_cate").append(area);
+        var option = "<option value=''>二级分类</option>";
+        $.ajax({
+            url:"{:U('Product/ajaxSecond')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                console.log(data);
+                if(data.length>0){
+                    for(var i=0;i<data.length;i++){
+                        option += "<option value='"+data[i].cate_id+"'>"+data[i].category+"</option>"
+                    }
+                }
+                $("#second_cate").append(option);
+            }
+        });
+    }
+    function getThird(val){
+        $("#three_cate").empty();
+        var option = "<option value=''>三级分类</option>";
+        $.ajax({
+            url:"{:U('Product/ajaxThird')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                if(data.length>0){
+
+                    for(var i=0;i<data.length;i++){
+                        option += "<option value='"+data[i].cate_id+"'>"+data[i].category+"</option>"
+                    }
+                }
+                $("#three_cate").append(option);
+            }
+        });
+    }
+
+
+    function ajax1(){
+        var filesize = this.files[0].size;
+        if (filesize > 10000*1024) {
+            alert("请上传大小在500k以下的图片");
+            return false;
+        }
+        var files = this.files;
+        var i = '';
+        for(i=0;files.length;i++){
+            var picname = files[i].name;
+            var reader = new FileReader();
+            reader.onload = function(e){
+                var src = e.target.result;
+                $.ajax({
+                    type:"post",
+                    url:"{:U('Product/uploadPic')}",
+                    data: {"pic":src,"pic_name":picname},
+                    dataType : "json",
+                    success : function(data){
+                        var data = JSON.parse(data);
+                        if(data['flag'] == "success"){
+                            $("#imgPreviewMore").append("<div class='parents' style='float: left'><div class='one_more_del'>[-]</div>" +
+                                    "<input type='hidden' value='"+data['data']['path']+"' name='pic[]'/>"+
+                                    "<div><img src='"+'/'+data['data']['path']+"' style='width: 150px;'></div></div>");
+                        }
+                        bindClickMore();
+                    }
+                });
+            }
+            reader.readAsDataURL(files[i]);
+        }
+    }
+    $("input[name='pic_upload']").on('change',ajax1);
+
+    function bindClickMore() {
+        $(".one_more_del").off("click");
+        $(".one_more_del").click(function () {
+            var url = "{:U('Product/delPhoto')}";
+            var file_path = $(this).next().val();
+            var p_id = "{$res['p_id']}";
+            $.post(url,{p_id:p_id,file_path:file_path,type:2},function(data){
+                console.log(data);
+                if(data == 1){
+//                    alert("删除成功！");
+                    $(this).parent().remove();
+                }else{
+                    alert("删除失败！请重新尝试！");
+                }
+            }.bind(this))
+        })
+    }
+    bindClickMore();
+
+</script>
+
+<script  src="__WEBPUBLIC__/Common/kindeditor/kindeditor-min.js"></script>
+<script  src="__WEBPUBLIC__/Common/kindeditor/lang/zh_CN.js"></script>
+<script>
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('textarea[name="content"]', {
+            resizeType : 1,
+            uploadJson : '__WEBPUBLIC__/Common/kindeditor/php/upload_json.php',
+            fileManagerJson :
+                    '__WEBPUBLIC__/Common/kindeditor/php/file_manager_json.php',
+            allowPreviewEmoticons : false,
+            items:[
+                'source', '|', 'undo', 'redo', '|', 'cut', 'copy','|', 'justifyleft',
+                'justifycenter', 'justifyright',
+                'justifyfull', 'clearhtml', 'selectall', '|', 'formatblock',
+                'fontname', 'fontsize', '|', 'forecolor',
+                'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough','image','multiimage'
+            ],
+            afterBlur:function(){this.sync();}
+        });
+    });
+</script>

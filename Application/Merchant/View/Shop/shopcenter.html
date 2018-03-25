@@ -1,0 +1,412 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd re textcenter">
+                店铺管理
+                <span style="top:0px;" linkto="{:U('Usershop/shopinfo')}" class="headright colon fs14 ab flex flexvcenter"><img class="w20 mgr5" src="/Public/Wechat/shopimg/eyes.png">预览店铺</span>
+            </div>
+            <!--<div class="weui-cell__ft">
+                <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+            </div>-->
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="mshoptop re">
+            <div class="fs0"><img class="w100" src="__WEBPUBLIC__/Wechat/shopimg/topbg.png"></div>
+            <div class="mshopmain">
+                <div class="mshopmaintop colfff pad10 flex flexvcenter weui-cell_access">
+                    <div class="shopheadimg fs0 mgr5 weui-cell__hd">
+                        <img class="w100 shopindexheadimg">
+                    </div>
+                    <div class="flex1 textovh weui-cell__hd">
+                        <div class="textovh shopname"></div>
+                        <div class="starnum"></div>
+                        <div class="fs12 zxtytjm"></div>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <a linkto="{:U('Shop/shopinfo')}">
+                            <img class="w20 y3" src="__WEBPUBLIC__/Wechat/shopimg/sz.png" style="vertical-align: sub;">
+                            <span class="colfff">店铺信息</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="mshopmainfoot colfff flex">
+                    <div class="flex1">
+                        <div class="fs1-2 collect_num"></div>
+                        <div>收藏人数</div>
+                    </div>
+                    <div class="flex1">
+                        <div class="fs1-2 goods_num"></div>
+                        <div>全部商品</div>
+                    </div>
+                    <div class="flex1">
+                        <div class="fs1-2 star"></div>
+                        <div>综合评分</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bgfff">
+            <a class="weui-cell weui-cell_access" linkto="{:U('Shop/qrcode')}">
+                <div class="weui-cell__bd">
+                    <p><img class="w20 y4 mgr5" src="__WEBPUBLIC__/Wechat/shopimg/ma.png"><span>店铺二维码</span></p>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
+            </a>
+        </div>
+        <div class="bgfff mgtop10">
+            <a class="weui-cell weui-cell_access" href="{:U('Shop/notice')}">
+                <div class="weui-cell__bd">
+                    <p><img class="w20 y4 mgr5" src="__WEBPUBLIC__/Wechat/shopimg/gg.png"><span>店铺公告</span></p>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
+            </a>
+            <a class="weui-cell weui-cell_access" href="{:U('Shop/album')}">
+                <div class="weui-cell__bd">
+                    <p><img class="w20 y4 mgr5" src="__WEBPUBLIC__/Wechat/shopimg/xc.png"><span>店铺相册</span></p>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
+            </a>
+            <a class="weui-cell weui-cell_access" href="javascript:;">
+                <div class="weui-cell__bd flex">
+                    <p><img class="w20 y4 mgr5" src="__WEBPUBLIC__/Wechat/shopimg/time.png"><span>营业时间</span></p>
+                    <!--
+                    <div class="flex1 flex colon">
+                        <div class="flex1 textcenter">
+                            <input type="time" class="timeh" name="ctime" value="09:00">
+                        </div>
+                        -
+                        <div class="flex1 textcenter">
+                            <input type="time" class="timeh" name="etime" value="18:00">
+                        </div>
+                    </div>-->
+                </div>
+                <div class="weui-cell__ft colon opentime" contenteditable="true">
+                    
+                </div>
+            </a>
+
+            <div class="flex pad10 weui-cell">
+                <div class="flex1 openbox re">
+                    <input class="openboxinp" type="radio" name="openorno" value="0">
+                    <div class="imgbgdiv1"></div>
+                    <div><label class="imglab1"></label><span class="colb3">营业中</span></div>
+                </div>
+                <div class="flex1 closebox re">
+                    <input class="closeboxinp" type="radio" name="openorno" value="1">
+                    <div class="imgbgdiv2"></div>
+                    <div><label class="imglab2"></label><span class="colb3">休息中</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="bgfff mgtop10">
+            <a class="weui-cell weui-cell_access rzshop">
+                <div class="weui-cell__bd">
+                    <p><img class="w20 y4 mgr5" src="__WEBPUBLIC__/Wechat/shopimg/rz.png"><span>店铺认证</span></p>
+                </div>
+                <div class="weui-cell__ft is_auth">
+                    未认证
+                </div>
+            </a>
+            <a class="weui-cell weui-cell_access yanz">
+                <div class="weui-cell__bd">
+                    <p><img class="w20 y4 mgr5" src="__WEBPUBLIC__/Wechat/shopimg/gly.png"><span>管理员密码</span></p>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
+            </a>
+            <a class="weui-cell weui-cell_access" href="{:U('Shop/returnaddress')}">
+                <div class="weui-cell__bd">
+                    <p><img class="w20 y4 mgr5" src="__WEBPUBLIC__/Wechat/shopimg/th.png"><span>退货地址</span></p>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
+            </a>
+            <a class="weui-cell weui-cell_access" href="{:U('Shop/servicephone')}">
+                <div class="weui-cell__bd">
+                    <p><img class="w20 y4 mgr5" src="__WEBPUBLIC__/Wechat/shopimg/tel.png"><span>店铺客服电话</span></p>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 推广二维码 -->
+    <div id="actionSheet_wrap" style="display: none;">
+        <div class="weui-mask_transparent actionsheet__mask" id="mask" style="opacity: 1;background-color:rgba(0,0,0,0.6)"></div>
+        <div class="weui-actionsheet weui-actionsheet_toggle" id="weui-actionsheet">
+            <div class="pad10 bgfff sharebox colb3">
+                <div class="">
+                    <img class="w80" src="__WEBPUBLIC__/Wechat/shopimg/index1.png">
+                    <div>微信</div>
+                </div>
+                <div class="">
+                    <img class="w80" src="__WEBPUBLIC__/Wechat/shopimg/index1.png">
+                    <div>微信</div>
+                </div>
+                <div class="">
+                    <img class="w80" src="__WEBPUBLIC__/Wechat/shopimg/index1.png">
+                    <div>微信</div>
+                </div>
+                <div class="">
+                    <img class="w80" src="__WEBPUBLIC__/Wechat/shopimg/index1.png">
+                    <div>微信</div>
+                </div>
+                <div class="">
+                    <img class="w80" src="__WEBPUBLIC__/Wechat/shopimg/index1.png">
+                    <div>微信</div>
+                </div>
+                <div class="">
+                    <img class="w80" src="__WEBPUBLIC__/Wechat/shopimg/index1.png">
+                    <div>微信</div>
+                </div>
+                <div class="">
+                    <img class="w80" src="__WEBPUBLIC__/Wechat/shopimg/index1.png">
+                    <div>微信</div>
+                </div>
+                <div class="">
+                    <img class="w80" src="__WEBPUBLIC__/Wechat/shopimg/index1.png">
+                    <div>微信</div>
+                </div>
+                <div class="">
+                    <img class="w80" src="__WEBPUBLIC__/Wechat/shopimg/index1.png">
+                    <div>微信</div>
+                </div>
+            </div>
+            <div class="weui-actionsheet__action">
+                <div class="weui-actionsheet__cell" id="actionsheet_cancel">取消</div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.min.js"></script>
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.common.min.js"></script>
+<!-- <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=c5e14c05b9c3aef7d437cb31cda7313f&plugin=AMap.Autocomplete">
+    </script> -->
+<script type="text/javascript">
+    $('.tgbut').click(function () {
+        $('#actionSheet_wrap').show();
+    });
+
+    $('#actionsheet_cancel,#mask').click(function(){
+        $('#actionSheet_wrap').hide();
+    })
+
+        //高德地图
+    // $('.showmap').click(function () {
+    //     $('#container').show();
+    // })
+    // var lat='';
+    // var lng='';
+    // var myaddress="";//详细地址
+    // var map = new AMap.Map('container',{
+    //         resizeEnable: true,
+    //         zoom: 13,
+    //         // center: [116.39,39.9]
+    // });
+
+    // //定位
+    //  map.plugin('AMap.Geolocation', function() {
+    //     geolocation = new AMap.Geolocation({
+    //         enableHighAccuracy: true,//是否使用高精度定位，默认:true
+    //         timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+    //         buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+    //         zoomToAccuracy: false,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+    //         buttonPosition:'RB'
+    //     });
+    //     map.addControl(geolocation);
+    //     geolocation.getCurrentPosition();
+    //     AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+    //     AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+    // });
+
+    // //解析定位结果
+    // function onComplete(data) {
+    //     $('#input').val(data.formattedAddress);
+    //     myaddress=data.formattedAddress;
+    //     $('.d_addressmain').html(myaddress);
+    //     lat=data.position.lat;
+    //     lng=data.position.lng;
+    // }
+    // //解析定位错误信息
+    // function onError(data) {
+    //     console.log(data);
+    // }
+
+    // AMap.plugin('AMap.Geocoder',function(){
+    //     var geocoder = new AMap.Geocoder({
+    //         // city: "010"//城市，默认：“全国”
+    //     });
+    //     var marker = new AMap.Marker({
+    //         map:map,
+    //         bubble:true
+    //     })
+    //     var input = document.getElementById('input');
+    //     var message = document.getElementById('message');
+    //     map.on('click',function(e){
+    //         console.log(e);
+    //         lat=e.lnglat.lat;
+    //         lng=e.lnglat.lng;
+    //         marker.setPosition(e.lnglat);
+    //         geocoder.getAddress(e.lnglat,function(status,result){
+    //           if(status=='complete'){
+    //              input.value = result.regeocode.formattedAddress;
+    //              myaddress= result.regeocode.formattedAddress;
+    //              message.innerHTML = '';
+    //           }else{
+    //              message.innerHTML = '无法获取地址';
+    //           }
+    //         })
+    //     })
+        
+    //     input.onchange = function(e){
+    //         var address = input.value;
+    //         geocoder.getLocation(address,function(status,result){
+    //             console.log(status);
+    //             console.log(result);
+    //           if(status=='complete'&&result.geocodes.length){
+    //             lat=result.geocodes[0].location.lat;
+    //             lng=result.geocodes[0].location.lng;
+    //             myaddress=result.geocodes[0].formattedAddress;
+    //             marker.setPosition(result.geocodes[0].location);
+    //             map.setCenter(marker.getPosition());
+    //             message.innerHTML = ''
+    //           }else{
+    //             message.innerHTML = '无法获取位置'
+    //           }
+    //         })
+    //     }
+
+    // });
+
+
+
+
+</script>
+
+<script>
+    var is_auth=0;
+    requestUrl("{:U('Api/Store/store')}",{shop_id:shop_id},function ( res ) {
+       if ( res.flag == "success" ) {
+            var data = res.data;
+            console.log(data);
+            $(".shopindexheadimg").attr("src",data.head_pic);
+            $(".shopname").text(data.name);
+            if ( data.star ) {
+                var str = "";
+                for (var i = 0; i < data.star; i++) {
+                    str += '<img class="w15" src="__WEBPUBLIC__/Wechat/shopimg/star.png">';
+                }
+                $(".starnum").html( str );
+            }
+            $(".star").text(data.star);
+            $(".goods_num").text(data.goods_num);
+            if ( data.is_auth == 1 ) {
+                $(".is_auth").text("已认证");
+                is_auth=1;
+            }else{
+                $(".is_auth").text("未认证");
+            }
+            // var time = data.time.split("-");
+            // $(".ctime").text(time[0]);
+            // $(".etime").text(time[1]);
+            is_open = data.is_open;
+            time = data.time;
+            $(".opentime").text( data.time?data.time:'未设置' );
+            if ( is_open == 1 ) {
+                $(".closeboxinp").click();
+            }else{
+                $(".openboxinp").click();
+            }
+            yesDoIt();
+            $(".collect_num").text( data.collect_num );
+        }else{
+            layer.msg( res.message );
+       } 
+    });
+
+    var is_open,time;
+    function yesDoIt() {
+        $("[name='openorno']").on('change',function () {
+            if ( is_open != $(this).val() ) {
+                is_open = $(this).val();
+                editMixFun();
+            }
+            console.log(is_open);
+        });
+    }
+    
+
+    $(".opentime").on('blur',function () {
+        var timeval=$(this).text();
+        if($(this).text()==""){
+            layer.msg('营业时间不能为空');
+            $(this).text(time);
+            return;
+        }
+        var timezz=/[0-2]{1}\d{1}:[0-6]{1}\d{1}-[0-2]{1}\d{1}:[0-6]{1}\d{1}/;
+        if(!timezz.test(timeval)){
+            layer.msg('日期格式为08:00-18:00');
+            $(this).text(time);
+            return;
+        }
+        if ( time != $(this).text() ) {
+            time = $(this).text();
+            editMixFun();
+        }
+        console.log(time);
+    });
+
+    function editMixFun() {
+        requestUrl("{:U('Api/Store/editMixFun')}",{shop_id:shop_id,is_open:is_open,time:time},function ( res ) {
+            if ( res.flag == "success" ) {
+                layer.msg( res.message );
+            }else{
+                layer.msg( res.message );
+            }
+        })
+    }
+    
+    //获取店铺推荐码
+    getzxtytjm();
+    function getzxtytjm(){
+        requestUrl("{:U('Api/Store/createRecommendNum')}",{shop_id:shop_id},function ( res ) {
+            if ( res.flag == "success" ) {
+                $('.zxtytjm').html('推荐码:'+res.data);
+            }else{
+                layer.msg( res.message );
+            }
+        });
+    }
+    //店铺认证
+    $('.rzshop').click(function(){
+        if(is_readonly==1){
+            layer.msg('无操作权限');
+            return;
+        }
+        if(is_auth){
+            layer.msg('已认证！');
+            return;
+        }
+        location.href = "{:U('Shop/shopcertification')}";
+    });
+
+    /**管理员密码*/
+    $('.yanz').click(function(){
+//        if(is_readonly==1){
+//            layer.msg('无操作权限');return;
+//        }
+        location.href = "{:U('Shop/yanz')}";
+    });
+</script>
+</block>

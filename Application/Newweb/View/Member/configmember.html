@@ -1,0 +1,112 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" type="text/css" href="__WEBPUBLIC__/Wechat/css/oldtop.css">
+</block>
+<block name="main">
+
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="addressback" linkto="{:U('Member/membercenter')}"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div>
+                    设置
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cells">
+            <div class="weui-cell weui-cell_access ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd" linkto="{:U('Member/persondata')}">
+                    个人资料
+                </div>
+                <div class="weui-cell__ft">
+                  
+                </div>
+            </div>
+            <div class="weui-cell weui-cell_access ih30 box" linkto="{:U('Address/addresslist')}">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd">
+                    我的收货地址
+                </div>
+                <div class="weui-cell__ft">
+                  
+                </div>
+            </div>
+            <div class="weui-cell weui-cell_access goupinfo ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd">
+                    修改开户信息
+                </div>
+                <div class="weui-cell__ft">
+                  
+                </div>
+            </div>
+        </div> 
+        <div class="weui-cells mgb20">
+            <div class="weui-cell weui-cell_access bindbox ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd">
+                    绑定手机号
+                </div>
+                <div class="weui-cell__ft account">
+                    未绑定
+                </div>
+            </div>
+        </div>
+       <!--  <div class="loginbut setupfoot">
+                退出登录
+        </div> -->
+    </div>
+
+
+</block>
+<block name="footerjs">
+    <script>
+        var dataargs = {m_id:m_id};
+        var account="";
+        requestUrl("{:U('Api/Member/memberCenter')}",dataargs,function(data){
+            var res = data.data;
+            if(data['flag'] == "success"){
+                $(".nick_name").text(res.nick_name);
+                $(".head_pic").attr('src',''+res.head_pic+'');
+                if(res.account!=""){
+                    $(".account").html(res.account);
+                    account=res.account;
+                }
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+            }
+        },"GET",true);
+        layer.closeAll();
+
+        $('.bindbox').click(function(){
+            if(account){
+                location.href="{:U('Member/vertel')}/account/"+account;
+            }else{
+                location.href="{:U('Login/bind')}";
+            };
+        });
+        $('.goupinfo').click(function(){
+            sessionStorage.setItem("goupinfo",1);
+            location.href="{:U('Member/upduserinfo')}";
+        })
+    </script>
+    <!--上传图片-->
+    
+
+</block>

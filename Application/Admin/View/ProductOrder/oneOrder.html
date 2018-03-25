@@ -1,0 +1,128 @@
+
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">订单管理</a></li>
+        <li class="active">订单列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>订单管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="{:U('Order/orderList')}">订单列表</a>
+            </li>
+        </ul>
+    </div>
+    <style>
+        table tr td{
+            padding: 5px;
+        }
+        table tr td h4{
+            width: 180px;
+        }
+    </style>
+        <!--表格内容-->
+        <div class="content-box-content">
+            <table style="width: 300px;height: auto;margin:0 20px;font-family: 微软雅黑">
+                <tr>
+                    <td><h4><strong>订单号：</strong></h4></td>
+                    <td>{$res['order_sn']|default="无"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>订单总价格：</strong></h4></td>
+                    <td>{$res['total_price']|default="0.00"}元</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>实际支付金额：</strong></h4></td>
+                    <td>{$res['real_price']|default="0.00"}元</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>联系人：</strong></h4></td>
+                    <td>{$res['addr_name']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>联系电话：</strong></h4></td>
+                    <td>{$res['addr_tel']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>详细地址：</strong></h4></td>
+                    <td>{$res['member']['province_name']}{$res['member']['city_name']}{$res['member']['area_name']}{$res['addr_address']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>订单备注：</strong></h4></td>
+                    <td>{$res['remark']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>下单时间：</strong></h4></td>
+                    <td>{$res['ctime']|date='Y-m-d H:i:s',###}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>支付时间：</strong></h4></td>
+                    <td>{$res['pay_time']|date='Y-m-d H:i:s',###}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>确认收货时间：</strong></h4></td>
+                    <td>{$res['affirm_time']|date='Y-m-d H:i:s',###}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>发货时间：</strong></h4></td>
+                    <td>{$res['send_time']|date='Y-m-d H:i:s',###}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>物流公司名称：</strong></h4></td>
+                    <td>{$res['company_name']|default="未发货"}</td>
+                </tr>
+
+                <tr>
+                    <td><h4><strong>物流编号：</strong></h4></td>
+                    <td>{$res['delivery_number']|default="未发货"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>支付方式：</strong></h4></td>
+                    <td>{$res['pay_type']?"微信":"豆"}</td>
+                </tr>
+
+                <tr>
+                    <td><h4><strong style="color: #ff0000">商品的清单：</strong></h4></td>
+                </tr>
+            </table>
+            <style>
+                .table tr td{
+                    border: 1px solid #CCCCCC;
+                }
+            </style>
+            <table style="width: 600px;height: auto;margin:0 20px;font: 微软雅黑;
+            font-size:16px;border: 1px solid #CCCCCC;text-align: center" class="table">
+                <tr>
+                    <td>商品id</td>
+                    <td>商品名称</td>
+                    <td>商品价格</td>
+                    <td>商品属性</td>
+                    <td>商品数量</td>
+                    <td>商品总计</td>
+                </tr>
+                <volist name="res['goods_list']" id="vo">
+                    <tr>
+                        <td>{$vo['p_id']}</td>
+                        <td>{$vo['title']}</td>
+                        <td>{$vo['price']}</td>
+                        <td>{$vo['attr']}</td>
+                        <td>X {$vo['num']}</td>
+                        <td>{$vo['price']*$vo['num']}</td>
+                    </tr>
+                </volist>
+            </table>
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>
+<script>
+    var status = $("#status").val();
+    if(status==0){
+        $("#daili").show();
+    }
+</script>

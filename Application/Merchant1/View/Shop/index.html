@@ -1,0 +1,143 @@
+<extend name="Public:header"/>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>众享通赢</p>
+            </div>
+            <div class="weui-cell__ft message" linkto="{:U('Shop/message')}">
+                <img src="__WEBPUBLIC__/Wechat/img/msg.png" class="iconfenx"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container indexbg" style="background:white;overflow-y:scroll;-webkit-overflow-scrolling:touch;">
+        <div class="weui-flex texcen pad20-0 dingtop">
+            <div class="weui-flex__item">
+                <div class="colff0 d_integral fs1"></div>
+                <div class="fs0.8 colccc">麦穗</div>
+            </div>
+            <div class="weui-flex__item">
+                <div class="colff0 d_shares fs1"></div>
+                <div class="fs0.8 colccc">众享豆</div>
+            </div>
+            <div class="weui-flex__item">
+                <div class="colff0 d_earn_price fs1"></div>
+                <div class="fs0.8  colccc">昨日收益</div>
+            </div>
+        </div>
+
+       <!--  <div class="ih30 texcen" style="padding-top:20px;">
+            收益：<span class="colff0 fs2 wallet"></span>
+        </div> -->
+
+        <div class="weui-flex texcen pad20-0 indexicon">
+            
+            <!--<div class="weui-flex__item " linkto="{:U('Member/transferrecord')}">
+                <div class="">
+                    <img src="__WEBPUBLIC__/Wechat/img/zz.png"/>
+                </div>
+                <div class="">转账</div>
+            </div>-->
+
+            <div class="weui-flex__item" linkto="{:U('Shop/billlist')}">
+                <div class="">
+                    <img src="__WEBPUBLIC__/Wechat/img/mx.png"/>
+                </div>
+                <div class="">明细</div>
+            </div>
+            <div class="weui-flex__item" linkto="{:U('Shop/paydraw')}">
+                <div class="">
+                    <img src="__WEBPUBLIC__/Wechat/img/tix.png"/>
+                </div>
+                <div class="">提现</div>
+            </div>
+
+        </div>
+
+
+        <div class="weui-cells fs0-8">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <div id="main" style="width:100%;height:250px;"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</block>
+<block name="footerjs">
+<script>
+    var d_user={
+        "shop_id":shop_id
+    };
+    requestUrl("{:U('Api/Merchant/index')}",d_user,ding_callback,"POST",true);
+    function ding_callback(res){
+        layer.closeAll();
+        if (res.flag=="success") {
+            var data = res.data;
+            $(".d_earn_price").html(data.sum_price);
+            $(".d_shares").html(data.wallet);
+            $(".d_integral").html(data.integral);
+            
+        }else{
+            layer.msg(res.message);
+        }
+    }
+    var dataargs_other = {shop_id:shop_id,type:1};
+    requestUrl("{:U('Api/Message/isReadShop')}",dataargs_other,function(data){
+        var res = data.data;
+        if(res > 0){
+            $(".message").addClass("is_read");
+        }
+    },"GET");
+</script>
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.min.js"></script>
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.common.min.js"></script>
+<script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        function showLine(date,line) {
+        var option = {
+            title: {
+                text: '收益曲线'
+            },
+            color: [
+                '#208de1', '#fec42c', '#80F1BE'
+            ],
+
+            tooltip: {},
+            legend: {
+                data:['收益']
+            },
+            xAxis: {
+                data: date,
+                name: '日'
+            },
+            yAxis: {
+                name: '元'
+            },
+            series: [{
+                name: '收益',
+                type: 'line',
+                borderColor: '#208de1',
+                data: line
+            }]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+        }
+        requestUrl("{:U('Api/Merchant/income')}",{"shop_id":shop_id},function(res) {
+            if (res.flag == "success") {
+                var date = res.data.x_date;
+                var value = res.data.day_line;
+                //console.log(typeof date,typeof value);
+                showLine(date.split(","),value.split(","));
+            }else{
+                layer.msg(res.message);
+            }
+        })
+    </script>
+</block>

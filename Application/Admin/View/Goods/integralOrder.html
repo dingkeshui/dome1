@@ -1,0 +1,374 @@
+<include file="Public:header"/>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/js/ajax-operate.js"></script>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/laydate/laydate.js"></script>
+<script src="__WEBPUBLIC__/Admin/layer/layer.js"></script>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class=""><a href="">兑换商品管理</a></li>
+        <li class="active">兑换商品列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>兑换商品管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="{:U('Goods/integralOrder')}">兑换商品列表</a>
+            </li>
+        </ul>
+    </div>
+    <div class="search-content">
+        <form action="{:U('Goods/integralOrder')}" method="post" class="search-form form-inline" role="form">
+            <style>
+                #laydate_ys{
+                    overflow: hidden;!important;
+                }
+                .laydate_body .laydate_bottom{
+                    height: 40px;!important;
+                }
+            </style>
+            &nbsp;&nbsp;
+            <input placeholder="请输入开始日期" name="start_time" value="{$start_time}" class="laydate-icon" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="width: 180px;height:34px;border-radius:5px">&nbsp;&nbsp;
+            <input placeholder="请输入结束日期" name="end_time" value="{$end_time}" class="laydate-icon" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="width: 180px;height:34px;border-radius:5px">
+            &nbsp;&nbsp;
+            <div class="form-group">
+                <label class="sr-only" for="order_sn">订单号</label>
+                <input class="earch-input form-control" id="order_sn" type="text" name="order_sn" value="{$request['order_sn']}" placeholder="订单号"/>　
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="order_sn">用户昵称</label>
+                <input class="earch-input form-control" id="nick_name" type="text" name="nick_name" value="{$request['nick_name']}" placeholder="用户昵称"/>　
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="name">联系人</label>
+                <input class="earch-input form-control" id="name" type="text" name="name" value="{$request['name']}" placeholder="联系人"/>　
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="tel">联系电话</label>
+                <input class="earch-input form-control" id="tel" type="text" name="tel" value="{$request['tel']}" placeholder="联系电话"/>　
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="address">联系人地址</label>
+                <input class="earch-input form-control" id="address" type="text" name="address" value="{$request['address']}" placeholder="联系人地址"/>　
+            </div>
+            <div class="form-group">
+                <div class="col-sm-9">
+                    <select name="status" id="" class="form-control input-small form-control-select">
+                        <option value="">请选择是否发货...</option>
+                        <option value="1" <if condition="$status eq 1">selected</if>>未发货</option>
+                        <option value="2" <if condition="$status eq 2">selected</if>>已发货</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-9">
+                    <select name="type" id="" class="form-control input-small form-control-select">
+                        <option value="">请选择订单类型...</option>
+                        <option value="1" <if condition="$type eq 1">selected</if>>豆订单</option>
+                        <option value="2" <if condition="$type eq 2">selected</if>>麦穗订单</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-9">
+                    <select name="rank_type" id="" class="form-control input-small form-control-select">
+                        <option value="">请选择用户角色...</option>
+                        <option value="1" <if condition="$rank_type eq 1">selected</if>>用户</option>
+                        <option value="2" <if condition="$rank_type eq 2">selected</if>>商家</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn derive">查询</button>
+        </form>
+    </div>
+    <div class="content-box-table content-box-content">
+        <form action="{:U('Goods/deleteOrder')}" method="post" class="batch-form">
+            <table class="table table-striped table-framed table-hover">
+                <thead>
+                <tr>
+                    <th width="8%">
+                        <input class="check-all" type="checkbox" />&nbsp;&nbsp;编号
+                    </th>
+                    <th width="">下单时间</th>
+                    <th width="">订单号</th>
+                    <th width="">收货人名称</th>
+                    <th width="">收货人电话</th>
+                    <th width="">收货人地址</th>
+                    <th width="">麦穗/豆(实际支付)</th>
+                    <th width="">总金额</th>
+                    <th width="">抵扣的豆</th>
+                    <th width="">商品的名称</th>
+                    <th width="">订单类型</th>
+                    <th width="">商家/用户</th>
+                    <th width="">商家/用户(名称)</th>
+                    <th width="">支付类型</th>
+                    <th width="">状态</th>
+                    <th width="">操作</th>
+                </tr>
+                </thead>
+                <tbody class="tbody">
+                <if condition="empty($list)">
+                    <tr><td colspan="20"><span style="font-size:14px;">暂无数据</span></td></tr>
+                </if>
+                <volist name="list" id="vo">
+                    <tr>
+                        <td><input type="checkbox" value="{$vo['i_o_id']}" name="i_o_id[]"/>&nbsp;&nbsp;{$vo['i_o_id']}</td>
+                        <td>{$vo['ctime']|date='Y-m-d H:i:s',###}</td>
+                        <td>{$vo['order_sn']}</td>
+                        <td>{$vo['name']}</td>
+                        <td>{$vo['tel']}</td>
+                        <td>{$vo['address']}</td>
+                        <td>{$vo['price']}</td>
+                        <td>{$vo['total_price']}</td>
+                        <td>{$vo['d_price']}</td>
+                        <td>{$vo['goods']['name']}</td>
+                        <td>
+                            <if condition="$vo['type'] eq 1">
+                                <span style="color: green">麦穗</span>
+                                <else/>
+                                <span style="color: red">豆</span>
+                            </if>
+                        </td>
+                        <td>
+                            <if condition="$vo['rank_type'] eq 1">
+                                <span style="color: green">商家</span>
+                                <else/>
+                                <span style="color: red">用户</span>
+                            </if>
+                        </td>
+                        <td>
+                            <if condition="$vo['rank_type'] eq 1">
+                                <a href="{:U('Shop/shopList',array('shop_id'=>$vo['mix_id']))}"><span>{$vo['mem_name']}</span></a>
+                                <else/>
+                                <a href="{:U('Member/memberList',array('m_id'=>$vo['mix_id']))}"><span>{$vo['mem_name']}</span></a>
+                            </if>
+                        </td>
+                        <td>
+                            <if condition="$vo['pay_type'] eq 0">
+                                <span style="color: red">豆</span>
+                                <elseif condition="$vo['pay_type'] eq 1"/>
+                                <span style="color: red">麦穗</span>
+                                <elseif condition="$vo['pay_type'] eq 2"/>
+                                <span style="color: red">微信</span>
+                            </if>
+                        </td>
+                        <td>
+                            <if condition="$vo['status'] eq 0">
+                                <span style="color: red">未付款</span>
+                                <elseif condition="$vo['status'] eq 1"/>
+                                <span style="color: red">支付成功(待发货)</span>
+                                <elseif condition="$vo['status'] eq 2"/>
+                                <span style="color: red">发货成功</span>
+                                <elseif condition="$vo['status'] eq 3"/>
+                                <span style="color: green">待评价</span>
+                                <elseif condition="$vo['status'] eq 4"/>
+                                <span style="color: red">申请退货</span>
+                                <elseif condition="$vo['status'] eq 5"/>
+                                <span style="color: green">退货成功</span>
+                                <elseif condition="$vo['status'] eq 6"/>
+                                <span style="color: green">已完成</span>
+                                <elseif condition="$vo['status'] eq 9"/>
+                                <span style="color: green">用户删除订单</span>
+                            </if>
+                        </td>
+                        <td>
+                            <a href="{:U('Goods/orderDetail',array('id'=>$vo['i_o_id']))}" title="兑换的详情" class="modify">
+                                <span class="icon glyphicon glyphicon-shopping-cart"></span>
+                            </a>&nbsp;&nbsp;&nbsp;
+                            <if condition="$vo['status'] eq 1">
+                            <a href="#" title="发货" class="modify" onclick="openLayerSend({$vo['i_o_id']},'发货通知(请填写信息，点击确认发送)','postGoods')">
+                                <span class="icon glyphicon glyphicon-send"></span>
+                            </a>&nbsp;&nbsp;&nbsp;
+                            </if>
+                            <if condition="$vo['status'] eq 4">
+                                <if condition="$vo['pay_type'] eq 2">
+                                    <a href="#" title="确认退货" class="modify" onclick="openLayer({$vo['i_o_id']},'退货通知(请填写信息，点击确认发送)','returnBean')">
+                                        <span class="icon glyphicon glyphicon-retweet"></span>
+                                    </a>&nbsp;&nbsp;&nbsp;
+                                    <else/>
+                                    <a href="#" title="确认退货" class="modify" onclick="openLayer({$vo['i_o_id']},'退货通知(请填写信息，点击确认发送)','makeSureReturn')">
+                                        <span class="icon glyphicon glyphicon-retweet"></span>
+                                    </a>&nbsp;&nbsp;&nbsp;
+                                </if>
+                            </if>
+                            <a href="#" title="删除" class="delete-delete">
+                                <span class="icon glyphicon glyphicon-remove"></span>
+                            </a><input type="hidden" value="{:U('Goods/deleteOrder',array('i_o_id'=>$vo['i_o_id']))}">
+                        </td>
+                    </tr>
+                </volist>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="20">
+                        <div class="bulk-actions fl">
+                            <input type="button" class="btn delete-batch" value="批量删除">　
+                        </div>
+                        <div class="bulk-actions fl">
+                            <a href="{:U('Goods/integralOrderXLS')}" style="text-decoration: none;color: #ffffff"><input type="button" class="btn btn-primary" value="导出订单列表" style="background: green">　</a>
+                        </div>
+                        <div class="fr">
+                            {$page}
+                        </div>
+                        <if condition="$pages gt 1">
+                            <div style="padding:24px 10px;float:right;">
+                                <span style="font-size: 16px">转到第</span>&nbsp;
+                                <input type="tel"  min="1" max="" name="" id="page_num" style="border: 1px solid #ccc;width:50px;height:27px;text-align: center;" value="{:I('get.p')}" placeholder="1"/>&nbsp;
+                                <span style="font-size: 16px">页</span>
+                                <input type="button" id="go1" value="Go" style="width: 45px;height:30px;border:0;background-color: #c5c5c5;border-radius:1px;color: #ffffff;cursor: pointer"/>
+                            </div>
+                        </if>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+<style>
+    .layui-layer-page .layui-layer-content{
+        overflow: hidden;!important;
+    }
+</style>
+<script>
+    $("#go1").click(function(){
+        var max_page = "{$pages}";
+        var go_page = $("#page_num").val();
+        if(go_page == 0){
+            alert("请输入跳转页数！");
+            return false;
+        }
+        var p_go = 0;
+        if(parseInt(go_page)>parseInt(max_page)){
+            $("#page_num").val(max_page);
+            p_go = max_page;
+        }else{
+            p_go = go_page;
+        }
+        var url = "/index.php?s=/Admin/Goods/integralOrder/p/"+p_go;
+        var start = "{$start_time}";
+        if(start){
+            url += "/start_time/"+start;
+        }
+        var end = "{$end_time}";
+        if(end){
+            url += "/end_time/"+end;
+        }
+        var order_sn = "{$request.order_sn}";
+        if(order_sn){
+            url += "/order_sn/"+order_sn;
+        }
+        var nick_name = "{$request.nick_name}";
+        if(nick_name){
+            url += "/nick_name/"+nick_name;
+        }
+        var name = "{$request.name}";
+        if(name){
+            url += "/name/"+name;
+        }
+        var tel = "{$request.tel}";
+        if(tel){
+            url += "/tel/"+tel;
+        }
+        var address = "{$request.address}";
+        if(address){
+            url += "/address/"+address;
+        }
+        var status = "{$status}";
+        if(status){
+            url += "/status/"+status;
+        }
+        var type = "{$type}";
+        if(type){
+            url += "/type/"+type;
+        }
+        var rank_type = "{$rank_type}";
+        if(rank_type){
+            url += "/rank_type/"+rank_type;
+        }
+
+        location.href = url;
+    });
+    function openLayer(id,type,m) {
+        /**弹框，提供后台编辑然后给用户发送短信*/
+        layer.open({
+            type: 1,
+            title: type,
+            closeBtn: 0,
+            shadeClose: true,
+            skin: 'yourclass',
+            content:
+            '<div style="width:400px;height: 285px;overflow-x:hidden">' +
+            '<form action="/index.php/Admin/Goods/'+m+'" method="post">' +
+            '<input type="hidden" name="id" value="'+id+'">'+
+            '<textarea name="body" id="" cols="55" rows="5" style="border: 0px;margin: 5px"></textarea>'+
+            '<center><input type="submit" value="确认发送" style="border:1px solid #CCCCCC;width: 80px;height:30px;margin-top:30px"></center>'+
+            '</form>' +
+            '</div>'
+        });
+    }
+
+
+
+    function openLayerSend(id,type,m) {
+        var html = "{$html}";
+        /**弹框，提供后台编辑然后给用户发送短信*/
+        layer.open({
+            type: 1,
+            title: type,
+            closeBtn: 0,
+            shadeClose: true,
+            skin: 'yourclass',
+            content:
+            '<div style="width:400px;height: 285px;overflow-x:hidden">' +
+                '<form action="/index.php/Admin/Goods/'+m+'" method="post">' +
+                    '<input type="hidden" name="id" value="'+id+'">'+
+                    '<input type="text" name="delivery_number" style="width:340px;height:40px;margin:5px" placeholder="物流单号"><br/>'+
+                    ''+html+''+
+                    '<textarea name="body" id="" cols="55" rows="5" style="border: 0px;margin: 5px"></textarea>'+
+                    '<center><input type="submit" value="确认发送" style="border:1px solid #CCCCCC;width: 80px;height:30px;margin-top:30px"></center>'+
+                '</form>' +
+            '</div>'
+        });
+    }
+
+
+    /**兑换商品的上下架*/
+    $(".click_ajax").change(function () {
+        var field = $(this).attr('data');
+        var data_i_o_id = $(this).attr('data_i_o_id');
+        var input_val = $(this).val();
+        updateMore(data_i_o_id,input_val,field);
+    })
+    function updateMore(id,value,field){
+        if(confirm("确认操作？")){
+            var url = "{:U('Goods/ajaxMore')}";
+            $.post(url,{'id':id,'value':value,field:field},function(data){
+                if(data==1){
+                    alert("修改成功");
+                    window.location.reload();
+                }else{
+                    alert("修改失败");
+                }
+            });
+        }
+    }
+    /**兑换商品的上下架*/
+    function up(id,status){
+        if(confirm("确认操作？")){
+            var url = "{:U('Goods/ajaxUp')}";
+            $.post(url,{'id':id,'status':status},function(data){
+                if(data==1){
+                    alert("修改成功");
+                    window.location.reload();
+                }else{
+                    alert("修改失败");
+                }
+            });
+        }
+    }
+
+</script>
+<include file="Public:footer"/>
+

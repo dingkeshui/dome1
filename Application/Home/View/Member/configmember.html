@@ -1,0 +1,123 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>设置</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    头像
+                </div>
+                <div class="weui-cell__bd">
+                    <input type="file" name="" class="fileinput">
+                </div>
+                <div class="weui-cell__ft fs0">
+                    <img class="simg head_pic" src="__WEBPUBLIC__/Wechat/img/headimg.png"/>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    昵称
+                </div>
+                <div class="weui-cell__bd"></div>
+                <div class="weui-cell__ft">
+                    <span contenteditable="true" class="pad10 nick_name"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-cells">
+            <div class="weui-cell weui-cell_access" linkto="{:U('Login/bind')}">
+                <div class="weui-cell__hd">
+                    绑定手机号
+                </div>
+                <div class="weui-cell__bd"></div>
+                <div class="weui-cell__ft">
+                    <span class="account"></span>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="weui-btn-area">-->
+            <!--<a class="weui-btn bgjb nobor fs1" href="javascript:">安全退出</a>-->
+        <!--</div> -->
+        
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+        var dataargs = {m_id:m_id};
+        requestUrl("{:U('Api/Member/memberCenter')}",dataargs,function(data){
+            //console.log(data);
+            var res = data.data;
+            if(data['flag'] == "success"){
+                $(".nick_name").text(res.nick_name);
+                $(".head_pic").attr('src',''+res.head_pic+'');
+                $(".account").text(res.account);
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+            }
+        },"GET",true);
+    </script>
+    <!--上传图片-->
+    <script>
+        function ajax(){
+            var filesize = this.files[0].size;
+            if (filesize > 500*1024) {
+                alert("请上传大小在500k以下的图片");
+                return false;
+            }
+            var files = this.files;
+            var picname = files[0].name;
+            var reader = new FileReader();
+            reader.onload = function(e){
+                var src = e.target.result;
+                var dataargs = {"pic": src, "pic_name": picname, m_id: m_id};
+                requestUrl("{:U('Empty/uploadPic')}", dataargs, function (data_json) {
+                    layer.closeAll();
+                    var data = JSON.parse(data_json);
+                    if (data['flag'] == "success") {
+                        $(".head_pic").attr("src", data['data']['path']);
+                        layer.msg("上传成功！");
+                    } else {
+                        layer.msg("上传失败！");
+                    }
+                }, "POST", true);
+
+            }
+            reader.readAsDataURL(files[0]);
+        }
+        $("input[type='file']").on('change',ajax);
+        /**修改用户的昵称*/
+        $(".nick_name").on("blur",function () {
+            var nick_name = $(".nick_name").text();
+            if($.trim(nick_name)==""||nick_name==""){
+                layer.msg("名字不能为空!");
+                return false;
+            }else if(nick_name.length>10){
+                layer.msg("名字过长!");
+                return false;
+            }
+            var dataargs = {"nick_name": nick_name, m_id: m_id};
+            requestUrl("{:U('Api/Member/configMember')}", dataargs, function (data) {
+                layer.closeAll();
+                if (data['flag'] == "success") {
+                    layer.msg("修改成功！");
+                } else {
+                    layer.msg("修改失败！");
+                }
+            }, "POST", true);
+        })
+
+    </script>
+
+</block>

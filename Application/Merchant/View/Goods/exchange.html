@@ -1,0 +1,175 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>收货地址</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        <div class="fs0-8 colbbb ih30 texcen">请填写您的联系方式，等待客户人员与您联系。</div>
+       <div class="weui-cells bgfff mat0 nbsp_input">
+            <div class="weui-cell ">
+                <div class="weui-cell__hd mar15">
+                    姓名
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input name" type="text" placeholder="填写您的姓名"/>
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    手机号
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input tel" type="tel" placeholder="填写您的手机号"/>
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    收货地址
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input address" type="text" placeholder="填写您的收货地址"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="paybox">
+        <div class="weui-cells__title">选择支付方式</div>
+        <div class="weui-cells weui-cells_radio">
+            <label class="weui-cell weui-check__label" for="x11">
+                <div class="weui-cell__hd">
+                    <img src="/Public/Wechat/img/jifen.png" class="slimg">
+                </div>
+                <div class="weui-cell__bd">
+                    <p>豆支付</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="radio" class="weui-check pay_type" name="radio1" id="x11" value="integral" checked="checked">
+                    <span class="weui-icon-checked"></span>
+                </div>
+            </label>
+            <label class="weui-cell weui-check__label" for="x12">
+                <div class="weui-cell__hd">
+                    <img src="/Public/Wechat/img/wxpay.png" class="slimg">
+                </div>
+                <div class="weui-cell__bd">
+                    <p>微信支付</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="radio" name="radio1" class="weui-check pay_type" id="x12" value="wechat">
+                    <span class="weui-icon-checked"></span>
+                </div>
+            </label>
+        </div>
+        </div>
+        
+        <div class="weui-btn-area">
+            <a class="weui-btn bgjb nobor make_sure" href="javascript:">确认</a>
+        </div>
+        
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+        var url_api = "{$_REQUEST['type']}" == 1 ? "{:U('Api/Goods/exchangeInter')}" : "{:U('Api/Goods/exchange')}";
+        if("{$_REQUEST['type']}" == 1){
+            $(".paybox").css("display","none");
+        }
+        var jsApiParameters;
+        var dataargs = {};
+        /**选择支付方式*/
+        var flag =true;
+        $(".make_sure").click(function () {
+            dataargs.g_id = "{:I('get.g_id')}";
+            dataargs.tel = $(".tel").val();
+            dataargs.name = $(".name").val();
+            dataargs.address = $(".address").val();
+            dataargs.mix_id = shop_id;
+            dataargs.type = 1;
+            var pay_type = $(".pay_type:checked").val();
+            if(pay_type == ""){
+                layer.msg("请选择支付的方式！");
+                return false;
+            }else if(pay_type == "integral"){
+                if (!flag) {
+                    return;
+                }
+                flag = false;
+                requestUrl(url_api,dataargs,function(data){
+                    flag =true;
+                    if(data['flag'] == "success"){
+                        layer.msg("支付成功！");
+                        setTimeout(function () {
+                            var url = "{:U('Order/orderList')}";
+                            window.location.href = url;
+                        },1000);
+                    }else if(data['flag'] == "error"){
+                        layer.msg(data['message']);
+                    }
+                },"POST",'');
+            }else if(pay_type == "wechat"){
+                if (!flag) {
+                    return;
+                }
+                flag = false;
+                requestUrl("/index.php?s=/Pay/getJsApiGoods", dataargs, function (res) {
+                    flag =true;
+                    if(res['flag'] == "error"){
+                        layer.closeAll();
+                        layer.msg(res['message']);
+                    }else{
+                        var data = JSON.parse(res);
+                        if (data.jsApiParameters) {
+                            jsApiParameters = JSON.parse(data.jsApiParameters);
+                            dataargs.id = jsApiParameters.id;
+                            callpay();
+                            layer.closeAll();
+                        }
+                    }
+                },"POST",true);
+            }
+        });
+        function jsApiCall(){
+            WeixinJSBridge.invoke(
+                    'getBrandWCPayRequest',
+                    jsApiParameters,
+                    function(res){
+                        WeixinJSBridge.log(res.err_msg);
+                        if (res.err_msg == "get_brand_wcpay_request:fail") {
+                            layer.msg("系统支付失败！");
+                        }else if(res.err_msg == "get_brand_wcpay_request:cancel"){
+                            layer.msg("取消支付！");
+                        }else if (res.err_msg == "get_brand_wcpay_request:ok") {
+                            layer.msg("支付成功！");
+                            setTimeout(function () {
+                                window.location.href = "{:U('Order/orderList')}";
+                            },500);
+                        }
+                    }
+            );
+        }
+
+        function callpay()
+        {
+            if (typeof WeixinJSBridge == "undefined"){
+                if( document.addEventListener ){
+                    document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+                }else if (document.attachEvent){
+                    document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                    document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+                }
+            }else{
+                jsApiCall();
+            }
+        }
+    </script>
+</block>

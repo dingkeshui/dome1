@@ -1,0 +1,57 @@
+<include file="Public:header"/>
+<link rel="stylesheet" href="__WEBPUBLIC__/Uploadify/uploadify.css" type="text/css" />
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active"><a href="">权限管理</a></li>
+        <li class="active">修改管理组</li>
+    </ul>
+
+    <div class="page-header clearfix">
+        <h3>修改管理组</h3>
+        <ul class="nav nav-tabs">
+            <li  class="">
+                <a href="{:U('Group/groupList')}">管理组列表</a>
+            </li>
+            <li  class="">
+                <a href="{:U('Group/addGroup')}">添加管理组</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div id="tabs-content" class="content-box-content">
+        <div class="ul">
+            <form action="{:U('Group/editGroup')}" method="post" class="form-horizontal" enctype="multipart/form-data">
+                <input type="hidden" name="group_id" value="{$list['group_id']}">
+                <div class="form-group">
+                    <label for="type_name" class="col-sm-1 control-label"><em class="prompt-red">*</em>组名：</label>
+                    <div class="col-sm-9">
+                        <input type="text" value="{$list['group_name']}" class="form-control" id="type_name" name="group_name" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <volist name="per" id="action">
+                        <label class="col-sm-1 control-label"><em class="prompt-red">*</em>{$action['name']}：</label>
+                        <div class="col-sm-9">
+                            <volist name="action['list']" id="vo">
+                                <div class="f-left" style="width:180px;padding:5px;">
+                                    <input type="checkbox" <if condition="in_array($vo['action_id'],$list['permission'])">checked</if> value="{$vo['action_id']}" name="permission[]"/>{$vo['action_name']}
+                                </div>
+                            </volist>
+                        </div>
+                        <div class="clear"></div><br>
+                    </volist>
+                    <span class='prompt col-sm-offset-4 col-sm-9' style="color: red">(选择之后，将获取对应的权限)</span><br/>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                      <button type="submit" class="btn btn-default btn-primary">确认修改</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<include file="Public:footer"/>

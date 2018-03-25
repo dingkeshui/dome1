@@ -1,0 +1,118 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <div class="content-box">
+        <ul class="breadcrumb">
+            <li><a href="{:U('Index/main')}">首页</a></li>
+            <li><a href="{:U('Member/memberList')}">会员微信管理</a></li>
+            <li class="active">会员微信详情</li>
+        </ul>
+        <div class="page-header clearfix">
+            <h3>会员微信管理</h3>
+            <ul class="nav nav-tabs">
+                <li>
+                    <a href="{:U('Member/memberList')}">会员列表</a>
+                </li>
+                <li class="active">
+                    <a href="{:U('Member/oneMember')}">会员微信详情</a>
+                </li>
+            </ul>
+        </div>
+
+        <!--表格内容-->
+        <div class="content-box-content">
+            <!--表单 start-->
+            <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="account" class="col-sm-3 control-label">微信昵称：</label>
+                    <div>{$res['nickname']|default="未填写"}</div>
+                </div>
+                <div class="form-group">
+                    <label for="account" class="col-sm-3 control-label">城市：</label>
+                    <div>{$res['city']|default="未填写"}</div>
+                </div>
+                <div class="form-group">
+                    <label for="account" class="col-sm-3 control-label">国家：</label>
+                    <div>{$res['country']|default="未填写"}</div>
+                </div>
+                <div class="form-group">
+                    <label for="account" class="col-sm-3 control-label">头像：</label>
+                    <div><img src="{$res['headimgurl']}" alt="" width="100px" height="auto"/></div>
+                </div>
+                <div class="form-group">
+                    <label for="account" class="col-sm-3 control-label">关注时间：</label>
+                    <div>{$res['subscribe_time']|date='Y-m-d H:i:s',###}</div>
+                </div>
+
+
+            </form>
+            <!--表单 end-->
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>
+<!--地区的三级联动-->
+<script type="text/javascript">
+    var ajax_url = "{:U('Firm/getArea')}";
+    function loadArea(areaId,areaType) {
+        $.post(ajax_url,{'areaId':areaId},function(data){
+            if(areaType=='city'){
+                $('#'+areaType).html('<option value="-1">市/县</option>');
+                $('#district').html('<option value="-1">区/镇</option>');
+            }else if(areaType=='district'){
+                $('#'+areaType).html('<option value="-1">区/镇</option>');
+            }
+            if(areaType!='null'){
+                $.each(data,function(no,items){
+                    $('#'+areaType).append('<option value="'+items.area_id+'">'+items.area_name+'</option>');
+                });
+            }
+        });
+    }
+</script>
+<script>
+    var url = "{:U('Member/oneMember')}";
+    $(document).ready(function(){
+        $("#account").change(function(){
+            var numbers =$("#account").val();
+            $.post(url,{'numbers':numbers},function(data) {
+                if(data){
+                    alert("会员微信账号存在");
+
+                }else{
+
+                }
+            });
+        });
+
+
+    });
+</script>
+<!--判断手机的格式-->
+<script>
+//    $(document).ready(function(){
+//        $("#account").blur(function(){
+//            var phone = $("#account").val();
+//            if(checkMobile(phone)){
+//
+//            }else{
+//                alert("手机格式错误");
+//            }
+//
+//        });
+//        function checkMobile(str) {
+//            var re = /^1\d{10}$/;
+//            if (re.test(str)) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        }
+//        $(".btn").click(function(){
+//            if(checkMobile(phone)){
+//                $(".form").submit();
+//            }
+//        });
+//    });
+</script>

@@ -1,0 +1,93 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	订单管理
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container mh100 bgfff">
+        <div class="padtb10 after">
+            <a class="weui-cell weui-cell_access" href="javascript:;">
+                <div class="weui-cell__bd">
+                    <p>商城订单</p>
+                </div>
+                <div class="weui-cell__ft fs0-8" linkto="{:U('Order/order')}">查看全部</div>
+            </a>
+            <div class="flex pad10 fs0-8">
+                <a linkto="{:U('Order/order')}/status/1" class="w_25 re flex2 flexcenter">
+                    <img class="w50" src="__WEBPUBLIC__/Wechat/shopimg/order1.png">
+                    <div>待发货</div>
+                    <span class="shopordernumspan wait_send_order none"></span>       
+                </a>
+                <a linkto="{:U('Order/order')}/status/2" class="w_25 re flex2 flexcenter">
+                    <img class="w50" src="__WEBPUBLIC__/Wechat/shopimg/order2.png">
+                    <div>已发货</div>
+                    <span class="shopordernumspan wait_query_order none"></span>      
+                </a>
+                <a linkto="{:U('Order/order')}/status/3" class="w_25 re flex2 flexcenter">
+                     <img class="w50" src="__WEBPUBLIC__/Wechat/shopimg/order3.png">
+                    <div>已完成</div>   
+                    <span class="shopordernumspan wait_success_order none"></span>   
+                </a>
+                <a linkto="{:U('Refund/refundlist')}" class="w_25 re flex2 flexcenter">
+                    <img class="w50" src="__WEBPUBLIC__/Wechat/shopimg/order4.png">
+                    <div>退款/售后</div>
+                    <span class="shopordernumspan wait_tk_order none"></span>   
+                </a>
+            </div> 
+        </div>
+        <div class="padtb10 bgfff after">
+            <a class="weui-cell weui-cell_access" linkto="{:U('Checkorder/checkorder')}&status=4" href="javascript:;">
+                <div class="weui-cell__bd">
+                    <p>买单订单</p>
+                </div>
+                <div class="weui-cell__ft fs0-8">查看全部</div>
+            </a>
+            <div class="flex pad10 fs0-8">
+                <div linkto="{:U('Checkorder/checkorder')}&status=1" class="w_25 flex2 flexcenter">
+                    <img class="w50" src="__WEBPUBLIC__/Wechat/shopimg/order5.png">
+                    <div>消费</div>    
+                </div>
+                <div linkto="{:U('Checkorder/checkorder')}&status=3" class="w_25 flex2 flexcenter">
+                    <img class="w50" src="__WEBPUBLIC__/Wechat/shopimg/order6.png">
+                    <div>退款</div>   
+                </div>
+            </div> 
+        </div>
+        
+    </div>
+</block>
+
+<block name="footerjs">
+    <script type="text/javascript">
+        requestUrl("{:U('Api/StoreOrder/orderCount')}",{shop_id:shop_id},function(data){
+            if(data.flag=="success"){
+                var shop=data.data;
+                if(+shop.wait_send_order){
+                    $('.wait_send_order').html(shop.wait_send_order).removeClass('none');
+                }
+                if(+shop.wait_query_order){
+                    $('.wait_query_order').html(shop.wait_query_order).removeClass('none');
+                }
+                if(+shop.wait_success_order){
+                    $('.wait_success_order').html(shop.wait_success_order).removeClass('none');
+                }
+                if(+shop.wait_tk_order){
+                    $('.wait_tk_order').html(shop.wait_tk_order).removeClass('none');
+                }
+            }else{
+                layer.msg(data.message);
+            }
+        },"POST");
+    </script>
+</block>

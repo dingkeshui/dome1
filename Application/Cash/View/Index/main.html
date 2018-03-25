@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>后台管理系统</title>
+<link rel="stylesheet" href="__WEBPUBLIC__/Admin/css/bootstrap.min.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="__WEBPUBLIC__/Admin/css/toocms.css" type="text/css" media="screen" />
+<script type="text/javascript" src="__WEBPUBLIC__/Common/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/js/common.js"></script>
+<!--主页面-->
+<div id="main-content" class="content">
+    <if condition="!empty($group)">
+    <div class="notification information png_bg">
+        <div>
+            您属于【{$group}】组，可能部分功能没有使用权限！
+        </div>
+    </div>
+    </if>
+    <h3 class="page-title">
+        <span class="icon glyphicon glyphicon-home"></span>
+        后台首页
+    </h3>
+    <div class="content-box-column">
+        <!--内容框一  start-->
+        <div class="column-left">
+            <div class="content-box-header" style="padding: 1px;;padding-left:10px">
+                <h3>系统信息</h3>
+            </div>
+            <div class="content-box-content">
+                <div class="tab-content default-tab">
+                    <p>后台版本　　　　　　　　    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.0</p>
+                    <p>服务器操作系统　　　　　　　Linux</p>
+                    <p>ThinkPHP版本　　　　　　　&nbsp;&nbsp;3.2.0</p>
+                    <p>运行环境　　　　　　　　　　Nginx</p>
+                    <p>MYSQL版本　　　　　　　　&nbsp;&nbsp;5.6.12-log</p>
+                    <p>上传限制　　　　　　　　　　无</p>
+                </div>
+            </div>
+        </div>
+        <!--内容框一  end-->
+
+        <!--内容框二 start-->
+        <div class="column-right">
+            <div class="content-box-header" style="padding: 1px;;padding-left:10px">
+                <h3>开发团队</h3>
+            </div>
+            <div class="content-box-content">
+                <div class="tab-content default-tab">
+                    <p>总策划　　　　　　　　　　　　　众享通赢</p>
+                    <p>产品设计及研发团队　　　　　　　众享通赢</p>
+                    <p>界面及用户体验团队　　　　　　　众享通赢</p>
+                    <p>网址　　　　　　　　　　　　　　<a href="http://www.zxty.me" target="_blank" style="text-decoration:underline">www.zxty.me</a></p>
+                    <p>QQ　　　　　　　　　　　 　　　众享通赢</p>
+                    <p>工作系统　　　　　　　　　　　　<a href="http://www.zxty.me" target="_blank" style="text-decoration:underline">www.zxty.me</a></p>
+                </div>
+            </div>
+        </div>
+        <!--内容框二 end-->
+    </div>
+
+    <div class="clear"></div>
+    <div id="footer" class="footer">
+        <small>&#169;  Powered by <a href="http://www.zxty.em" target="_blank">众享通赢科技</a> | <a href="#">返回顶部</a> </small>
+    </div>
+</div>
+
+
+<include file="Public:footer"/>

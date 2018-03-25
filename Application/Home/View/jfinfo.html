@@ -1,0 +1,67 @@
+<extend name="Public:header"/>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>商品详情</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        <div style="width: 100%;height: 10rem;margin: 0 auto;max-width: 100%;">
+            <div class="xq_slide_out">
+                <ul class="xq_slide_in">
+                    <li>
+                        <a href="http://topqiang.top"><img src="../slide/img/rp.jpg" /></a>
+                    </li>
+                    <li>
+                        <a href="http://topqiang.top"><img src="../slide/img/rp2.jpg" /></a>
+                    </li>
+                    <li>
+                        <a href="http://topqiang.top"><img src="../slide/img/rp3.jpg" /></a>
+                    </li>
+                    <li>
+                        <a href="http://topqiang.top"><img src="../slide/img/rp4.jpg" /></a>
+                    </li>
+                    <li>
+                        <a href="http://topqiang.top"><img src="../slide/img/rp5.jpg" /></a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="bgfff pad10">
+            <div class="texovh">雀巢(Nestle)(丝滑拿铁)咖啡268ml*15瓶 整箱</div>
+            <div class="colccc fs0-8">
+                <span class="iconzuan colff0 fs1-2">1999</span>
+                <span class="">积分</span>
+                <span class="fr">销售91</span>
+            </div>
+        </div>
+
+        <div class="gdesc pad10 bgfff">
+            <div class="colccc">商品信息</div>
+            <p>及哦啊搜if举案说法啊世纪东方安抚加上佛加速度佛案件是否安抚吉安市富按实际奥是哦</p>
+        </div>
+    </div>
+
+    <div class="bgjb footer-container texcen ih50">
+        立即兑换
+    </div>
+</block>
+<block name="footerjs">
+    <script src="../slide/js/xq_slide.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+        $(".xq_slide_out").xq_slide({
+            type: "h", //轮播方式  h水平轮播；v垂直轮播；o透明切换
+            vatical: false, //图片描述性文本 true 显示 false不显示
+            choseBtn: false, //是否显示上下切换按钮
+            speed: 2000, //动画间隔的时间，以毫秒为单位。
+            mousestop: true, //当鼠标移上去是否停止循环,针对PC端
+            showbar: true, //是否显示轮播导航bar
+            openmb: true //是否开启移动端支持
+        });
+    </script>
+</block>

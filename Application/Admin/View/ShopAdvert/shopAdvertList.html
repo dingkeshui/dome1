@@ -1,0 +1,134 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active"><a href="">商城楼层下方广告管理</a></li>
+        <li class="active">商城楼层下方广告</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>商城楼层下方广告</h3>
+        <ul class="nav nav-tabs">    
+            <li class="active">
+                <a href="javascript:;">列表</a>
+            </li>
+            <li>
+                <a href="{:U('ShopAdvert/addShopAdvert')}">添加</a>
+            </li>
+        </ul>
+    </div>
+    <div class="search-content">
+        <form action="{:U('ShopAdvert/shopAdvertList')}" method="post" class="search-form form-inline" role="form">
+            <div class="form-group">
+                <div class="col-sm-9">
+                    <select name="l_id" id="" class="form-control input-small form-control-select" style="width: 200px">
+                        <volist name="list_ladder" id="vo">
+                            <option value="{$vo['l_id']}" <if condition="$l_id eq $v['l_id']">selected</if>>{$vo['name']}</option>
+                        </volist>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-9">
+                    <select name="is_show" id="" class="form-control input-small form-control-select" style="width: 200px">
+                        <option value="">是否显示...</option>
+                        <option value="1" <if condition="$is_show eq 1">selected</if>>否</option>
+                        <option value="2" <if condition="$is_show eq 2">selected</if>>是</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn derive">查询</button>
+        </form>
+    </div>
+    <div class="content-box-table">
+        <form action="{:U('ShopAdvert/deleteShopAdvert')}" method="post" class="batch-form">
+            <table class="table table-striped table-framed table-hover">
+                <thead>
+                    <tr>
+                        <th width="4%">
+                            <input class="check-all" type="checkbox" />
+                        </th>
+                        <th>ID</th>
+                        <th>名称</th>
+                        <th>图片</th>
+                        <th>楼层</th>
+                        <th>显示顺序</th>
+                        <th>是否显示</th>
+                        <th>创建时间</th>
+                        <th width="">被点击次数</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+                    <if condition="empty($list)">
+                        <tr style="font-size:14px;text-align:center;"><td colspan="20">暂无数据</td></tr>
+                    </if>
+                    <volist name="list" id="v">
+                        <tr>
+                            <td><input type="checkbox" value="{$v['s_a_id']}" name="s_a_id[]"/>&nbsp;&nbsp;</td>
+                            <td>{$v['s_a_id']}</td>
+                            <td>{$v['title']|default="未填写"}</td>
+                            <td><img src="/Uploads/{$v['pic']}" alt="" width="60px" height="60px"></td>
+                            <td>{$v['ladder_name']}</td>
+                            <td><input type="number" name="position" id="{$v['s_a_id']}" value="{$v['position']}"></td>
+                            <td>
+                                <if condition="$v['is_show'] eq 1">
+                                    <span style="color: green">显示</span>
+                                    <else/>
+                                    <span style="color: red">不显示</span>
+                                </if>
+                            </td>
+                            <td>{$v['ctime']|date="Y-m-d H:i:s",###}</td>
+                            <td><a href="{:U('ShopAdvert/clickAdvertList',array('s_a_id'=>$v['s_a_id']))}" title="点击查看详情">{$v['click_num']|default="0"}</a></td>
+                            <td>
+                                <a href="{:U('ShopAdvert/editShopAdvert',array('s_a_id'=>$v['s_a_id']))}" title="编辑" class="modify">
+                                   <span class="icon glyphicon glyphicon-pencil"></span>
+                                </a>&nbsp;
+                                <a href="#" title="删除" class="delete-delete">
+                                    <span class="icon glyphicon glyphicon-remove"></span>
+                                </a><input type="hidden" value="{:U('ShopAdvert/deleteCate',array('s_a_id'=>$v['s_a_id']))}">
+                            </td>
+                        </tr>
+                    </volist>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="20">
+                            <div class="bulk-actions fl">
+                                <!-- <input type="button" class="btn delete-batch" value="批量删除">　
+                                <a href="#excel" title="导出EXCEL" rel="modal">-->
+                                    <!--<input type="button" class="btn derive" value="导出EXCEL" data-toggle="modal" data-target="#excel">-->
+                                    <!--</a>-->
+                            </div>
+                            <div class="fr">
+                                {$page}
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $('input[name="position"]').each(function(){
+            var oldnum = $(this).val();
+            var id = $(this).attr('id');
+            $(this).blur(function(){
+                var num = $(this).val();
+                if(num!=oldnum){
+                    $.post("{:U('ShopAdvert/updateSort')}",{s_a_id:id,position:num},function(data){
+                        if(data == 1){
+                            layer.msg('修改成功！');
+                        }else{
+                            layer.msg('修改失败！');
+                        }
+                    },'json');
+                }
+            });
+        });
+    })
+</script>
+<include file="Public:footer"/>

@@ -1,0 +1,521 @@
+<include file="Public:header"/>
+<link rel="stylesheet" href="__WEBPUBLIC__/Uploadify/uploadify.css" type="text/css" />
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active"><a href="">商家管理</a></li>
+        <li class="active">添加商家</li>
+    </ul>
+
+    <div class="page-header clearfix">
+        <h3>添加商家</h3>
+        <ul class="nav nav-tabs">
+            <li  class="">
+                <a href="{:U('Shop/shopList')}">商家列表</a>
+            </li>
+            <li  class="active">
+                <a href="{:U('Shop/addShop')}">添加商家</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="tabs-content" class="content-box-content">
+        <div class="ul">
+            <form action="{:U('Shop/addShop')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label"><em class="prompt-red">*</em>商家名称：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="name" name="name" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="account" class="col-sm-3 control-label"><em class="prompt-red">*</em>商家登录账号：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="account" name="account" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-3 control-label"><em class="prompt-red">*</em>商家登录密码：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="password" name="password" />
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label class="col-sm-3 control-label">经度：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="jd" name="lnt" />
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="lat" class="col-sm-3 control-label">纬度：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="wd" name="lat" />
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label class="col-sm-3 control-label"></label>
+                    <div class="col-sm-9">
+                        <button class="btn btn-primary" id="test" type="button" data-toggle="modal" data-target="#cancelOrder">获取经纬度</button>
+                    </div>
+                </div>
+                <!--获取经纬度弹出框-->
+                <div id="map" style="display:none;"  class="modal-dialog" role="document">
+                    <div  class="modal-content" style="width:800px;height:512px;margin:0 auto">
+                        <div style="padding: 5px;" class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="open"><span aria-hidden="true">&times;</span></button>
+                            <h4>单击获取点击的经纬度</h4>
+                        </div>
+                        <div class="modal-body" style="width:795px;height:400px">
+                            <style>
+                                #container {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+                            </style>
+                            <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+                            <script type="text/javascript"
+                                    src="http://webapi.amap.com/maps?v=1.3&key=c5e14c05b9c3aef7d437cb31cda7313f&plugin=AMap.Autocomplete"></script>
+                            <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+                            <div id="container"></div>
+                            <div id="myPageTop">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <label>按关键字搜索：</label>
+                                        </td>
+                                        <td class="column2">
+                                            <label>左击获取经纬度：</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="text" placeholder="请输入关键字进行搜索" id="tipinput">
+                                        </td>
+                                        <td class="column2">
+                                            <input type="text" readonly="true" id="lnglat">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="r-result" style="text-align: center;padding: 5px;">
+                            <span style="font-size:20px">经度：</span><input type="text" name="" id="lng" value="" style="width: 150px;height: 30px"/>&nbsp;&nbsp;&nbsp;
+                            <span style="font-size:20px">纬度：</span><input type="text" name="" id="lat" value="" style="width: 150px;height: 30px"/>
+                            <input type="button" value="使用经纬度" id="sure" style="width: 80px;height: 32px;border-radius:5px;background: #A4CDFF;color: white"/>
+                            <div style="height:30px;width:100%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>所在地：</label>
+                    <div class="col-sm-9">
+                        <select onchange="getCity(this.value)"  style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="province">
+                            <option value="">省份</option>
+                            <volist name="pro" id="pr">
+                                <option {$list['provincial_id']==$pr['area_id']?'selected':''} value="{$pr['area_id']}">{$pr['area_name']}</option>
+                            </volist>
+                        </select>
+                        <select id="city" onchange="getArea(this.value)" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="city">
+                            <option value="">市/县</option>
+                            <volist name="city" id="ci">
+                                <option {$list['city_id']==$ci['area_id']?'selected':''} value="{$ci['area_id']}">{$ci['area_name']}</option>
+                            </volist>
+                        </select>
+                        <select id="area" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="area">
+                            <option value="">镇/区</option>
+                            <volist name="area" id="ar">
+                                <option {$list['area_id']==$ar['area_id']?'selected':''} value="{$ar['area_id']}">{$ar['area_name']}</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="address" class="col-sm-3 control-label"><em class="prompt-red">*</em>详细地址：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="address" name="address" />
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="time" class="col-sm-3 control-label"><em class="prompt-red">*</em>营业时间：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="time" name="time" />
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="tel" class="col-sm-3 control-label"><em class="prompt-red">*</em>商家的电话：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="tel" name="tel" />
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="star" class="col-sm-3 control-label">商家的评价的星级：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="star" name="star" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商家封面图片：</label>
+                    <div id="imgPreview">
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"></label>
+                    <div class="col-sm-9">
+                        <input type="file" name="head_pic_upload"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商家的多图展示：</label>
+                    <div id="imgPreviewMore">
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"></label>
+                    <div class="col-sm-9">
+                        <input type="file" name="pic_upload" multiple/>
+                        <span style="color: red">框选上传多张图片</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商家的资质展示：</label>
+                    <div id="imgPreviewMorePic">
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"></label>
+                    <div class="col-sm-9">
+                        <input type="file" name="more_pic" multiple/>
+                        <span style="color: red">框选上传多张图片</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>商家类型：</label>
+                    <div class="col-sm-9">
+                        <div class="f-left" style="width:498px;padding:5px;">
+                            <select name="class_id" id="class_id" style="width: 240px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc">
+                                <option value="">请选择商家的类型...</option>
+                                <volist name="type" id="vo">
+                                    <option value="{$vo['class_id']}">
+                                        {$vo['name']}
+                                    </option>
+                                </volist>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="notice" class="col-sm-3 control-label">公告：</label>
+                    <div class="col-sm-9">
+                        <textarea style="height: 100px;" type="text" class="form-control" id="notice" name="notice" ></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="content" class="col-sm-3 control-label">商家介绍：</label>
+                    <div class="col-sm-9">
+                        <textarea name="content" class="form-control" id="content" style="width:auto;height:300px;visibility:hidden;" ></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" class="btn btn-default btn-primary make_sure">确认添加</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<include file="Public:footer"/>
+<!--商家的头像和商家的展示图的上传-->
+<script>
+
+    $(".make_sure").click(function () {
+        var name = $('input[name="name"]').val();
+        var account = $('input[name="account"]').val();
+        var address = $('input[name="address"]').val();
+        var time = $('input[name="time"]').val();
+        var password = $('input[name="password"]').val();
+        var tel = $('input[name="tel"]').val();
+        if(!/^1\d{10}$/.test(account)) {
+            alert("手机号格式错误!");return false;
+        }
+        if(!name){
+            alert("商家名称不能为空!");return false;
+        }
+        if(!account){
+            alert("商家手机号不能为空!");return false;
+        }
+        if(!password){
+            alert("商家密码不能为空!");return false;
+        }
+        if(!address){
+            alert("商家地址不能为空!");return false;
+        }
+        if(!tel){
+            alert("商家联系方式不能为空!");return false;
+        }
+        $(".form").submit();
+    })
+
+    /**判断手机号是否被注册*/
+    $("#account").blur(function () {
+        var account = $("#account").val();
+        var url = "{:U('Shop/isRegister')}";
+        $.post(url,{account:account},function (data) {
+            if(data == 1){
+                alert("手机号已经被注册了！");
+            }
+        });
+    })
+
+    function ajax(){
+        var filesize = this.files[0].size;
+        if (filesize > 10000*1024) {
+            alert("请上传大小在500k以下的图片");
+            return false;
+        }
+        var files = this.files;
+        var i = '';
+        for(i=0;files.length;i++){
+            var picname = files[i].name;
+            var reader = new FileReader();
+            reader.onload = function(e){
+                var src = e.target.result;
+                $.ajax({
+                    type:"post",
+                    url:"{:U('Shop/uploadPic')}",
+                    data: {"pic":src,"pic_name":picname},
+                    dataType : "json",
+                    success : function(data){
+                        var data = JSON.parse(data);
+                        if(data['flag'] == "success"){
+                            $("#imgPreview").append(" <div class='parents'><div class='one_del'>[-]</div><input type='hidden' value='"+data['data']['path']+"' name='head_pic'/>"+
+                                    "<div><img src='"+'/'+data['data']['path']+"' style='width: 150px;'></div></div>");
+                            bindClick();
+                        }
+                    }
+                });
+            }
+            reader.readAsDataURL(files[i]);
+        }
+    }
+    $("input[name='head_pic_upload']").on('change',ajax);
+    function bindClick() {
+        $(".one_del").click(function () {
+            var url = "{:U('Shop/delPhoto')}";
+            var file_path = $(this).next().val();
+            $.post(url,{file_path:file_path},function(data){
+                if(data == 1){
+                    $("#imgPreview").html("");
+                }else{
+                    alert("删除失败！请重新尝试！");
+                }
+            })
+        })
+    }
+    bindClick();
+
+    function ajax1(){
+        var filesize = this.files[0].size;
+        if (filesize > 10000*1024) {
+            alert("请上传大小在500k以下的图片");
+            return false;
+        }
+        var files = this.files;
+        var i = '';
+        for(i=0;files.length;i++){
+            var picname = files[i].name;
+            var reader = new FileReader();
+            reader.onload = function(e){
+                var src = e.target.result;
+                $.ajax({
+                    type:"post",
+                    url:"{:U('Shop/uploadPic')}",
+                    data: {"pic":src,"pic_name":picname},
+                    dataType : "json",
+                    success : function(data){
+                        var data = JSON.parse(data);
+                        if(data['flag'] == "success"){
+                            $("#imgPreviewMore").append("<div class='parents' style='float: left'><div class='one_more_del'>[-]</div>" +
+                                    "<input type='hidden' value='"+data['data']['path']+"' name='pic[]'/>"+
+                                    "<div><img src='"+'/'+data['data']['path']+"' style='width: 150px;'></div></div>");
+                        }
+                        bindClickMore();
+                    }
+                });
+            }
+            reader.readAsDataURL(files[i]);
+        }
+    }
+    $("input[name='pic_upload']").on('change',ajax1);
+
+    function bindClickMore() {
+        $(".one_more_del").off("click");
+        $(".one_more_del").click(function () {
+            var url = "{:U('Shop/delPhoto')}";
+            var file_path = $(this).next().val();
+            $.post(url,{file_path:file_path},function(data){
+                if(data == 1){
+                    $(this).parent().remove();
+                }else{
+                    alert("删除失败！请重新尝试！");
+                }
+            }.bind(this))
+        });
+    }
+    bindClickMore();
+
+    /**商家上传资质*/
+    function ajax2(){
+        var filesize = this.files[0].size;
+        if (filesize > 10000*1024) {
+            alert("请上传大小在500k以下的图片");
+            return false;
+        }
+        var files = this.files;
+        var i = '';
+        for(i=0;files.length;i++){
+            var picname = files[i].name;
+            var reader = new FileReader();
+            reader.onload = function(e){
+                var src = e.target.result;
+                $.ajax({
+                    type:"post",
+                    url:"{:U('Shop/uploadPic')}",
+                    data: {"pic":src,"pic_name":picname},
+                    dataType : "json",
+                    success : function(data){
+                        var data = JSON.parse(data);
+                        if(data['flag'] == "success"){
+                            $("#imgPreviewMorePic").append("" +
+                                    "<div class='parents' style='float: left'>" +
+                                        "<div class='one_more_del_zz'>[-]</div>" +
+                                        "<input type='hidden' value='"+data['data']['path']+"' name='more_pic[]'/>"+
+                                        "<div><img src='"+'/'+data['data']['path']+"' style='width: 150px;'></div>" +
+                                    "</div>");
+                        }
+                        bindClickMoreZz();
+                    }
+                });
+            }
+            reader.readAsDataURL(files[i]);
+        }
+    }
+    $("input[name='more_pic']").on('change',ajax2);
+
+    function bindClickMoreZz() {
+        $(".one_more_del_zz").off("click");
+        $(".one_more_del_zz").click(function () {
+            var url = "{:U('Shop/delPhoto')}";
+            var file_path = $(this).next().val();
+            $.post(url,{file_path:file_path},function(data){
+                if(data == 1){
+                    $(this).parent().remove();
+                }else{
+                    alert("删除失败！请重新尝试！");
+                }
+            }.bind(this))
+        })
+    }
+    bindClickMoreZz();
+</script>
+
+<!--地区的三级联动-->
+<script type="text/javascript">
+    function getCity(val){
+        $("#city").empty();
+        $("#area").empty();
+        var area = "<option value=''>镇/区</option>";
+        $("#area").append(area);
+        var option = "<option value=''>市/县</option>";
+        $.ajax({
+            url:"{: U('Shop/ajaxCity')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    option += "<option value='"+data[i].area_id+"'>"+data[i].area_name+"</option>"
+                }
+                $("#city").append(option);
+            }
+        });
+    }
+    function getArea(val){
+        $("#area").empty();
+        var option = "<option value=''>镇/区</option>";
+        $.ajax({
+            url:"{:U('Shop/ajaxArea')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    option += "<option value='"+data[i].area_id+"'>"+data[i].area_name+"</option>"
+                }
+                $("#area").append(option);
+            }
+        });
+    }
+
+    /**高德地图*/
+    var map = new AMap.Map("container", {
+        resizeEnable: true
+    });
+    //为地图注册click事件获取鼠标点击出的经纬度坐标
+    var clickEventListener = map.on('click', function(e) {
+        document.getElementById("lng").value = e.lnglat.getLng();
+        document.getElementById("lat").value = e.lnglat.getLat();
+    });
+    var auto = new AMap.Autocomplete({
+        input: "tipinput"
+    });
+    AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+    function select(e) {
+        if (e.poi && e.poi.location) {
+            map.setZoom(15);
+            map.setCenter(e.poi.location);
+        }
+    }
+    //点击关闭
+    $(".close").click(function(){
+        $("#map").hide();
+    });
+    /*点击使用该经纬度将值传给表单*/
+    $("#sure").click(function(){
+        var lng = $("#lng").val();
+        var lat = $("#lat").val();
+        $("#jd").val(lng);
+        $("#wd").val(lat);
+        if($("#jd").val(lng)){
+            $(".close").click();
+        }
+    });
+    //显示地图
+    $("#test").click(function(){
+        $(".modal-dialog").show();
+    });
+</script>
+<!--富文本-->
+<script  src="__WEBPUBLIC__/Common/kindeditor/kindeditor-min.js"></script>
+<script  src="__WEBPUBLIC__/Common/kindeditor/lang/zh_CN.js"></script>
+<script>
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('textarea[name="content"]', {
+            resizeType : 1,
+            uploadJson : '__WEBPUBLIC__/Common/kindeditor/php/upload_json.php',
+            fileManagerJson :
+                    '__WEBPUBLIC__/Common/kindeditor/php/file_manager_json.php',
+            allowPreviewEmoticons : false,
+            items:[
+                'source', '|', 'undo', 'redo', '|', 'cut', 'copy','|', 'justifyleft',
+                'justifycenter', 'justifyright',
+                'justifyfull', 'clearhtml', 'selectall', '|', 'formatblock',
+                'fontname', 'fontsize', '|', 'forecolor',
+                'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough','image'
+            ],
+            afterBlur:function(){this.sync();}
+        });
+    });
+</script>

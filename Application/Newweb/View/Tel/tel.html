@@ -1,0 +1,103 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	验证
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container mh100 bgfff">
+    	<div class="loginbox">
+            <div class="logtelbox re mgb20">
+                <input type="number" class="logtel account" name="" placeholder="输入手机号">
+                <span></span>
+            </div>
+            <div class="re logimgbox mgb20 flex">
+                <div class="re flex1 mgr5">
+                    <input type="" name="" class="logimg verify_code" placeholder="图形码">
+                    <span></span>
+                </div>
+                <div class="">
+                    <img class="weui-vcode-img changevirify" src="{:U('Api/Login/verify')}">
+                </div>
+            </div>
+            <div class="flex logcodebox mgb20">
+                <div class="re flex1 mgr5">
+                    <input type="" class="logcode" name="" placeholder="动态码" >
+                    <span></span>
+                </div>
+                <div class="logcodenum getcode">获取动态码</div>
+            </div>
+            <div class="loginbut">
+                下一步
+            </div>
+        </div>
+    </div>
+
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var status = +"{$_GET['status']}"; //进入这个页面的路径 status==1验证，status==2绑定
+
+    var mydata="";
+    if(status==1){
+        mydata=""//身份验证发送哪种状态
+    }else if(status==2){
+        $('.loginbut').html('确认');
+        $('.header-container .weui-cell__bd').html('绑定');
+        mydata="newBind"; 
+    }
+
+	// 获取验证码
+    getCode("{:U('Api/Login/sendVerify')}",mydata,0);
+    var curind = 0;
+    var url = "{:U('Api/Login/verify')}";
+    $(".changevirify").on('click',function () {
+        curind++;
+        $(this).attr("src",url+"/"+curind);
+    });
+
+    $('.loginbut').click(function(){
+        var account=$.trim($('.account').val());
+        var logcode=$.trim($('.logcode').val());
+        if(!account||!logcode){
+            layer.msg('信息不能为空！');
+            return;
+        }
+        if (!(/^1{1}[3|5|7|8|4]{1}[0-9]{9}$/.test(account))) {
+            layer.msg("手机格式错误！");
+            return;
+        }
+        if(status==1){
+            requestUrl("{:U('Api/Login/isSureCode')}",{account:account,vc:logcode,port:0},function(res){
+                if(res.flag=="success"){
+                    var url="{:U('Tel/tel')}&status=2";
+                    window.location.href = url;
+                }else{
+                    layer.msg(res.message);
+                }
+            },'POST',true);
+        }else if(status==2){
+            requestUrl("{:U('Api/Login/bindTel')}",{type:0,account:account,mixture_id:m_id,vc:logcode},function(res){
+                if(res.flag=="success"){
+                    layer.msg('绑定成功');
+                    var url="{:U('Shop/index')}";
+                    window.location.href = url;
+                }else{
+                    layer.msg(res.message);
+                }
+            },'POST',true);
+        }
+    })
+</script>
+</block>

@@ -1,0 +1,103 @@
+
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">订单管理</a></li>
+        <li class="active">订单列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>订单管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="{:U('Order/orderList')}">订单列表</a>
+            </li>
+        </ul>
+    </div>
+    <style>
+        table tr td{
+            padding: 5px;
+        }
+    </style>
+        <!--表格内容-->
+        <div class="content-box-content">
+            <table style="width: 300px;height: auto;margin:0 20px;font: 微软雅黑">
+                <tr>
+                    <td><h4><strong>订单号：</strong></h4></td>
+                    <td>{$res['order_sn']|default="无"}</td>
+                </tr>
+                <tr>
+                    <eq name="res['type']" value="1">
+                        <td><h4><strong>订单积分：</strong></h4></td>
+                        <td>{$res['price']|default="0"}分</td>
+                        <else/>
+                        <td><h4><strong>订单价格：</strong></h4></td>
+                        <td>{$res['price']|default="0"}元</td>
+                    </eq>
+                </tr>
+                <tr>
+                    <td><h4><strong>联系人：</strong></h4></td>
+                    <td>{$res['m_name']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>联系电话：</strong></h4></td>
+                    <td>{$res['tel']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>详细地址：</strong></h4></td>
+                    <td>{$res['address']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>订单备注：</strong></h4></td>
+                    <td>{$res['remark']|default="未填写"}</td>
+                </tr>
+                <tr>
+                    <td><h4><strong>下单时间：</strong></h4></td>
+                    <td>{$res['ctime']|date='Y-m-d H:i:s',###}</td>
+                </tr>
+
+                <tr>
+                    <td><h4><strong style="color: #ff0000">商品的清单：</strong></h4></td>
+                </tr>
+            </table>
+            <style>
+                .table tr td{
+                    border: 1px solid #CCCCCC;
+                }
+            </style>
+            <table style="width: 600px;height: auto;margin:0 20px;font: 微软雅黑;
+            font-size:16px;border: 1px solid #CCCCCC;text-align: center" class="table">
+                <tr>
+                    <td>商品id</td>
+                    <td>商品名称</td>
+                    <eq name="res['type']" value="1">
+                        <td>商品积分：</td>
+                        <else/>
+                        <td>商品价格：</td>
+                    </eq>
+                    <td>商品数量</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>测试商品</td>
+                    <eq name="res['type']" value="1">
+                        <td>15分</td>
+                        <else/>
+                        <td>15元</td>
+                    </eq>
+                    <td>X 2</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>
+<script>
+    var status = $("#status").val();
+    if(status==0){
+        $("#daili").show();
+    }
+</script>

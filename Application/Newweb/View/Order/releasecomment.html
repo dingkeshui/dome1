@@ -1,0 +1,322 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z5">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                   
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                	发表评价
+                    <span class="colon addressgl">发表</span>
+                </div>
+            </div>
+    </div>
+
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="list">
+            
+        </div>
+        <!-- <div class="bgfff mgb10">
+            <div class="weui-cell box">
+                <div class="weui-cell__hd w40 fs0 mgr5">
+                    <img class="w100" src="../img/img (144).png">
+                </div>
+                <div class="weui-cell__bd">
+                    <span>商品评分</span>
+                    <span class="starbox fs0">
+                        <img class="w15 mgr5" src="../img/img (172).png">
+                        <img class="w15 mgr5" src="../img/img (172).png">
+                        <img class="w15 mgr5" src="../img/img (172).png">
+                        <img class="w15 mgr5" src="../img/img (172).png">
+                        <img class="w15 mgr5" src="../img/img (172).png">
+                    </span>
+                </div>
+                <div class="weui-cell__ft colb6">
+                    非常好
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <textarea class="weui-textarea" placeholder="请输入文本" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="pad10 after bgfff">
+                <div class="weui-uploader__hd">
+                    <p class="fs17 weui-uploader__title">详情图上传</p>
+                </div>
+                <div class="weui-uploader__bd">
+                    <ul class="weui-uploader__files" id="">
+                        
+                    </ul>
+                    <div class="weui-uploader__input-box imgbox1">
+                        <input id="" onchange="mychange(this)" class="weui-uploader__input" type="file" accept="image/*" multiple />
+                    </div>
+                 </div>
+            </div>
+        </div> -->
+       <!--  <div class="bgfff">
+            <div class="weui-cell box">
+                <div class="weui-cell__hd w20 fs0 mgr5">
+                    <img class="w100" src="/Public/Wechat/cusimg/img (68).png">
+                </div>
+                <div class="weui-cell__bd">
+                    <span>商家评分</span>
+                </div>
+            </div>
+            <div class="weui-cell box">
+                <div class="weui-cell__hd">
+                   
+                </div>
+                <div class="weui-cell__bd">
+                    <span>服务评分</span>
+                    <span class="starbox fs0">
+                        <img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">
+                        <img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">
+                        <img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">
+                        <img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">
+                        <img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">
+                    </span>
+                </div>
+                <div class="weui-cell__ft colb6">
+                    非常好
+                </div>
+            </div>
+            <div class="weui-cell box">
+                <div class="weui-cell__hd">
+    
+                </div>
+                <div class="weui-cell__bd">
+                    <span>物流评分</span>
+                    <span class="starbox fs0">
+                        <img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">
+                        <img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">
+                        <img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">
+                        <img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">
+                        <img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">
+                    </span>
+                </div>
+                <div class="weui-cell__ft colb6">
+                    非常好
+                </div>
+            </div>
+        </div> -->
+    </div>
+
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    //如果是ios
+    if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.xq_container').addClass('app_xq_container');
+        $('.app_xq_container').removeClass('xq_container');
+    }
+    var order_id="{$_GET['order_id']}";
+    var dataargs={order_id:order_id,m_id:m_id,detail:[]};
+    requestUrl("{:U('Api/ProductOrder/appraise')}",{order_id:order_id},function(data){
+        if(data['flag'] == "success"){
+            var shops=data.data.product;
+            var str="";
+            for(var i in shops){
+                var shop=shops[i];
+                dataargs.detail.push({p_id:shop.p_id,star:5,picGather:[],content:''});
+                str+='<div class="bgfff item mgb10">'
+                        +'<div class="weui-cell box">'
+                            +'<div class="weui-cell__hd w40 fs0 mgr5">'
+                                +'<img class="w100" src="'+shop.cover_pic+'">'
+                            +'</div>'
+                            +'<div class="weui-cell__bd">'
+                                +'<span class"mgr5 ">商品评分</span>'
+                                +'<span class="starbox fs0">'
+                                    +'<img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">'
+                                    +'<img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">'
+                                    +'<img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">'
+                                    +'<img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">'
+                                    +'<img class="w15 mgr5 on" src="/Public/Wechat/cusimg/img (172).png">'
+                                +'</span>'
+                            +'</div>'
+                           +' <div class="weui-cell__ft colb6">非常好</div>'
+                        +'</div>'
+                        +'<div class="weui-cell">'
+                            +'<div class="weui-cell__bd">'
+                                +'<textarea class="weui-textarea" placeholder="请输入评价" rows="3"></textarea>'
+                            +'</div>'
+                        +'</div>'
+                        +'<div class="pad10 after bgfff">'
+                            +'<div class="weui-uploader__hd">'
+                                +'<p class="fs17 weui-uploader__title">详情图上传</p>'
+                            +'</div>'
+                            +'<div class="weui-uploader__bd">'
+                                +'<ul class="weui-uploader__files" id="myul" myindex="'+i+'">'
+                                    
+                                +'</ul>'
+                               +' <div class="weui-uploader__input-box imgbox1">'
+                                    +'<input myindex="'+i+'" onchange="mychange(this,'+i+')" class="weui-uploader__input" type="file" accept="image/*" '+(/android/i.test(navigator.userAgent)?"capture='camera'":"")+' multiple />'
+                                +'</div>'
+                             +'</div>'
+                        +'</div>'
+                    +'</div>';
+            };
+            $('.list').append(str);
+        }else if(data['flag'] == "error"){
+            layer.msg(data['message']);
+            layer.closeAll();
+         }
+    },"POST",true);
+
+    // 点击评分
+    $('.list').on('click','.starbox img',function () {
+        $(this).attr('src','/Public/Wechat/cusimg/img (172).png').addClass('on');
+        $(this).nextAll().attr('src','/Public/Wechat/cusimg/img (186).png').removeClass('on');
+        $(this).prevAll().attr('src','/Public/Wechat/cusimg/img (172).png').addClass('on');
+        var $next=$(this).parents('.weui-cell__bd').next();
+        switch($(this).index())
+        {
+        case 0:
+          $next.html('非常差')
+          break;
+        case 1:
+          $next.html('差')
+          break;
+        case 2:
+          $next.html('一般')
+          break;
+        case 3:
+          $next.html('好')
+          break;
+        case 4:
+          $next.html('非常好')
+          break;
+        }
+    });
+
+
+    // 图片数组
+    // 点击添加多图图片
+    function mychange (data) {
+        var $that=$(data);
+        console.log($that.parents('.itme'));
+        var thisindex=$that.attr('myindex');
+        var fileimg=data.files;
+        var imgarr= dataargs.detail[thisindex].picGather;
+        var arrnum=imgarr.length;
+        var num=arrnum+fileimg.length;
+        if(num>3){
+            layer.msg("最多上传三张图片");
+            return false;
+        };
+        for(var i =0;i<fileimg.length;i++){    
+            /*图片转Base64 核心代码*/  
+            var file = fileimg[i];  
+            //这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件  
+            if (!/image\/\w+/.test(file.type)) {  
+                layer.msg("请确保文件为图像类型");  
+                return false;  
+            }  
+            var reader = new FileReader(); 
+            (function(x){
+                    reader.onload = function (e) {  
+                        var str='<li class="weui-uploader__file myimgli" style="background-image:url('+this.result+')"><span class="imgremove" i="'+thisindex+'" style="color:red">X</span></li>';
+                        $that.parents('.weui-uploader__bd').find('ul').append(str);
+                        if(num==3){
+                            // $('.imgbox1.weui-uploader__input-box').hide();
+                            $that.parent().hide();
+                        }
+                        render(this.result,x,imgarr);
+                    }  
+            })(file.name) 
+            
+            reader.readAsDataURL(file);  
+        }
+    };
+
+    var MAX_HEIGHT = 1000;
+// 渲染
+function render(src,myname,imgarr) {
+    // 创建一个 Image 对象
+    var image = new Image();
+    // 绑定 load 事件处理器，加载完成后执行
+    image.onload = function() {
+        // 获取 canvas DOM 对象
+        var canvas = document.createElement("canvas");
+        // 如果高度超标
+        if (image.height > MAX_HEIGHT && image.height >= image.width) {
+            // 宽度等比例缩放 *=
+            image.width *= MAX_HEIGHT / image.height;
+            image.height = MAX_HEIGHT;
+        }
+        if (image.width > MAX_HEIGHT && image.width > image.height) {
+            // 宽度等比例缩放 *=
+            image.height *= MAX_HEIGHT / image.width;
+            image.width = MAX_HEIGHT;
+        }
+        // 获取 canvas的 2d 环境对象,
+        // 可以理解Context是管理员，canvas是房子
+        var ctx = canvas.getContext("2d");
+        // canvas清屏
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // 重置canvas宽高
+        canvas.width = image.width;
+        canvas.height = image.height;
+        // 将图像绘制到canvas上
+        ctx.drawImage(image, 0, 0, image.width, image.height);
+        // !!! 注意，image 没有加入到 dom之中
+//        document.getElementById('img').src = canvas.toDataURL("image/png");
+        var blob = canvas.toDataURL("image/jpeg");
+        imgarr.push({pic:blob,pic_name:myname});
+        // var fd = new FormData();
+        // fd.append("image", blob, "image.png");
+        // imgCompressUpload(canvas.toDataURL("image/png"));
+       
+    };
+    // 设置src属性，浏览器会自动加载。
+    // 记住必须先绑定事件，才能设置src属性，否则会出同步问题。
+    image.src = src;
+};
+
+ // 点击删除图片
+    $(".list").on("click",".imgremove",function(){
+        var $that=$(this);
+        var ia =$(this).attr('i');
+        console.log($that.closest('li').index());
+        dataargs.detail[$that.closest('ul').attr('myindex')].picGather.splice($that.closest('li').index(),1); 
+        $that.closest('.weui-uploader__bd').find('input').remove();
+        var str='<input myindex="'+ia+'" onchange="mychange(this)" class="weui-uploader__input" type="file" accept="image/*" '+(/android/i.test(navigator.userAgent)?"capture='camera'":"")+' multiple />';
+        $that.closest('.weui-uploader__bd').find('.imgbox1').append(str).show();
+        $that.parent().remove();
+    });
+
+    // 评价
+    $('.addressgl').click(function(){
+        var isok=true;
+        $('.item').each(function(){
+            var index=$(this).index();
+            var $text=$.trim($(this).find('.weui-textarea').val());
+            if(!$text){
+                layer.msg('评价不能为空');
+                isok=false;
+                return;
+            };
+            dataargs.detail[index].content=$text;
+            dataargs.detail[index].star=$(this).find('img.on').length;
+        });
+        if(isok){
+            dataargs.detail=JSON.stringify(dataargs.detail);
+            console.log(dataargs);
+            requestUrl("{:U('Api/ProductOrder/addAppraise')}",dataargs,function(data){
+                if(data.flag=="success"){
+                    layer.msg('评价成功');
+                    setTimeout(function(){
+                        location.href="{:U('Order/myorder')}";
+                    },1500);
+                }else{
+                    layer.msg(data.message);
+                }
+            },'POST');
+        };
+
+    })
+</script>
+</block>

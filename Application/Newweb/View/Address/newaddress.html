@@ -1,0 +1,196 @@
+<extend name="Public:head"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z5">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="addressback none"><img class="w100" src="__WEBPUBLIC__/Wechat/img/back.png"></div>
+                	<span>新增收货地址</span>
+                    <span class="colon addressgl">保存</span>
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+    	<div class="mgtop10 bgfff">
+            <div class="weui-cell">
+                <div class="weui-cell__hd w65"><label class="weui-label">收货人</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input name" type="text" placeholder="请输入收货人姓名"/>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label w65">手机号</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input tel" type="tel" placeholder="请输入手机号">
+                </div>
+            </div>
+        </div>
+        <div class="bgfff mgtop10">
+            <span class="weui-cell weui-cell_access goaddressbox1">
+                <div class="weui-cell__bd">
+                    <p>所在地区</p>
+                </div>
+                <div class="weui-cell__ft areas">请选择</div>
+            </span>
+            <!--<div class="weui-cell weui-cell_select weui-cell_select-after">-->
+                <!--<div class="weui-cell__hd">-->
+                    <!--<label for="" class="weui-label">街道</label>-->
+                <!--</div>-->
+                <!--<div class="weui-cell__bd">-->
+                    <!--<select class="weui-select" name="select2">-->
+                        <!--<option value="1">中国</option>-->
+                        <!--<option value="2">美国</option>-->
+                        <!--<option value="3">英国</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <textarea class="weui-textarea addr" placeholder="详细地址" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="weui-cell bgfff mgtop20 weui-cell_switch">
+                <div class="weui-cell__bd">设为默认地址</div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch is_default" type="checkbox"/>
+                </div>
+        </div>
+        
+    </div>
+
+    <!-- 省市区 -->
+    <div class="addressbox">
+        <div class="weui-cells bgfff body2list">
+            <!--<div class="weui-cell">-->
+                <!--<div class="weui-cell__bd">-->
+                    <!--<p>天津市</p>-->
+                <!--</div>-->
+            <!--</div>-->
+
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    //如果是ios
+    if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.xq_container').addClass('app_xq_container');
+        $('.app_xq_container').removeClass('xq_container');
+    }
+    var type = "{$_GET['type']}";
+    var car = "{$_GET['car']}";
+    var linkurl = "{:U('Address/addresslist')}";
+    if(type==1){
+        var g_id = "{$_GET['g_id']}";
+        linkurl = "{:U('Address/selectaddress')}/type/"+type+"/g_id/"+g_id;
+    }else if(type==2){
+        linkurl = "{:U('Address/selectaddress')}/type/"+type+"/cart_id/{$_GET['cart_id']}";
+    }
+    var getarr=[];
+    var newget=[];
+    // 显示省
+	$('.goaddressbox1').click(function () {
+        $('.xq_container,.app_xq_container').addClass('none');
+        $('.addressback').removeClass('none');
+        getsheng(1);
+    });
+
+    $('.addressback').click(function(){
+        $('.xq_container').removeClass('none');
+        $('.addressback').addClass('none');
+        getarr=[];
+    })
+
+    // 点击省市区
+    $('.body2list').on('click','.weui-cell',function(){
+        if(getarr.length==0){
+            getsheng(2,{'province':$(this).attr('area_id')});
+            getarr.push({'name':$(this).attr('area_name'),'id':$(this).attr('area_id')});
+        }else if(getarr.length==1){
+            getsheng(3,{'city':$(this).attr('area_id')});
+            getarr.push({'name':$(this).attr('area_name'),'id':$(this).attr('area_id')});
+        }else if(getarr.length==2){
+            getarr.push({'name':$(this).attr('area_name'),'id':$(this).attr('area_id')});
+            $('.xq_container,.app_xq_container').removeClass('none');
+            $('.addressback').addClass('none');
+            $('.goaddressbox1 .weui-cell__ft').html(getarr[0].name+'>>'+getarr[1].name+'>>'+getarr[2].name);
+            newget=getarr;
+            getarr=[];
+        }
+    });
+    // 获取省级num:1省2市3区
+    function getsheng(num,fundata){
+        var urldata=(num==1?'getProvince':(num==2?'getCity':'getArea'));
+        requestUrl("{:U('Api/Merchant/"+urldata+"')}",fundata,function(res) {
+            if (res.flag == "success") {
+                var info=res.data;
+                var str="";
+                for(var i=0;i<info.length;i++){
+                    str+='<div area_id='+info[i].area_id+' area_name='+info[i].area_name+' class="weui-cell '+(num==3?'weui-cell_access':'')+'">'+
+                            '<div class="weui-cell__bd">'+
+                            '<p>'+info[i].area_name+'</p>'+
+                            '</div>'+
+                            '</div>';
+                }
+                $(".body2list").html(str);
+            }else{
+                layer.msg(res.message);
+            }
+        },num==1?"GET":"POST",true);
+    }
+
+    /**保存地址*/
+    $('.addressgl').click(function(){
+        var name = $('.name').val().trim();
+        var tel = $('.tel').val().trim();
+        var address = $('.addr').val().trim();
+        if(name==""){
+            layer.msg("请填写姓名");return;
+        }
+        if(tel==""){
+            layer.msg("请填写手机号");return;
+        }else if(!(/^1[3|4|5|7|8]\d{9}$/.test(tel))){
+            layer.msg("手机号格式不正确");return;
+        }
+        if(newget.length==0){
+            layer.msg("请选择地区");return;
+        }
+        if(address==""){
+            layer.msg("请填写详细地址");return;
+        }
+        var is_set = 0;
+        if($('.is_default')[0].checked){
+            is_set = 1;
+        }
+        var subData = {mix_id:m_id,type:0,name:name,phone:tel,province:newget[0].id,city:newget[1].id,area:newget[2].id,address:address,is_default:is_set};
+
+        requestUrl("{:U('Api/Address/addAddress')}",subData,function(res){
+            if(res.flag=="success"){
+                layer.msg('保存成功');
+                if(car){
+                    location.href = "{:U('Car/car')}";
+                }else{
+                    setTimeout(function(){
+                        location.href = linkurl;
+                    },1200);
+                }
+                
+            }else{
+                layer.msg(res.message);
+            }
+        })
+    });
+</script>
+</block>

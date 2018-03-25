@@ -1,0 +1,45 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <div class="content-box">
+
+        <ul class="breadcrumb">
+            <li><a href="/">首页</a></li>
+            <li><a href="">图片管理</a></li>
+            <li class="active">图片</li>
+        </ul>
+        <div class="page-header clearfix">
+            <h3>商品图片</h3>
+            <ul class="nav nav-tabs">
+                <li>
+                    <a href="{:U('Mater/materList')}">图片列表</a>
+                </li>
+                <li class="active">
+                    <a href="javascript:;">添加图片</a>
+                </li>
+            </ul>
+        </div>
+
+        <!--表格内容-->
+        <div class="content-box-content">
+            <!--表单 start-->
+            <form action="{:U('Mater/editMater')}" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
+                <input name="id" type="hidden" value="{$mater['id']}"/>
+                <div class="form-group">
+                    <label for="mer_id" class="col-sm-3 control-label"><em class="prompt-red">*</em>图片mer_id：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="mer_id" name="mer_id" placeholder="mer_id" required value="{$mater['mer_id']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-default btn-primary">确认添加</button>
+                    </div>
+                </div>
+            </form>
+            <!--表单 end-->
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>

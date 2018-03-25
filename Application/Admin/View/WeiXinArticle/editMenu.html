@@ -1,0 +1,77 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <div class="content-box">
+        <ul class="breadcrumb">
+            <li><a href="/">首页</a></li>
+            <li><a href="">微信菜单管理</a></li>
+        </ul>
+        <div class="page-header clearfix">
+            <h3>微信菜单管理</h3>
+            <ul class="nav nav-tabs">
+                <li>
+                    <a href="{:U('WeiXinArticle/menuList')}">微信菜单列表</a>
+                </li>
+                <li>
+                    <a href="{:U('WeiXinArticle/createMenu')}">添加微信菜单</a>
+                </li>
+            </ul>
+        </div>
+
+        <!--表格内容-->
+        <div class="content-box-content">
+            <!--表单 start-->
+            <form action="{:U('WeiXinArticle/editMenu')}" method="post" class="form-horizontal" enctype="multipart/form-data">
+                <input name="me_id" type="hidden" value="{$res['me_id']}"/>
+                <div class="form-group">
+                    <label for="count" class="col-sm-3 control-label"><em class="prompt-red">*</em>一级菜单：</label>
+                    <div class="col-sm-9">
+                        <select name="parent" id="count" class="form-control input-small form-control-select" style="float: left;width: 3s00px">
+                            <option value="">二级菜单请选择对应的一级菜单...</option>
+                            <volist name="sel_menu_list" id="vo">
+                                <option value="{$vo['me_id']}" <if condition="$vo['me_id'] eq $res['parent']">selected</if>>{$vo['name']}</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label"><em class="prompt-red">*</em>微信菜单名称：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="微信菜单名称" value="{$res['name']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="url" class="col-sm-3 control-label">跳转链接：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="url" name="url" placeholder="跳转链接" value="{$res['url']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="media_id" class="col-sm-3 control-label">图文id：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="media_id" name="media_id" placeholder="图文id" value="{$res['media_id']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="keywords" class="col-sm-3 control-label">关键词：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="keywords" name="keywords" placeholder="关键词" value="{$res['keywords']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sort" class="col-sm-3 control-label">排序：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="sort" name="sort" placeholder="排序" value="{$res['sort']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-default btn-primary">确认修改</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>

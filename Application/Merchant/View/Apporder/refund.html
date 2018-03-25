@@ -1,0 +1,48 @@
+<extend name="Public:head"/>
+<block name="main">
+
+    <!-- <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>申请退款</p>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="xq_container">
+        
+
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <textarea class="weui-textarea content" maxlength="200" placeholder="退款说明(亲，真的决定要退款嘛？)" rows="5"></textarea>
+                </div>
+            </div>
+            <div class="weui-btn-area"><!--bgjb-->
+                <a class="weui-btn bgjb nobor" href="javascript:" onclick="feedBack()">确定退款</a>
+            </div>
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+       var order_id = "{:I('get.i_o_id')}";
+        function feedBack() {
+            var reason = $(".content").val();
+            dataargs = {"order_id":order_id,"reason":reason};
+            requestUrl("{:U('Api/Order/returnOrder')}",dataargs,function(data){
+                if(data['flag'] == "success"){
+                    layer.msg("申请成功！");
+                    setTimeout(function () {
+                        var url = "{:U('Apporder/orderlist')}";
+                        window.location.href = url;
+                    },1000);
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                    layer.closeAll();
+                }
+            },"POST",true);
+        }
+
+    </script>
+</block>

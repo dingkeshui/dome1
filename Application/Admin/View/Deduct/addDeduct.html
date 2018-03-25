@@ -1,0 +1,137 @@
+<include file="Public:header"/>
+<link rel="stylesheet" href="__WEBPUBLIC__/Uploadify/uploadify.css" type="text/css" />
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active"><a href="">加盟商管理</a></li>
+        <li class="active">添加加盟商</li>
+    </ul>
+
+    <div class="page-header clearfix">
+        <h3>添加加盟商</h3>
+        <ul class="nav nav-tabs">
+            <li  class="">
+                <a href="{:U('Deduct/deductList')}">加盟商列表</a>
+            </li>
+            <li  class="active">
+                <a href="{:U('Deduct/addDeduct')}">添加加盟商</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="tabs-content" class="content-box-content">
+        <div class="ul">
+            <form action="{:U('Deduct/addDeduct')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>所在地：</label>
+                    <div class="col-sm-9">
+                        <select onchange="getCity(this.value)"  style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="province">
+                            <option value="">省份</option>
+                            <volist name="pro" id="pr">
+                                <option {$list['provincial_id']==$pr['area_id']?'selected':''} value="{$pr['area_id']}">{$pr['area_name']}</option>
+                            </volist>
+                        </select>
+                        <select id="city" onchange="getArea(this.value)" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="city">
+                            <option value="">市/县</option>
+                            <volist name="city" id="ci">
+                                <option {$list['city_id']==$ci['area_id']?'selected':''} value="{$ci['area_id']}">{$ci['area_name']}</option>
+                            </volist>
+                        </select>
+                        <select id="area" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="area">
+                            <option value="">镇/区</option>
+                            <volist name="area" id="ar">
+                                <option {$list['area_id']==$ar['area_id']?'selected':''} value="{$ar['area_id']}">{$ar['area_name']}</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><em class="prompt-red">*</em>加盟商类型：</label>
+                    <div class="col-sm-9">
+                        <div class="f-left" style="width:498px;padding:5px;">
+                            <select name="type" id="type" style="width: 240px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc">
+                                <option value="">请选择加盟商的类型...</option>
+                                <option value="1">市级代理</option>
+                                <option value="2">区（县）代理</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="price" class="col-sm-3 control-label"><em class="prompt-red">*</em>销售额度：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="price" name="price" />
+                    </div>
+                </div>
+                <div class="form-group skill">
+                    <label for="deduct" class="col-sm-3 control-label"><em class="prompt-red">*</em>提成百分比（%）：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="deduct" name="deduct" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" class="btn btn-default btn-primary add-to-here make_sure">确认添加</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<include file="Public:footer"/>
+<!--加盟商的头像和加盟商的展示图的上传-->
+<script>
+
+    $(".make_sure").click(function () {
+        var deduct = $('input[name="deduct"]').val();
+        var price = $('input[name="price"]').val();
+        if(!deduct){
+            alert("销售额度不能为空!");return false;
+        }
+        if(!price){
+            alert("提成百分比不能为空!");return false;
+        }
+        $(".form").submit();
+    })
+
+</script>
+
+<!--地区的三级联动-->
+<script type="text/javascript">
+    function getCity(val){
+        $("#city").empty();
+        $("#area").empty();
+        var area = "<option value=''>镇/区</option>";
+        $("#area").append(area);
+        var option = "<option value=''>市/县</option>";
+        $.ajax({
+            url:"{: U('Deduct/ajaxCity')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    option += "<option value='"+data[i].area_id+"'>"+data[i].area_name+"</option>"
+                }
+                $("#city").append(option);
+            }
+        });
+    }
+    function getArea(val){
+        $("#area").empty();
+        var option = "<option value=''>镇/区</option>";
+        $.ajax({
+            url:"{:U('Deduct/ajaxArea')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    option += "<option value='"+data[i].area_id+"'>"+data[i].area_name+"</option>"
+                }
+                $("#area").append(option);
+            }
+        });
+    }
+</script>

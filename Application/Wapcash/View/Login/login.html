@@ -1,0 +1,72 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__bd">
+                <p>加盟商登录</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        
+       <div class="weui-cells bgfff outinput">
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    账号
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input account" type="text" placeholder="账号"/>
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    密码
+                </div>
+
+                <div class="weui-cell__bd">
+                    <input class="weui-input password" type="password" placeholder="请输入密码"/>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="pad10">
+            
+        </div>
+        
+        <div class="weui-btn-area">
+            <a class="weui-btn bgjb nobor loginbtn" href="javascript:">登录</a>
+        </div>
+        
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+
+    $(".loginbtn").on('click',function () {
+
+        var password = $(".password").val();
+        var account = $(".account").val();
+
+        if ( !password || !account ) {
+            layer.msg("用户名密码不能为空！");
+            return;
+        }
+
+        requestUrl("{:U('Api/Cash/login')}",{account:account,password:password},function ( res ) {
+            layer.msg(res.message);
+            if ( res.flag == "success" ) {
+                setTimeout(function () {
+                    window.location.href = "index.php/Wapcash/Index/index";
+                },500);
+            }
+        })
+    });
+
+
+    </script>
+</block>

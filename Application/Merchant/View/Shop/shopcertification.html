@@ -1,0 +1,177 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/newding.css?s=1">
+</block>
+<block name="main">
+<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    店铺认证
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>  
+    <!-- 内容 -->
+   <div class="xq_container">
+      <div class="height18"></div>
+      <div class="list">
+      </div>
+      <div class="addbut none">
+            立即支付
+        </div>
+   </div>
+    
+    <div class="shade1">
+        <div class="tan1">
+        </div>
+    </div>
+
+</block>
+<block name="footerjs">
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.min.js"></script>
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.common.min.js"></script>
+<script type="text/javascript">
+        var myData = [];
+        function putGoods(res,args) {
+            if(res.flag == 'success'){
+                var res = res.data;
+                console.log(res)
+                if((!res || res.length == 0 ) && args == "shouci"){
+                    $(".list").addClass('wusj');
+                }else if((!res || res.length == 0 ) && args == "fenye"){
+                    $(".nomore").remove();
+                    $(".list").append('<div class="texcen nomore">没有更多了！</div>');
+                }else{
+                    var  str = ""; 
+                    for( var i=0;i<res.length;i++){
+                    myData.push({id:res[i].app_id,content:res[i].content,title:res[i].title,price:res[i].price})
+                      str += '<div class="weui-cells weui-cells_radio nocells shopobj">'
+                         +'<label class="weui-cell weui-check__label">'
+                         +' <div class="weui-cell__hd">'
+                         +'<div class=" checkdiv flex flexvcenter">'
+                         +    '<input price="'+res[i].price+'" app_id="'+res[i].app_id+'" class="carallcheck" type="radio" name="radio">'
+                         +     '<span></span>'
+                         + '</div>'
+                         + '</div>'
+                         +'<div class="weui-cell__bd">'
+                         +    '<p>'+res[i].title+'</p>'
+                         +    '<div style="color:#FB8940">￥'
+                         +      res[i].price
+                         +'</div>'
+                         +'</div>'
+                         +'<div class="weui-cell__ft">'
+                         +    '<p class="detail" shopid="'+res[i].app_id+'">详情</p>'
+                         +'</div>'
+                        +'</label>'
+                        +'</div>'
+                    }
+                    if (args == "fenye") {
+                        $('.list').append(str);
+                    }else{
+                         $('.list').html(str);
+                    }
+                    $('.addbut').removeClass('none');
+                    top_linkto();
+                }
+            }else{
+              if(res.message=="数据为空"){
+                $('.list').addClass('wusj'); 
+              }else{
+                layer.msg(res.message);
+              }
+            }
+            if (args == "shouci") {
+                fenye();
+            }
+        }   
+        //点击支付
+        $('.addbut').click(function(){
+          if($('.carallcheck:checked').length){
+            // layer.msg('');
+            var order_price=$('.carallcheck:checked').attr('price');
+            var app_id=$('.carallcheck:checked').attr('app_id');
+            requestUrl("{:U('Newweb/Pay/getHxApproveOrderApi')}",{shop_id:shop_id,app_id:app_id,order_price:order_price},function(res){
+                if(res.flag=="success"){ 
+                  document.getElementsByTagName("body")[0].innerHTML = res.data;
+                  document.forms['ipspaysubmit'].submit();
+                }else{
+                  layer.msg(res.message);
+                }
+            },"POST",true);
+          }else{
+            layer.msg('请选择服务项目');
+          }
+        });
+        var dataargs ={p:1};
+         function getJson(args) {
+            console.log(dataargs)
+            requestUrl("{:U('Api/StoreIndex/approvePriceList')}",dataargs,function(res,times){
+                if (new Date().getTime()-500 > times) {
+                    layer.closeAll();
+                }else{
+                    setTimeout(function () {
+                        layer.closeAll();
+                    },500);
+                }
+                putGoods(res,args);
+              $(".list shopobj:eq(0)").removeClass("nocells");
+            },"POST",true);
+        }
+        getJson("shouci");
+
+
+        $("body").on("click",".detail",function(){   
+        var shopid =  $(this).attr("shopid");
+        var str="";
+        for(j=0;j<myData.length;j++){
+        if(shopid==myData[j].id){
+          str='<div class="tan-head">'+myData[j].title+'￥'+myData[j].price+'</div>'
+             +'<div class="tan-body">'
+             + '<h3>详情介绍</h3>'
+             +'<p style="max-height:300px;overflow-y:scroll;">'+escape2Html(myData[j].content)+'</p>'
+             +'</div>'
+             + '<button class="btnyanse" >关闭</button>' 
+       }
+       $(".tan1").html(str);
+       $(".shade1").css("display","block");  
+     }         
+    }) 
+      $("body").on("click",".btnyanse",function(){
+        $(".shade1").css("display","none");
+      })
+
+        function fenye(){
+            var flag= true;//防止ajax请求期间，对此触发请求数据
+            var $_zd = $(".shopobj").height();//获取每个单项的高度
+            var length = 3;//定义预加载的数量，提前三个加载数据
+            var $_par = $(".list");//获取包裹容器
+            var winheight = $(window).height();//获取窗口高度
+            var curpage = 1;//存储当前的页数v
+            $(function(){
+                $(window).on("scroll",function(e){
+                    if(flag&& !$('.list').hasClass('wusj')){
+                        var self = $(this);
+                        var scrtop = self.scrollTop() + winheight;
+                        var docheight = $_par.height();
+                        if(scrtop > docheight - ( length * $_zd ) ){
+                            flag = false;
+                            dataargs.p = dataargs.p +1;
+                            getJson("fenye");
+                        }
+                    }
+                });
+            });
+        }
+
+        //普通字符转换为任意字符
+        function escape2Html(str) {
+           var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'};
+           return str.replace(/&(lt|gt|nbsp|amp|quot);/ig,function(all,t){return arrEntities[t];});
+        }      
+</script>
+</block>

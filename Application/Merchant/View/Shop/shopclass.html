@@ -1,0 +1,126 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd textcenter">
+                选择商品品类
+                <!-- <span class="fr tc">退出</span> -->
+            </div>
+            <!--<div class="weui-cell__ft">
+                <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+            </div>-->
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cells classlist" style="margin-top:0px;">
+
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script>
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    requestUrl("{:U('Api/Product/category')}",{shop_id:shop_id},function ( res ) {
+        if ( res.flag == "success" ) {
+            var list = res.data;
+            var str = '';
+            for (var i = 0; i < list.length; i++) {
+                var item = list[i];
+                var has_child = "";
+                if ( item.have_other == 1 ) {
+                    has_child = "weui-cell_access";
+                }else{
+                    has_child = "nochild";
+                }
+                str += '<div class="weui-cell '+has_child+'" cate_id="'+item.cate_id+'" cate_name="'+item.category+'">'
+                            +'<div class="weui-cell__bd">'
+                                +'<p>'+item.category+'</p>'
+                            +'</div>'
+                            +'<div class="weui-cell__ft">'
+                            +'</div>'
+                        +'</div>';
+            }
+            $(".classlist").html( str );
+            bindEvent();
+        }else{
+            layer.msg( res.message );
+        }
+    });
+    function bindEvent() {
+        $(".nochild").off('click');
+        $(".weui-cell_access").off('click');
+        $(".nochild").on('click',nochild);
+        $(".weui-cell_access").on('click',callchild);
+    }
+
+    var class_id = [];
+
+    function nochild( e ) {
+        var ele = $(this);
+        class_id = [];
+        class_id.push({cate_id:$(this).attr("cate_id"),cate_name:$(this).attr("cate_name")});
+        var par = ele.parent();
+        while( par.attr("child") != "" && par.attr("child") != undefined){
+            var cate_id = par.attr("child");
+            var cate_name = $("[cate_id='"+cate_id+"']").attr("cate_name");
+            class_id.push( { cate_id : cate_id , cate_name : cate_name } );
+            par = par.parent();
+        }
+        e.stopPropagation();
+        if ( class_id ) {
+            sessionStorage.setItem("class_id",JSON.stringify(class_id));
+            if(isApp||isA){
+                history.go(-1);
+            }else{
+                location.href = document.referrer;
+            }
+        }
+        console.log( class_id );
+    }
+
+    function callchild() {
+        var ele = $(this);
+        var cate_id = ele.attr("cate_id");
+        if ( $("[child='"+cate_id+"']").html() ) {
+            $("[child='"+cate_id+"']").remove();
+        }else{
+            requestUrl("{:U('Api/Product/secondCate')}",{cate_id:cate_id},function ( res ) {
+                if ( res.flag == "success" ) {
+                    var str = '<div class="weui-cells" child="'+cate_id+'">';
+                    var list = res.data;
+                    for (var i = 0; i < list.length; i++) {
+                        var item = list[i];
+                        var has_child = "";
+                        if ( item.have_other == 1 ) {
+                            has_child = "weui-cell_access";
+                        }else{
+                            has_child = "nochild";
+                        }
+                        str += '<div class="weui-cell '+has_child+'" cate_id="'+item.cate_id+'" cate_name="'+item.category+'">'
+                                    +'<div class="weui-cell__bd">'
+                                        +'<p>'+item.category+'</p>'
+                                    +'</div>'
+                                    +'<div class="weui-cell__ft">'
+                                    +'</div>'
+                                +'</div>';
+                    }
+                    str += '</div>';
+                    ele.after( str );
+                    bindEvent();
+                }else{
+                    layer.msg( res.message );
+                }
+            },"GET",true);
+        }
+    }
+
+</script>
+</block>

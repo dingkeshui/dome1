@@ -1,0 +1,140 @@
+<extend name="Public:header"/>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd">
+                <marquee id="affiche" align="left" behavior="scroll" direction="up" scrollamount="1" onMouseOut="this.start()" onMouseOver="this.stop()" class="marquee fs0-8" style="height: 30px;margin: 0px 0px 0px 10px;line-height: 1rem;"></marquee>
+            </div>
+            <!--<div class="weui-cell__ft">
+                <img src="__WEBPUBLIC__/Wechat/img/fenx.png" class="iconfenx"/>
+            </div>-->
+        </div>
+    </div>
+
+    <div class="xq_container indexbg">
+        <div class="weui-flex texcen pad20-0 dingtop">
+
+            <div class="weui-flex__item">
+                <div class="colff0 d_integral fs1 texovh"></div>
+                <div class="fs0-8 colccc">麦穗</div>
+            </div>
+            
+            <div class="weui-flex__item">
+                <div class="colff0 d_shares fs1 texovh"></div>
+                <div class="fs0-8 colccc">众享豆</div>
+            </div>
+            
+            <div class="weui-flex__item" linkto="{:U('Bill/myEarnList')}">
+                <div class="colff0 d_earn_price fs1 texovh"></div>
+                <div class="fs0-8  colccc">昨日收益</div>
+            </div>
+            
+        </div>
+
+        <div class="weui-flex texcen pad20-0 indexicon">
+            
+            <div class="weui-flex__item " linkto="{:U('Member/transferrecord')}">
+                <div class="">
+                    <img src="__WEBPUBLIC__/Wechat/img/zz.png"/>
+                </div>
+                <div class="">转账</div>
+            </div>
+
+            <div class="weui-flex__item" linkto="{:U('Bill/billlist')}">
+                <div class="">
+                    <img src="__WEBPUBLIC__/Wechat/img/mx.png"/>
+                </div>
+                <div class="">明细</div>
+            </div>
+
+            <div class="weui-flex__item" linkto="{:U('Member/paydraw')}">
+                <div class="">
+                    <img src="__WEBPUBLIC__/Wechat/img/tix.png"/>
+                </div>
+                <div class="">提现</div>
+            </div>
+
+        </div>
+
+        <div class="saocon" id="scanQRCode0">
+            <img src="__WEBPUBLIC__/Wechat/img/sao.png"/>
+        </div>
+
+
+        <div class="xq_loading"></div>
+    </div>
+</block>
+<block name="footerjs">
+<script>
+//    wx.config({
+//        debug: false,
+//        appId:"{$appid}",
+//        timestamp:'{$wx.timestamp}',
+//        nonceStr: '{$wx.nonceStr}',
+//        signature:'{$wx.signature}',
+//        jsApiList: [
+//            // 所有要调用的 API 都要加到这个列表中
+//            'scanQRCode',
+//            'openLocation',
+//            'getLocation',
+//            "onMenuShareTimeline",
+//            "onMenuShareAppMessage",
+//            "onMenuShareQQ",
+//            "onMenuShareWeibo",
+//            "onMenuShareQZone"
+//        ]
+//    });
+    document.querySelector('#scanQRCode0').onclick = function () {
+        wx.scanQRCode({
+            needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+            scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+            success: function (res) {
+                var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                //window.location.href = result;
+                //alert(result);
+            }
+        });
+    };
+    
+    var d_user={
+        "m_id":m_id
+    };
+    requestUrl("{:U('Api/Index/index')}",d_user,ding_callback,"GET",true);
+    function ding_callback(res){
+        if (res.flag=="success") {
+            var data = res.data;
+            $(".d_earn_price").html(data.earn_price);
+            $(".d_shares").html(data.shares);
+            $(".d_integral").html(data.integral);
+        }else{
+            layer.msg(res.message);
+//            setTimeout(function () {
+//                console.log(1)
+//            },1000)
+        }
+        requestUrl("{:U('Api/Roll/rollList')}",{},callback);
+    }
+
+    
+    function callback(res){
+        layer.closeAll();
+        if (res.flag=="success") {
+            var data = res.data;
+            var newarr=[];
+            var str = "";
+            for(var index in data){
+                if (data[index]&&newarr.indexOf(data[index])==-1) {
+                    str += "<p>"+data[index]+"</p>";
+                    newarr.push(data[index]);
+                }
+            }
+            $(".marquee").html(str);
+        }else{
+            layer.msg(res.message);
+        }
+    }
+
+</script>
+</block>

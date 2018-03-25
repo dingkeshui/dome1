@@ -1,0 +1,343 @@
+<extend name="Public:header"/>
+<block name="main">
+<!-- 头部 -->
+    <div class="header-container bgfff">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd back">
+               
+            </div>
+            <div class="weui-cell__bd searchimgbox">
+                <img class="searchimg" src="__WEBPUBLIC__/Wechat/img/search.png">
+                <input placeholder="输入商品名称搜索" type="search" name="name" class="search_input proname" value="" onchange="handler()"/>
+                <!-- <span class="fr tc">退出</span> -->
+            </div>
+            <div class="weui-cell__ft" linkto="{:U('Car/car')}">
+                <div class="carbox">
+                    <img class="carimg" src="__WEBPUBLIC__/Wechat/img/car.png" class=""/>
+                    <div class="carnum none">
+                        <span>0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 选择分类导航 -->
+    <div class="classnav flex bgfff z3 ih30">
+        <div class="flex1 flex">
+            <div class="flex1 classnav1">
+                <select class="allclass opainput" forele="goodclass">
+                </select>
+                <div class="claarea" ele="goodclass">全部分类</div>
+            </div>
+            <div class="flex1 classnav2">
+                <select class="zhclass opainput" forele="order">
+                    <option value="1">综合排序</option>
+                    <option value="2">销量最高</option>
+                    <!--<option value="3">价格最低</option>-->
+                </select>
+                <div ele="order">综合排序</div>
+            </div>
+        </div>
+        <div class="divclass">
+            <img class="" src="__WEBPUBLIC__/Wechat/img/class1.png">
+        </div>
+    </div>
+
+    <!-- 内容 -->
+    <div class="xq_container padtop100">
+        <div class="goodslist">
+            <!--<div class="shoplist goodobj">-->
+                <!--<div><img class="listimg1" src="__WEBPUBLIC__/newp/img (133).png"></div>-->
+                <!--<div>-->
+                    <!--<div class="ih20 line2 mgb5">        巴黎欧莱雅巴黎欧莱雅巴黎欧雅巴黎欧莱雅巴黎欧雅巴黎欧莱雅巴黎欧莱雅巴黎欧莱雅</div>-->
+                    <!--<div class="listdiv3 ">-->
+                        <!--<div class="ih20">-->
+                            <!--<div class="colb6 fs12">月售<span>588</span>件</div>-->
+                            <!--<div class="colred">￥<span>189.00</span></div>-->
+                        <!--</div>-->
+                        <!--<div>-->
+                            <!--<img class="listimg2" src="__WEBPUBLIC__/newp/img/img (136).png">-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var flag= true;//防止ajax请求期间，对此触发请求数据
+    var dataargs = {p:1};
+    var name = "{$_GET['name']}";
+    var cate_id = "{$_REQUEST['cate_id']}";
+    var scrollTop = "{$_GET['height']}";//上次滚动条高度
+    var type = "{$_GET['type']}";//1代表商品横着排队，0代表商品竖着排列
+    if(cate_id!=""){
+        dataargs.parent_id = cate_id;
+    }
+    if(name!=""){
+        dataargs.title = name;
+        $('.proname').val(name);
+    }
+
+    $('.divclass').click(function () {
+        if($(this).hasClass('on')){
+            $(this).removeClass('on');
+            $(this).find('img').attr('src','__WEBPUBLIC__/Wechat/img/class1.png');
+            $('.shoplist').removeClass('shoplist2');
+            type=0;
+        }else{
+            $(this).addClass('on');
+            $(this).find('img').attr('src','__WEBPUBLIC__/Wechat/img/class2.png');
+            $('.shoplist').addClass('shoplist2');
+            type=1;
+        }
+        var thisurl="";
+            if(name){
+                thisurl+="/name/"+name;
+            }
+            if(type){
+                thisurl+="/type/"+type;
+            }
+            history.replaceState(null,'',"{:U('Store/productlist')}/cate_id/"+dataargs.parent_id+thisurl);
+    });
+
+    function putClass( arr ) {
+        var str = "";
+        var istrue;
+        for (var index in arr) {
+            var claitem = arr[index];
+            istrue = "";
+            if (cate_id && cate_id == claitem.cate_id) {
+                $('.allclass').next('div').html(claitem.category);
+                istrue = "selected";
+            }
+            str += '<option value="'+claitem.cate_id+'" '+istrue+'>'+claitem.category+'</option>';
+            if(cate_id==claitem.cate_id){
+                $('.allclass').next('div').html(claitem.category);
+            }
+        }
+        $(".allclass").html(str);
+    }
+
+//  var classitem = sessionStorage.getItem("classitem");
+//  if (classitem) {
+//      putClass(JSON.parse(classitem));
+//  }else{
+        requestUrl("{:U('Api/Product/category')}",{},function ( res ) {
+            if ( res.flag == "success") {
+                putClass(res.data);
+            }else{
+                layer.msg(res.message);
+            }
+        });
+//  }
+    if($('.zhclass').find("option:selected").val()!=""){
+        dataargs.order = $('.zhclass').find("option:selected").val();
+        $('.zhclass').next('div').text($('.zhclass').find("option:selected").text());
+    }
+
+    //添加商家到列表
+    function selectAfter( self ) {
+        var order = self.attr("forele");
+        var option = $(this).find("option:selected");
+        self.next('div').html(self.find("option:selected").text().trim());
+        if (order=='goodclass') {
+            dataargs.parent_id = self.val();
+            var thisurl="";
+            if(name){
+                thisurl+="/name/"+name;
+            }
+            if(type){
+                thisurl+="/type/"+type;
+            }
+            history.replaceState(null,'',"{:U('Store/productlist')}/cate_id/"+dataargs.parent_id+thisurl);
+        }else{
+            dataargs.order = self.val();
+        }
+        dataargs.p = 1;
+        getJson("shouci");
+    }
+
+    $(function(){
+        if(scrollTop){
+            $('.goodslist').html(sessionStorage.getItem('listscrollTop'));
+            window.scrollTo(0,scrollTop);
+            dataargs.p= +"{$_GET['listp']}";
+            fenye();
+        }else{
+            getJson("shouci");
+        }
+        if(type==1){
+            $('.divclass').trigger('click');
+        }
+    });
+    //点击跳转
+    $('.goodslist').on('click','.shoplist',function(){
+        var mygoto=$(this).attr('mygoto');
+        var thisurl="";
+        if(name){
+            thisurl+="/name/"+name;
+        }
+        if(type){
+            thisurl+="/type/"+type;
+        }
+        history.replaceState(null,'',"{:U('Store/productlist')}/cate_id/"+dataargs.parent_id+thisurl+"/height/"+$(window).scrollTop()+"/listp/"+dataargs.p);
+        sessionStorage.setItem('listscrollTop',$('.goodslist').html());
+        location.href=mygoto;
+    });
+    //点击购物车
+    $('.goodslist').on('click','.listimg2',function(event){
+        event.stopPropagation();
+        var url="{:U('Store/productinfo')}/status/2/p_id/"+$(this).attr('p_id');
+        location.href=url;
+    });
+    function putGoods(data,args) {
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $(".nomore").remove();
+                $(".xq_container").addClass('wusj');
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".nomore").remove();
+                $(".xq_container").append('<div class="nomore" style="text-align: center;">没有更多了！</div>');
+            }else{
+                $(".nomore").remove();
+                $(".xq_container").removeClass('wusj');
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    str += '<div class="shoplist goodobj '+($(".divclass").hasClass("on")?"shoplist2":"")+'" mygoto="{:U("Store/productinfo")}/p_id/'+shop.p_id+'">'
+                        +'<div><img class="listimg1" src="'+shop.cover_pic+'"></div>'
+                        +'<div>'
+                            +'<div class="ih20 h40 line2 mgb5">'+shop.title+'</div>'
+                            +'<div class="listdiv3 ">'
+                                +'<div class="ih20">'
+                                    +'<div class="colb6 fs12">月售<span>'+shop.sales+'</span>件</div>'
+                                    +'<div class="colred">￥<span>'+shop.price+'</span><span class="fs12"> 豆(元)</span></div>'
+                                +'</div>'
+                                +'<div>'
+                                    +'<img p_id="'+shop.p_id+'"" class="listimg2" src="__WEBPUBLIC__/Wechat/img/img (136).png">'
+                                +'</div>'
+                            +'</div>'
+                        +'</div>'
+                    +'</div>';
+                }
+                if (args == "fenye") {
+                    $('.goodslist').append(str);
+                }else{
+                    $('.goodslist').html(str);
+                    window.scrollTo(0,0);
+                }
+                flag=true;
+            }
+                top_linkto();
+        }else{
+            if(data.message=="数据为空"&&args == "shouci"){
+                $('.goodslist').html('');
+                $('.nomore').remove();
+                $(".xq_container").addClass('wusj');
+            }else{
+                layer.msg(data.message);
+                $(".goodslist").html('');
+            }
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+    
+
+    function getJson(args) {
+        requestUrl("{:U('Api/Product/productList')}",dataargs,function(data,times){
+            if (new Date().getTime()-500 > times) {
+                layer.closeAll();
+            }else{
+                setTimeout(function () {
+                    layer.closeAll();
+                },500);
+            }
+            putGoods(data,args);
+        },"GET",true);
+    }
+
+    function fenye(){
+        var $_zd = $(".shoplist").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".xq_container");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).on("scroll",function(e){
+                console.log("flag="+flag);
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+
+
+    //显示购物车数量
+    requestUrl("{:U('Api/Cart/cartNumber')}",{m_id:m_id},function(res){
+        if(res.flag=="success"){
+            if(res.data>0){
+                $('.carnum').removeClass('none');
+                $('.carnum>span').text(res.data);
+            }
+        }
+    });
+
+    /**搜索商品*/
+    function handler(){
+        dataargs.title = $('.proname').val();
+        dataargs.p = 1;
+        getJson('shouci');
+        return false;
+    }
+</script>
+<script type="text/javascript">
+    function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+            if((isApp)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+            $('.back').off('click');
+            $('.back').on('click',function(){
+                bridge.callHandler('iosBack',{}, function(response) {
+                    //处理oc过来的回调
+                    layer.closeAll();
+                })
+            });
+        }
+    });
+</script>
+</block>

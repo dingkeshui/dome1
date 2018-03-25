@@ -1,0 +1,32 @@
+<extend name="Public:header"/>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>奖励模式介绍</p>
+            </div>
+        </div>
+    </div>
+    <div class="xq_container dmymain">
+        
+    </div>
+    <div class="bgjb footer-container texcen ih50" style="bottom: 50px">
+        客户电话 <a href="tel:022-60868499" style="color:#fff;">022-60868499</a>
+    </div>
+</block>
+<block name="footerjs">
+    <script>
+        var dataargs = "";
+        requestUrl("{:U('Api/AboutUs/pattern')}",dataargs,function(data){
+            console.log(data);
+            if(data['flag'] == "success"){
+                $(".xq_container").html(data['data']['content']);
+            }else if(data['flag'] == "error"){
+                alert(data['message']);
+            }
+        },"GET",true);
+
+        layer.closeAll();
+    </script>
+</block>

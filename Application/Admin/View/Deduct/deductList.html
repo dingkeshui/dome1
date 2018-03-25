@@ -1,0 +1,167 @@
+<include file="Public:header"/>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/js/ajax-operate.js"></script>
+<script type="text/javascript" src="__WEBPUBLIC__/Admin/laydate/laydate.js"></script>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">加盟商管理</a></li>
+        <li class="active">提成比例列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>加盟商提成比例</h3>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="{:U('Deduct/deductList')}">提成比例列表</a>
+            </li>
+            <li class="">
+                <a href="{:U('Deduct/addDeduct')}">添加提成比例</a>
+            </li>
+        </ul>
+    </div>
+    <div class="search-content">
+        <form action="{:U('Deduct/deductList')}" method="post" class="search-form form-inline" role="form">
+            <style>
+                #laydate_ys{
+                    overflow: hidden;!important;
+                }
+                .laydate_body .laydate_bottom{
+                    height: 40px;!important;
+                }
+            </style>
+            &nbsp;&nbsp;
+            <input placeholder="请输入开始日期" name="start_time" value="{$start_time}" class="laydate-icon" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="width: 180px;height:34px;border-radius:5px">&nbsp;&nbsp;
+            <input placeholder="请输入结束日期" name="end_time" value="{$end_time}" class="laydate-icon" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="width: 180px;height:34px;border-radius:5px">
+            &nbsp;&nbsp;
+            <div class="form-group">
+                <div class="f-left" style="width:265px;padding:5px;">
+                    <select name="type" id="type" style="width: 240px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc">
+                        <option value="">请选择加盟商的类型...</option>
+                        <option value="1" <if condition="$request['type'] eq 1">selected</if>>市级代理</option>
+                        <option value="2" <if condition="$request['type'] eq 2">selected</if>>区（县）代理</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                    <select onchange="getCity(this.value)"  style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="province">
+                        <option value="">省份</option>
+                        <volist name="pro" id="pr">
+                            <option {$province==$pr['area_id']?'selected':''} value="{$pr['area_id']}">{$pr['area_name']}</option>
+                        </volist>
+                    </select>
+                    <select id="city" onchange="getArea(this.value)" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="city">
+                        <option value="">市/县</option>
+                        <volist name="city" id="ci">
+                            <option {$city_s==$ci['area_id']?'selected':''} value="{$ci['area_id']}">{$ci['area_name']}</option>
+                        </volist>
+                    </select>
+                    <select id="area" style="width: 120px;height:34px;font-size: 14px;padding:6px 12px;border-radius:4px;border:1px solid #ccc" name="area">
+                        <option value="">镇/区</option>
+                        <volist name="area" id="ar">
+                            <option {$area_s==$ar['area_id']?'selected':''} value="{$ar['area_id']}">{$ar['area_name']}</option>
+                        </volist>
+                    </select>
+            </div>
+            <button type="submit" class="btn derive">查询</button>
+        </form>
+    </div>
+    <div class="content-box-table content-box-content">
+        <form action="{:U('Deduct/deleteDeduct')}" method="post" class="batch-form">
+            <table class="table table-striped table-framed table-hover">
+                <thead>
+                <tr>
+                    <th width="8%">
+                        <input class="check-all" type="checkbox" />&nbsp;&nbsp;编号
+                    </th>
+                    <th>添加时间</th>
+                    <th>销售额度</th>
+                    <th>提成百分比</th>
+                    <th>区（县）/市</th>
+                    <th>类型</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody class="tbody">
+                <if condition="empty($list)">
+                    <tr><td colspan="20"><span style="font-size:14px;">暂无数据</span></td></tr>
+                </if>
+                <volist name="list" id="vo">
+                    <tr>
+                        <td><input type="checkbox" value="{$vo['id']}" name="id[]"/>&nbsp;&nbsp;{$vo['id']}</td>
+                        <td>{$vo['ctime']|date='Y-m-d H:i:s',###}</td>
+                        <td>{$vo['price']|default='0.00'}/元</td>
+                        <td>{$vo['deduct']}%</td>
+                        <td>{$vo['name']}</td>
+                        <td>
+                            <if condition="$vo['type'] eq 1"><span style="color: green">市级代理</span>
+                                <elseif condition="$vo['type'] eq 2" /><span style="color: red">区县代理</span>
+                            </if>
+                        </td>
+                        <td>
+                            <a href="{:U('Deduct/editDeduct',array('id'=>$vo['id']))}" title="修改" class="modify">
+                                <span class="icon glyphicon glyphicon-pencil"></span>
+                            </a>&nbsp;&nbsp;
+                            <a href="#" title="删除" class="delete-delete">
+                                <span class="icon glyphicon glyphicon-remove"></span>
+                            </a><input type="hidden" value="{:U('Deduct/deleteDeduct',array('id'=>$vo['id']))}">
+                        </td>
+                    </tr>
+                </volist>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="20">
+                        <div class="bulk-actions fl">
+                            <input type="button" class="btn delete-batch" value="批量删除">　
+                        </div>
+                        <div class="fr">
+                            {$page}
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+<!--地区的三级联动-->
+<script type="text/javascript">
+    function getCity(val){
+        $("#city").empty();
+        $("#area").empty();
+        var area = "<option value=''>镇/区</option>";
+        $("#area").append(area);
+        var option = "<option value=''>市/县</option>";
+        $.ajax({
+            url:"{: U('Deduct/ajaxCity')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    option += "<option value='"+data[i].area_id+"'>"+data[i].area_name+"</option>"
+                }
+                $("#city").append(option);
+            }
+        });
+    }
+    function getArea(val){
+        $("#area").empty();
+        var option = "<option value=''>镇/区</option>";
+        $.ajax({
+            url:"{:U('Deduct/ajaxArea')}",
+            data:{parent_id:val},
+            dataType:"json",
+            type:"get",
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    option += "<option value='"+data[i].area_id+"'>"+data[i].area_name+"</option>"
+                }
+                $("#area").append(option);
+            }
+        });
+    }
+</script>
+<include file="Public:footer"/>
+

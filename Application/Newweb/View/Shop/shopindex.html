@@ -1,0 +1,360 @@
+<extend name="Public:header"/>
+<block name="headdiv">
+    <link rel="stylesheet" href="__WEBPUBLIC__/Wechat/css/xq_slide.css">
+</block>
+<block name="main">
+	 <!-- 头部 -->
+    <div class="header-container bgfff z5">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter location" linkto="{:U('Shop/opencity')}">
+                    <img class="w15 y3" src="__WEBPUBLIC__/Wechat/cusimg/img (10).png">
+                    <div class="nowaddress inblock re city_name">定位中</div>
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+            <div class="pad10 bgfff ih30 box">
+                <div class="searchimgbox">
+                    <img class="searchimg" src="__WEBPUBLIC__/Wechat/cusimg/search.png">
+                    <form action="/index.php/Newweb/Shop/shoplist" method="get">
+                     <input class="shop classname search_input" type="search " name="name" placeholder="搜索商家">
+                    </form>
+                   
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+            </div>
+    </div>
+   
+    <!-- 内容 -->
+    <div class="xq_container padtop100">
+        <div style="width: 100%;height: 12rem;margin: 0 auto;max-width: 100%;">
+                <div class="xq_slide_out">
+                    <ul class="xq_slide_in">    
+                    </ul>
+                </div>
+        </div>
+        <div id="test"></div>
+        <div class="navbox">
+            <div class="nav">
+             </div>   
+        </div>
+        <div class="bgfff mgtop10">
+            <div class="shopinfopjbox after flex flexcenter">
+                <span>附近商家</span>
+            </div>
+            <div class="list">
+            </div>
+        </div>
+    </div>
+
+    <div class="togley" linkto="{:U('Newweb/Car/car')}">
+
+        <img src="/Public/Wechat/img/img (136).png"/>
+    </div>
+</block>
+<block name="footerjs">
+<script src="__WEBPUBLIC__/Wechat/slide/js/xq_slide.js" type="text/javascript" charset="utf-8"></script>
+<script>
+var list = localStorage.getItem("list");
+    if (list) {
+        $('.list').html(list);
+    }
+  //   if (shopview) {
+  //       $('.xq_slide_in').html(shopview);
+  //       $(".xq_slide_out").xq_slide({
+        //      type: "h", //轮播方式  h水平轮播；v垂直轮播；o透明切换
+        //      vatical: false, //图片描述性文本 true 显示 false不显示
+        //      choseBtn: false, //是否显示上下切换按钮
+        //      speed: 2000, //动画间隔的时间，以毫秒为单位。
+        //      mousestop: true, //当鼠标移上去是否停止循环,针对PC端
+        //      showbar: true, //是否显示轮播导航bar
+        //      openmb: true //是否开启移动端支持
+        // });
+  //   }
+
+    
+    wx.config({
+        debug: false,
+        appId: "{$appid}",
+        timestamp:'{$wx.timestamp}',
+        nonceStr: '{$wx.nonceStr}',
+        signature:'{$wx.signature}',
+        jsApiList: [
+            // 所有要调用的 API 都要加到这个列表中
+            'scanQRCode',
+            'openLocation',
+            'getLocation',
+            "onMenuShareTimeline",
+            "onMenuShareAppMessage",
+            "onMenuShareQQ",
+            "onMenuShareWeibo",
+            "onMenuShareQZone"
+        ]
+    });
+    var dataargs = {p:1};
+    var flag = false;
+    wx.ready(function(){
+        wx.getLocation({
+            type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+            success: function (res) {
+                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                var speed = res.speed; // 速度，以米/每秒计
+                var accuracy = res.accuracy; // 位置精度
+                //console.log(latitude,longitude);
+                //getData();
+                //alert("经度"+latitude);
+                dataargs.lat = latitude;
+                dataargs.lnt = longitude;
+                /**通过经纬度获取城市的名称*/
+                if(!localStorage.getItem('city_id')&&!localStorage.getItem('area_id')){
+                    requestUrl("{:U('Api/Shop/lngLatCity')}",dataargs,function(data){
+                        layer.closeAll();
+                        var city = data.data;
+                        dataargs.city_id = city.area_id;
+                        $(".city_name").text(city.city_name);
+                        $(".location").attr("linkto","{:U('Shop/opencity')}/city_name/"+city.city_name);
+                    },"POST",true);
+                    getJson();
+                }
+
+                sessionStorage.setItem("latlnt",JSON.stringify({lat:latitude,lnt:longitude}));
+                if (flag) {
+                    return;
+                }
+                flag = true;
+                var vxdata={lat:latitude,lnt:longitude,is_app:0};
+                if(localStorage.getItem('area_id')&&localStorage.getItem('area_id')!="undefined"){
+                    vxdata.area_id=localStorage.getItem('area_id');
+                }else if(localStorage.getItem('city_id')&&localStorage.getItem('city_id')!="undefined"){
+                    vxdata.city_id=localStorage.getItem('city_id');
+                }
+                requestUrl("{:U('Api/Shop/advertList')}",vxdata,function(data){
+                    layer.closeAll();
+                    putView(data);
+                },"POST",true);
+            },
+            fail: function(res) {
+                //console.log('未开启定位功能');
+                //console.log(res);
+                postData();
+            },
+            cancel: function (res) {
+                //console.log('用户拒绝授权获取地理位置');
+                postData();
+            }
+        });
+    });
+//localStorage.clear();
+//console.log(localStorage);
+if(localStorage.getItem('city_id')&&localStorage.getItem('city_id')!="undefined"){
+    $('.city_name').text(localStorage.getItem('city_name'));
+    $(".location").attr("linkto","{:U('Shop/opencity')}/city_name/"+localStorage.getItem('city_name'));
+    dataargs.city_id = localStorage.getItem('city_id');
+}
+if(localStorage.getItem('area_id')&&localStorage.getItem('area_id')!="undefined"){
+    $('.city_name').text(localStorage.getItem('area_name'));
+    dataargs.area_id = localStorage.getItem('area_id');
+}
+
+    getJson();
+
+function getJson(){
+//    console.log(dataargs);
+    requestUrl("{:U('Api/Shop/shopList')}",dataargs,function(data){
+        layer.closeAll();
+        putGoods(data);
+    },"GET",true);
+}
+    //shopList
+      function putGoods(data) {
+            if(data.flag == 'success'){
+                var data = data.data;
+         var list ="";
+        for(var i=0;i<data.length;i++){
+            list +='<div class="after bgfff padlr10 shopInShopList shopobj" linkto="{:U('Shop/shopdetail')}/shop_id/'+data[i].shop_id+'/lnt/'+data[i].lnt+'/lat/'+data[i].lat+'/distance/'+data[i].distance+'/shop_name/'+data[i].shop_name+'">'
+                 +  '<div class="weui-cell padlr0 box">'
+                 +     '<div class="weui-cell__hd mgr5 fs0">'
+                 +           '<img class="w65" src="'+(data[i].head_pic?"{:C('API_URL')}/"+data[i].head_pic+"":"/Public/Wechat/img/defa.jpg")+'"/>'
+                 +      '</div>'
+                 +      '<div class="weui-cell__bd textovh fs14">'
+                 +        '<div class="flex"><div class="textovh flex1 flex shop.name">' 
+                 +          '<div class="textovh mgr5">'+data[i].shop_name+'</div> '+(data[i].grade_icon?"<div class='h20 mgr5 fs0 flex flexvcenter'><img class='h100' src='"+data[i].grade_icon+"'></div>":"")+' '
+                 +         '</div>'
+                 +       '<div class="right fs0-8 distance shop.distance">'
+                 +         (data[i].distance < 1000 ?data[i].distance+"m" : Math.round(data[i].distance/100)/     10+"km")
+                 +        '</div></div>'
+                 +         '<div>' 
+                 +            '<span class="fs0 mgr5">'
+                 +              showXing(data[i].star)
+                 +             '</span>'
+                // +               '<span class="colb6">月售'+data[i].sale+'</span>'
+                 +           '</div>'
+                 +           '<div>'
+                 +              (data[i].is_open==1?"<span class='colred'>[未营业]</span>":"")
+                 +              '<span class="area_name">['+data[i].area_name+']</span>'
+                 +             data[i].class_name
+                 +           '</div>'
+                 +       '</div>'
+                 +   '</div>'
+                 +  '<div class="fs14 flex">'
+                 +     '<div class="w65 mgr10"></div>'
+                 //+     '<div class="flex1 mgb10">'
+                 //+          '<div class="">'
+                 //+              '<span class="logospan">折</span>'
+                 //+              '<span class="colb6">满199享9折</span>'
+                 //+           '</div>'
+                 //+           '<div class="">'
+                 //+              '<span class="logospan">促</span>'
+                 //+              '<span class="colb6">满199享9折</span>'
+                 //+           '</div>'
+                 //+      '</div>'
+                 +  '</div>'
+                 +'</div>';
+             
+            }
+           
+             $('.list').html(list);
+             
+                 top_linkto();
+            }else{
+                 layer.msg(data.message);
+            }
+           
+        }
+    
+      //对首页搜索商品进行筛选
+    var dataargs = {p:1,name:name};
+    function handleclassname() {
+            var shopclassname = $(".shopclassname").val();
+            dataargs.p = 1;
+            dataargs.name = shopclassname;
+           requestUrl("{:U('Api/Shop/classList')}",{},function(data){
+            layer.closeAll();
+            putClass(data);
+            $(".shopclassname").attr("linkto","{:U('Shop/shoplist')}/class_id/"+dataargs.name)
+           },"GET",true)
+        }
+    //未获取到经纬度，获取默认数据
+    function postData() {
+        if (flag) {
+            return;
+        }
+        flag = true;
+
+        var wxdata2={is_app:0};
+        if(localStorage.getItem('area_id')&&localStorage.getItem('area_id')!="undefined"){
+            wxdata2.area_id=localStorage.getItem('area_id');
+        }else if(localStorage.getItem('city_id')&&localStorage.getItem('city_id')!="undefined"){
+            wxdata2.city_id=localStorage.getItem('city_id');
+        }
+        requestUrl("{:U('Api/Shop/advertList')}",wxdata2,function(data){
+            layer.closeAll();                   
+            putView(data);
+        },"POST",true);
+    }
+    requestUrl("{:U('Api/Shop/classList')}",{},function(data){
+        layer.closeAll();
+        putClass(data);
+    },"GET",true);
+
+    
+
+    function showXing( num ) {
+        var str ="";
+        for (var i = 0; i < num; i++) {
+            str += '<img class="w15" src="__WEBPUBLIC__/Wechat/cusimg/img (104).png">';
+        }
+        return str;
+    }
+
+    function putClass(data) {
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 )){
+                $(".nav").append('<div class="texcen">没有更多了！</div>');
+            }else{
+                sessionStorage.setItem("classitem",JSON.stringify(shops));
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    str += '<div linkto="{:U('Shop/shoplist')}/class_id/'+shop.class_id+'">'
+                        +  '<div><img src="/Uploads/'+shop.pic+'" alt="" /></div>'
+                        +     shop.name
+                        +'</div>';
+                }
+                $('.nav').html(str);
+                top_linkto();
+            }
+        }else{
+            layer.msg(data.message);
+        }
+    }
+
+    var ggdata={m_id:m_id,type:3,port:'yd'};
+    $('.xq_slide_out').on('click','a',function(){
+        var url=$(this).attr('goto');
+        ggdata.a_id=$(this).attr('a_id');
+        requestUrl("{:U('Api/Advert/clickAdvert')}",ggdata,function(data){
+            if(data.flag=="success"){
+                if(url){
+                    location.href=url;
+                }
+            }else{
+                layer.msg(data.message);
+            }
+        },"POST");
+    })
+
+    function putView(data) {
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 )){
+                $(".list").append('<div class="texcen">没有更多了！</div>');
+            }else{
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    var url = shop.url ? 'href="'+shop.url+'"' : '';
+                    str += '<li>'
+                                +'<a a_id="'+shop.a_id+'" goto="'+shop.url+'"><img src="{:C('API_URL')}/Uploads/'+shop.pic+'"/></a>'
+                            +'</li>';
+                }
+                $(".xq_slide_out").html('<ul class="xq_slide_in"></ul>');
+                $('.xq_slide_in').html(str);
+                $(".xq_slide_out").xq_slide({
+                    type: "h", //轮播方式  h水平轮播；v垂直轮播；o透明切换
+                    vatical: false, //图片描述性文本 true 显示 false不显示
+                    choseBtn: false, //是否显示上下切换按钮
+                    speed: 2000, //动画间隔的时间，以毫秒为单位。
+                    mousestop: true, //当鼠标移上去是否停止循环,针对PC端
+                    showbar: true, //是否显示轮播导航bar
+                    openmb: true //是否开启移动端支持
+                });
+                //localStorage.setItem("shopview",str);
+            }
+        }else{
+//            layer.msg(data.message);
+        }
+    }
+    //获取城市
+//    requestUrl("{:U('Api/Shop/openCity')}",{},function(res){
+//            if(res.flag == "success"){
+//                var data = res.data;
+//                console.log(data)
+//                    $(".city_name").html(data[0].city_name);
+//            }else{
+////                layer.msg(res.message);
+//            }
+//        },'POST',true);
+
+  
+
+
+</script>
+        
+</block>

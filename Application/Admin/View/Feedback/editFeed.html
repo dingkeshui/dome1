@@ -1,0 +1,50 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">用户反馈信息管理</a></li>
+        <li class="active">用户反馈信息列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>用户反馈信息管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="">
+                <a href="{:U('Feedback/feedList')}">用户的反馈列表</a>
+            </li>
+        </ul>
+    </div>
+        <!--表格内容-->
+        <div class="content-box-content">
+            <!--表单 start-->
+            <form action="{:U('Feedback/editFeedback')}" method="post" class="form-horizontal form"  enctype="multipart/form-data">
+                <input type="hidden" name="f_id" value="{$res['f_id']}">
+                <input type="hidden" name="tel" value="{$res['tel']}">
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label"><em class="prompt-red">*</em>用户反馈信息名称：</label>
+                    <div class="col-sm-6">
+                        <textarea name="" id="" cols="100" rows="10">
+                            {$res['content']}
+                        </textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="re_content" class="col-sm-3 control-label"><em class="prompt-red">*</em>回复用户的信息：</label>
+                    <div class="col-sm-9">
+                        <textarea name="re_content" class="form-control" id="re_content" style="width:620px;height:300px;" >
+                            {$res['re_content']}
+                        </textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-default btn-primary add-to-here">确认回复</button>
+                    </div>
+                </div>
+            </form>
+            <!--表单 end-->
+        </div>
+    </div>
+</div>
+<include file="Public:footer"/>

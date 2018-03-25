@@ -1,0 +1,303 @@
+<extend name="Public:header"/>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>买单</p>
+            </div>
+        </div>
+    </div>
+    <div class="xq_container" id="buttons">
+        <div class="texcen pad20-0">
+            <img class="limg" src="/{$res['head_pic']}"/>
+            <div>{$res['name']}</div>
+            <div class="colbbb">{$res['tel']}</div>
+        </div>
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd fs0-8">
+                    <div class="colccc">买单金额：</div>
+                    <div class="fs2 disflex">
+                    <span>￥</span><input type="number" step="0.01" name="money" class="weui-input flex1 money"/></div>
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells">
+            <a class="weui-cell weui-cell_access" href="{:U('Coupon/coupon',array('shop_id'=>$_REQUEST['shop_id']))}">
+                <div class="weui-cell__bd">
+                    <p>选择优惠券</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <p class="fs0-8 infodiv"></p>
+                </div>
+            </a>
+            <div class="weui-cell weui-cell_switch">
+                <div class="weui-cell__hd">
+                    <img src="__WEBPUBLIC__/Wechat/img/jifen.png" class="slimg"/>
+                </div>
+                <div class="weui-cell__bd">豆抵扣<span class="colbbb wallet fs0-8"></span></div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch doudi" type="checkbox" checked value="1"/>
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells__title">选择支付方式</div>
+        <div class="weui-cells weui-cells_radio">
+            <label class="weui-cell weui-check__label" for="x11">
+                <div class="weui-cell__hd">
+                    <img src="__WEBPUBLIC__/Wechat/img/wxpay.png" class="slimg"/>
+                </div>
+                <div class="weui-cell__bd">
+                    <p>微信支付</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="radio" class="weui-check pay_type" name="radio1" id="x11" value="wechat" checked="checked">
+                    <span class="weui-icon-checked"></span>
+                </div>
+            </label>
+            <!--<label class="weui-cell weui-check__label" for="x12">
+                <div class="weui-cell__hd">
+                    <img src="__WEBPUBLIC__/Wechat/img/jifen.png" class="slimg"/>
+                </div>
+                <div class="weui-cell__bd">
+                    <p>豆支付</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="radio" name="radio1" class="weui-check pay_type" id="x12" value="integral">
+                    <span class="weui-icon-checked"></span>
+                </div>
+            </label>-->
+        </div>
+        <label for="weuiAgree" class="weui-agree">
+            <input id="weuiAgree" type="checkbox" checked class="weui-agree__checkbox weuiAgree" value="yes">
+            <span class="weui-agree__text">
+                阅读并同意<a href="{:U('Member/memberprotocol')}">《相关条款》</a>
+            </span>
+        </label>
+        <div class="weui-btn-area">
+            <a id="go_pay" class="weui-btn bgjb nobor go_pay" href="javascript:">确认买单</a>
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+    <script>
+        var url = location.href;
+        if (url.indexOf('m.zxty.me')) {
+            $("body").html("");
+            layer.msg("请稍后！");
+            window.location.href = url.substr(0,url.indexOf("?code")).replace("m.zxty.me","www.qufutong.me").replace("http://","https://");
+        }
+        var flag =true;
+        var jsApiParameters;
+        var shop_id = "{:I('get.shop_id')}";
+        var summoney=0;//用户今日消费额
+        var coupon="";//优惠券
+        var max_price = +"{$res['max_price']}";
+        if(sessionStorage.getItem("coupon")){
+            if(JSON.parse(sessionStorage.getItem("coupon")).shop_id==shop_id){
+                coupon=JSON.parse(sessionStorage.getItem("coupon"));
+                $(".infodiv").html(coupon.name);
+            }
+        } 
+        if (wallet > 0 ) {
+            $(".wallet").text("最多可抵扣"+wallet+"元。");
+        }else{
+            $(".weui-cell_switch").remove();
+        }
+
+        requestUrl("{:U('Api/Member/memberTotal')}",{"m_id":m_id}, function (res) {
+            layer.closeAll();
+            if(res['flag'] == "error"){
+                layer.closeAll();
+                layer.msg(res['message']);
+            }else{
+               summoney= +res.data.total;
+            }
+        },"GET");
+
+        $(".go_pay").click(function (e) {
+            var pay_type = $(".doudi:checked").val();
+            var weuiAgree = $(".weuiAgree:checked").val();
+            var money = +$(".money").val();
+            if ( !weuiAgree ) {
+                layer.msg("请阅读相关条款！");
+                return false;
+            }
+            var reg = /^\d{1,}(.\d{1,2}){0,1}$/;
+            if ( !reg.test(money) || money < 0.03 ) {
+                layer.msg("金额不合法，请重新输入！");
+                return false;
+            }
+            if(pay_type && wallet >= money){
+                if (!flag) {
+                    return;
+                }
+                flag = false;
+                
+                dataargs = {price:money,shop_id:shop_id,m_id:m_id,is_wallet:1};
+                if(coupon){
+                    dataargs.c_m_id=coupon.c_m_id;
+                }
+                requestUrl("{:U('Api/Order/payBill')}",dataargs,function(data){
+                    flag =true;
+
+                    if(data['flag'] == "success"){
+                        if(coupon){
+                            sessionStorage.removeItem("coupon");
+                        }
+                        layer.msg("支付成功！");
+                        setTimeout(function () {
+                            var url = "{:U('Bill/billList')}";
+                            window.location.href = url;
+                        },1000);
+                    }else if(data['flag'] == "error"){
+                        layer.msg(data['message']);
+                    }
+                },"POST",'');
+            }else{
+                var money = +$(".money").val();
+                var shop_name = "{$res['name']}";
+                dataargs = {order_price:money,m_id:m_id,shop_id:shop_id,shop_name:shop_name};
+                if(coupon){
+                    dataargs.c_m_id=coupon.c_m_id;
+                }
+
+                if ( pay_type ) {
+                    dataargs.is_wallet = 1;
+                    if ( money - wallet > 3000 ) {
+                        layer.msg("大于3000请分多次支付！");
+                        return;
+                    }
+                }else if ( money > 3000 ){
+                    layer.msg("大于3000请分多次支付！");
+                    return;
+                }
+
+                if ( money+summoney > max_price ) {
+                    var istrue = confirm("您每日消费最多可获"+max_price+"麦穗，是否继续交易！");
+                    layer.closeAll();
+                    if (!istrue) {
+                        return;
+                    }
+                }
+                if (!flag) {
+                    return;
+                }
+                flag = false;
+                requestUrl("{:U('Pay/getHxApi')}", dataargs, function (data) {
+                    flag =true;
+                    document.getElementsByTagName("body")[0].innerHTML = data.data;
+                    document.forms['ipspaysubmit'].submit()
+                },"POST",true);
+            }
+        })
+    </script>
+    <script>
+
+        function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                 document.addEventListener(
+                'WebViewJavascriptBridgeReady'
+                , function() {
+                    callback(WebViewJavascriptBridge)
+                },
+                false
+            );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+        }
+
+        setupWebViewJavascriptBridge(function(bridge) {
+            $(".go_pay").off('click');
+            $(".go_pay").on('click',function ( e ) {
+                e.preventDefault();
+                var pay_type = $(".doudi:checked").val();
+                var weuiAgree = $(".weuiAgree:checked").val();
+                var money = +$(".money").val();
+                
+                if ( !weuiAgree ) {
+                    layer.msg("请阅读相关条款！");
+                    return false;
+                }
+                var reg = /^\d{1,}(.\d{1,2}){0,1}$/;
+                if ( !reg.test(money) || money < 0.03 ) {
+                    layer.msg("金额不合法，请重新输入！");
+                    return false;
+                }
+                if(pay_type && wallet >= money){
+                    if (!flag) {
+                        return;
+                    }
+                    flag = false;
+                    dataargs = {price:money,shop_id:shop_id,m_id:m_id,is_wallet:1};
+                    if(coupon){
+                        dataargs.c_m_id=coupon.c_m_id;
+                    }
+                    requestUrl("{:U('Api/Order/payBill')}",dataargs,function(data){
+                        flag =true;
+                        if(data['flag'] == "success"){
+                            if(coupon){
+                                sessionStorage.removeItem("coupon");
+                            }
+                            layer.msg("支付成功！");
+                            setTimeout(function () {
+                                var url = "{:U('Bill/billList')}";
+                                window.location.href = url;
+                            },1000);
+                        }else if(data['flag'] == "error"){
+                            layer.msg(data['message']);
+                        }
+                    });
+                }else{
+                    var shop_name = "{$res['name']}";
+                    dataargs = {order_price:money,m_id:m_id,shop_id:shop_id,shop_name:shop_name};
+                    if(coupon){
+                        dataargs.c_m_id=coupon.c_m_id;
+                    }else{
+                        dataargs.c_m_id="";
+                    }
+
+                    if ( pay_type ) {
+                        dataargs.is_wallet = 1;
+                        if ( money - wallet > 3000 ) {
+                            layer.msg("大于3000请分多次支付！");
+                            return;
+                        }
+                    }else{
+                        dataargs.is_wallet = 0;
+                        if ( money > 3000 ) {
+                            layer.msg("大于3000请分多次支付！");
+                            return;
+                        }
+                    }
+
+                    if ( money+summoney > max_price ) {
+                        var istrue = confirm("您每日消费最多可获"+max_price+"麦穗，是否继续交易！");
+                        layer.closeAll();
+                        if (!istrue) {
+                            return;
+                        }
+                    }
+
+                    
+                    layer.msg("正在唤起微信！");
+                    bridge.callHandler('loginAction', dataargs, function(response) {
+                         //处理oc过来的回调
+                        layer.closeAll();
+                    })
+                }
+            })
+        })
+
+    </script>
+</block>

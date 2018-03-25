@@ -1,0 +1,59 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>转账</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        
+       <div class="weui-cells bgfff">
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    对方账号
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input account" type="tel" placeholder="请填写对方的会员账号"/>
+                </div>
+            </div>
+        </div>
+        
+        <div class="weui-btn-area">
+            <a class="weui-btn bgjb nobor make_sure" href="javascript:">确认转钱</a>
+        </div>
+        
+    </div>
+</block>
+<block name="footerjs">
+    <script>
+
+            $(".make_sure").click(function () {
+                if(is_bind == 0){
+                    layer.msg("请先绑定手机号！");
+                    return false;
+                }
+                var account = $(".account").val();
+                if(account == ''){
+                    layer.msg("请输入对方账号！");
+                    return false;
+                }
+                var dataargs = {account:account,type:0};
+                requestUrl("{:U('Api/Member/is_set')}",dataargs,function(data){
+                    if(data['flag'] == "success"){
+                        var url = "{:U('Member/transferShop')}/account/"+account;
+                        window.location.href = url;
+                    }else{
+                        layer.msg(data['message']);
+                        return false;
+                    }
+                },"GET",'');
+            })
+
+
+    </script>
+</block>

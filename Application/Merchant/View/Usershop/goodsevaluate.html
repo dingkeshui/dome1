@@ -1,0 +1,164 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                   
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	商品评价
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!-- <div class="weui-cell__ft">
+                    
+                </div> -->
+            </div>
+    </div>
+
+    <!-- 内容 -->
+    <div class="xq_container">
+        <!--<div class="pjbox bgfff mgb10 flex">-->
+                    <!--<div class="pjheadimg">-->
+                        <!--<img src="../img/img (127).png">-->
+                    <!--</div>-->
+                    <!--<div class="flex1">-->
+                        <!--<div class="textovh">兰博的海</div>-->
+                        <!--<div class="startbox">-->
+                            <!--<div class="startboxtop">-->
+                                <!--<img class="w15" src="../img/img (104).png">-->
+                                <!--<img class="w15" src="../img/img (104).png">-->
+                                <!--<img class="w15" src="../img/img (104).png">-->
+                                <!--<img class="w15" src="../img/img (105).png">-->
+                                <!--<img class="w15" src="../img/img (105).png">-->
+                            <!--</div>-->
+                            <!--<div class="right colb6 startboxtime">2017-12-15</div>-->
+                        <!--</div>-->
+                        <!--<div class="pjtext">-->
+                            <!--黄江浩阿萨德骷髅精灵啊圣诞节快乐安咯是大陆上课看到啦开始了卡拉啥来看待拉拉是空的拉上课了；精灵啊圣诞节快乐安咯是大陆上课看到啦开始了卡拉啥来看待拉拉是空的拉上课了；精灵啊圣诞节快乐安咯是大陆上课看到啦开始了卡拉啥来看待拉拉是空的拉上课了；-->
+                        <!--</div>-->
+                        <!--<div class="pjimgbox">-->
+                            <!--<div>-->
+                                <!--<img class="w100" src="../img/img (160).png">-->
+                            <!--</div>-->
+                            <!--<div>-->
+                                <!--<img class="w100" src="../img/img (160).png">-->
+                            <!--</div>-->
+                            <!--<div>-->
+                                <!--<img class="w100" src="../img/img (160).png">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+        <!--</div>-->
+
+    </div>
+</block>
+
+<block name="footerjs">
+<script type="text/javascript">
+    var p_id = "{$_GET['p_id']}";
+    var dataargs = {p_id:p_id,p:1};
+
+    getJson("shouci");
+    function putGoods(data,args) {
+        if(data.flag == 'success'){
+            var shops = data.data.list;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+                $(".xq_container").addClass('wusj');
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".nomore").remove();
+                $(".xq_container").append('<div class="texcen nomore">没有更多了！</div>');
+            }
+            if ( shops.length != 0 ){
+                $(".xq_container").removeClass('wusj');
+            }
+            var str ="";
+            for(var index in shops){
+                var shop = shops[index];
+                str += '<div class="pjbox bgfff mgb10 flex">\
+                            <div class="pjheadimg headimgbg" style="background-image:url('+shop.head_pic+')">\
+                            </div>\
+                            <div class="flex1">\
+                                <div class="textovh">'+shop.nick_name+'</div>\
+                            <div class="startbox">\
+                            <div class="startboxtop">';
+                str +=      showStar(shop.star);
+                str +=      '</div>\
+                            <div class="right colb6 startboxtime">'+shop.ctime+'</div>\
+                        </div>\
+                        <div class="pjtext">'+shop.content+'</div>';
+                if(shop.pics.length>0){
+                    str += '<div class="pjimgbox">';
+                    for(var i in shop.pics){
+                        var pic = shop.pics[i];
+                        str += '<div><img class="w100" src="'+pic+'"></div>';
+                    }
+                    str += '</div>';
+                }
+                str +=  '</div>\
+                    </div>';
+            }
+            if (args == "fenye") {
+                $('.xq_container').append(str);
+            }else{
+                $('.xq_container').html(str);
+            }
+            top_linkto();
+        }else{
+            layer.msg(data.message);
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+
+    function getJson(args) {
+        requestUrl("{:U('Api/Product/appraise')}",dataargs,function(data,times){
+            if (new Date().getTime()-500 > times) {
+                layer.closeAll();
+            }else{
+                setTimeout(function () {
+                    layer.closeAll();
+                },500);
+            }
+            putGoods(data,args);
+        },"POST",true);
+    }
+
+    function fenye(){
+        var flag= true;//防止ajax请求期间，对此触发请求数据
+        var $_zd = $(".pjbox").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".xq_container");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+
+    //显示星数
+    function showStar(num){
+        var str = '';
+        for (var i=0;i<num;i++){
+            str += '<img class="w15" src="__WEBPUBLIC__/Wechat/img/img (104).png">';
+        }
+        for (var j=5;j>num;j--){
+            str += '<img class="w15" src="__WEBPUBLIC__/Wechat/img/img (105).png">';
+        }
+        return str;
+    }
+</script>
+</block>

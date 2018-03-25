@@ -1,0 +1,34 @@
+<extend name="Public:header"/>
+<block name="main">
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p class="title"></p>
+            </div>
+        </div>
+    </div>
+    <div class="xq_container">
+        <div class="content pad10"></div>
+    </div>
+    <!--<div class="bgjb footer-container texcen ih50">-->
+        <!--客户电话 022-4567-8799-->
+    <!--</div>-->
+</block>
+<block name="footerjs">
+    <script>
+        var mess_id = "{:I('get.mess_id')}";
+        var dataargs = {mess_id:mess_id,m_id:m_id};
+        requestUrl("{:U('Api/Message/messageDetail')}",dataargs,function(data){
+            console.log(data);
+            var res = data.data;
+            if(data['flag'] == "success"){
+                $(".title").text(res.title);
+                $(".content").html(res.content);
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+            }
+        },"GET",true);
+        layer.closeAll();
+    </script>
+</block>

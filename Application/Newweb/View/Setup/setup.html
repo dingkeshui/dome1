@@ -1,0 +1,76 @@
+<extend name="Public:header"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	设置
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="weui-cells">
+            <div linkto="{:U('Member/memberinfo')}" class="weui-cell weui-cell_access ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd">
+                    个人资料
+                </div>
+                <div class="weui-cell__ft">
+                  
+                </div>
+            </div>
+            <div linkto="{:U('Address/addresslist')}" class="weui-cell weui-cell_access ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd">
+                    我的收货地址
+                </div>
+                <div class="weui-cell__ft">
+                  
+                </div>
+            </div>
+        </div> 
+        <div class="weui-cells mgb20">
+            <div linkto="{:U('Order/ordersearch')}" class="weui-cell weui-cell_access ih30 box">
+                <div class="weui-cell__hd">
+
+                </div>
+                <div class="weui-cell__bd">
+                    绑定手机号
+                </div>
+                <div class="weui-cell__ft tel">
+                    未绑定
+                </div>
+            </div>
+        </div>
+        <!-- <div class="loginbut setupfoot">
+                退出登录
+        </div> -->
+    </div>
+
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    // 手机号
+    requestUrl("{:U('Api/Member/memberCenter')}",{m_id:m_id},function(res){
+            if(res.flag=="success"){
+                if(res.data.account){
+                    $('.res').html(res.data.account);
+                }
+            }else{
+                layer.msg(res.flag)
+            }
+    },'GET');
+</script>
+</block>

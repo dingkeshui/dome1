@@ -1,0 +1,110 @@
+<extend name="Public:header"/>
+<block name="main">
+        <!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd re textcenter">
+                    <div class="headleft" linkto="{:U('Shop/profit')}"><img class="wh20 y3" src="__WEBPUBLIC__/Wechat/img/back2.png" style="transform:rotate(180deg);vertical-align: sub;"></div>
+                    会员管理
+                    <!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="userlist">
+            
+        </div>
+    </div>
+</block>
+<block name="footerjs">
+<script>
+
+    var dataargs={
+        "shop_id":shop_id,
+        "p" : 1
+    };
+    
+    var flag= true;//防止ajax请求期间，对此触发请求数据      
+    function getJson(args) {
+        console.log(dataargs);
+        requestUrl("{:U('Api/StoreOrder/memberList')}",dataargs,function(data){
+            layer.closeAll();
+            putGoods(data,args);
+        });
+    }
+
+    $(function(){
+        getJson("shouci");
+    });
+    var count = 0;
+    //添加商品到列表
+    function putGoods(data,args) {
+        console.log(data);
+        if(data.flag == 'success'){
+            var shops = data.data;
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+               $(".xq_container").addClass('wusj');
+
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".xq_container").append('<div class="texcen nulldata">没有更多了！</div>');
+            }else{
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    //console.log(shop.cover_pic);
+                    str += '<div class="weui-cell bgfff useritem">'
+                                +'<div class="weui-cell__hd mgr5">'
+                                    +'<div class="headimgbox mgr5 headimgbg fs0" style="background-image:url('+shop.head_pic+')">'
+                                    +'</div>'
+                                +'</div>'
+                                +'<div class="weui-cell__bd">'
+                                    +'<div>'+shop.nick_name+'</div>'
+                                +'</div>'
+                            +'</div>';
+                }
+                if (args == "fenye") {
+                    $('.userlist').append(str);
+                }else{
+                    $('.userlist').html(str);
+                }
+                flag=true;
+            }
+        }else{
+            layer.msg(data.message);
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+
+    function fenye(){
+        var $_zd = $(".useritem").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".userlist");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $(window).on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+
+</script>
+</block>

@@ -1,0 +1,152 @@
+<extend name="Public:head"/>
+<block name="main">
+	<!-- 头部 -->
+    <div class="header-container bgfff z3">
+            <div class="weui-cell ih30 box">
+                <div class="weui-cell__hd">
+                </div>
+                <div class="weui-cell__bd textcenter">
+                	确认订单
+                	<!-- <span class="fr tc">退出</span> -->
+                </div>
+                <!--<div class="weui-cell__ft">
+                    <img src="/Public/Wechat/img/fenx.png" class="iconfenx"/>
+                </div>-->
+            </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container">
+        <div class="flex bgfff pad10 cordertop" linkto="{:U('Address/selectaddress',array('type'=>1,'g_id'=>$_GET['g_id']))}">
+            <div class="flex flexcenter mgr10">
+                <img class="w15" src="__WEBPUBLIC__/Wechat/img/img (1).png">
+            </div>
+            <div class="flex1 fs14 address">
+                <div class="flex">
+                    <div class="w65">收货人:</div>
+                    <div class="flex1"><span class="mgr5 name"></span><span class="tel"></span></div>
+                </div>
+                <div class="flex">
+                    <div class="w65">收货地址:</div>
+                    <div class="flex1 addr"></div>
+                </div>
+            </div>
+            <div class="flex flexcenter">
+                <img class="w15" src="__WEBPUBLIC__/Wechat/img/img (20).png">
+            </div>
+        </div>
+        <div class="corderlist mgtop20">
+            <div class="corderitem mgb20 bgfff">
+                <div class="corderitemtop pad10 ih30">
+                    <img class="w15" src="__WEBPUBLIC__/Wechat/img/img (6).png">
+                    <span>众享商城</span>
+                    <!--<img class="w15" src="__WEBPUBLIC__/Wechat/img/img (20).png">-->
+                </div>
+                <div class="">
+                    <div class="flex corderitemshop">
+                            <div class="carshopimg">
+                                <img class="w100" src="__WEBPUBLIC__/Wechat/img/defa.jpg">
+                            </div>
+                            <div class="flex1 ih20 fs14">
+                                <div class="carshoptab1">
+                                    <div class="line2 h40 goodsname"></div>
+                                    <div>
+                                        <span class="colred price">0</span>麦穗
+                                        <span class="right colb6">x1</span>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="corderitemfoot fs14">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <p>配送方式</p>
+                        </div>
+                        <div class="weui-cell__ft"><span class="mgr5">快递</span>运费<span class="yunfei">0</span></div>
+                    </div>
+
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <textarea class="weui-textarea liuyan" placeholder="买家留言(选填)" rows="3"></textarea>
+                            <!-- <div class="weui-textarea-counter"><span>0</span>/200</div> -->
+                        </div>
+                    </div>
+                    <!--<div class="textright">-->
+                        <!--<span class="">共1件商品</span>-->
+                        <!--小计:<span class="colred xiaoji">￥0</span>-->
+                    <!--</div>-->
+                </div>
+            </div>
+
+        </div>
+
+        <div class="corderfoot fs14 pad10 flex bgfff">
+            <div>收货地址：</div>
+            <div class="flex1 footeraddr"></div>
+        </div>
+    </div>
+
+    <!-- 脚部 -->
+        <div class="carfoot flex z3">
+            <div class="carfootl flex1">
+                <div class="carfootlb h100 flex flexvcenter">
+                    合计:<span class="colred total">0</span>麦穗
+                </div>
+            </div>
+            <div class="carfootr">
+                提交订单
+            </div>
+        </div>
+
+</block>
+<block name="footerjs">
+<script type="text/javascript">
+    var g_id = "{$_GET['g_id']}",
+        addr_id = "{$_GET['addr_id']}",
+            price = 0,yun = 0,total = 0;
+    var subdata = {mix_id:m_id,type:0,g_id:g_id};
+
+    //获取信息
+    requestUrl("{:U('Api/Goods/makeSureOrder')}",{m_id:m_id,goods_id:g_id,addr_id:addr_id},function(res){
+        if(res.flag=="success"){
+            var addr = res.data.address;
+            var data = res.data.goods;
+            if(addr.addr_id==""){
+                $('.address').html('请选择地址');
+            }else{
+                $('.name').text(addr.name);
+                $('.tel').text(addr.phone);
+                $('.addr').text(addr.address);
+                $('.footeraddr').html(addr.address);
+                subdata.name = addr.name;
+                subdata.tel = addr.phone;
+                subdata.address = addr.address;
+            }
+            $('.carshopimg').find('img').attr('src',data.cover_pic);
+            $('.goodsname').text(data.name);
+            $('.yunfei').text(data.freight);
+            $('.price').text(data.price);
+            price = data.price;
+            yun = data.freight;
+            total = +yun + (+price);
+            $('.total').text(total);
+        }
+    });
+
+    /**提交订单*/
+    $('.carfootr').click(function(){
+        subdata.remark = $('.liuyan').val();
+        requestUrl("{:U('Api/Goods/exchangeInter')}",subdata,function(res){
+            if(res['flag'] == "success"){
+                layer.msg("支付成功！");
+                setTimeout(function () {
+                    var url = "{:U('Goods/order')}";
+                    window.location.href = url;
+                },1000);
+            }else if(res['flag'] == "error"){
+                layer.msg(res['message']);
+            }
+        });
+    });
+</script>
+</block>

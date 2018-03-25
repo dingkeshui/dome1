@@ -1,0 +1,156 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>商家资料</p>
+            </div>
+            <div class="weui-cell__ft colfff" onclick="logout()">退出</div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        <div class="weui-cells">
+            <div class="weui-cell weui-cell_access">
+                <div class="weui-cell__hd">
+                    封面图
+                </div>
+                <div class="weui-cell__bd">
+                    
+                </div>
+                <div class="weui-cell__ft fs0">
+                    <img class="simg head_pic" src="__WEBPUBLIC__/Wechat/img//headimg.png"/>
+                </div>
+            </div>
+            
+            <div class="weui-cell weui-cell_access">
+                <div class="weui-cell__hd">
+                    名称
+                </div>
+                <div class="weui-cell__bd"></div>
+                <div class="weui-cell__ft">
+                    <span contenteditable="true" class="pad10 name"></span>
+                </div>
+            </div>
+
+            <div class="weui-cell weui-cell_access">
+                <div class="weui-cell__hd">
+                    联系电话
+                </div>
+                <div class="weui-cell__bd"></div>
+                <div class="weui-cell__ft">
+                    <span contenteditable="true" class="pad10 tel"></span>
+                </div>
+            </div>
+
+            <div class="weui-cell weui-cell_access">
+                <div class="weui-cell__hd">
+                    商家地址
+                </div>
+                <div class="weui-cell__bd"></div>
+                <div class="weui-cell__ft">
+                    <span class="pad10 address"></span>
+                </div>
+            </div>
+
+            <div class="weui-cell weui-cell_access">
+                <div class="weui-cell__hd">
+                    营业时间
+                </div>
+                <div class="weui-cell__bd"></div>
+                <div class="weui-cell__ft">
+                    <span contenteditable="true" class="pad10 time"></span>
+                </div>
+            </div>
+
+            <div class="weui-cell weui-cell_access">
+                <div class="weui-cell__hd">
+                    商家公告
+                </div>
+                <div class="weui-cell__bd"></div>
+                <div class="weui-cell__ft">
+                    <span contenteditable="true" class="pad10 notice"></span>
+                </div>
+            </div>
+
+            <div class="weui-cell weui-cell_select">
+                <div class="weui-cell__bd">
+                    <select class="weui-select is_open" name="is_open">
+                        <option value="0">营业</option>
+                        <option value="1">不营业</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="weui-btn-area allok">
+            <a class="weui-btn bgjb nobor fs1" href="javascript:">保存</a>
+        </div>
+
+         <div class="ih30 pad0-10">
+            <a class="colff0" href="{:U('Shop/resetpass')}">修改密码</a>
+            <a class="colff0 fr" href="{:U('Shop/message')}">我的消息</a>
+         </div>
+
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+    console.log(shop_id);
+        var dataargs = {"shop_id":shop_id};
+        requestUrl("{:U('Api/Merchant/detail')}",dataargs,function(data){
+           layer.closeAll();
+            console.log(data);
+            console.log(dataargs);
+            var res = data.data;
+            if(data['flag'] == "success"){
+                $(".name").text(res.name);
+                $(".head_pic").attr('src',''+res.img+'');
+                $(".tel").text(res.tel);
+                $(".address").text(res.address);
+                $(".time").text(res.time);
+                $(".notice").text(res.notice);
+                $(".is_open option[value='"+res.is_open+"']").attr("selected",true);
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+            }
+        },"POST",true);
+
+        $(".allok").click(function(){
+            var name=$(".name").html();
+            var tel=$(".tel").html();
+            var time=$(".time").html();
+            var notice=$(".notice").html();
+            var isopen=$(".is_open").val();
+            if(!name&&!tel&&!time&&!notice){
+                layer.msg("信息不能为空");
+                return;
+            }
+            var dataargs2={"shop_id":shop_id,"name":name,"tel":tel,"time":time,"is_open":isopen,"notice":notice};
+            console.log(dataargs2);
+            requestUrl("{:U('Api/Merchant/editShop')}",dataargs2,function(data){
+           layer.closeAll();
+            console.log(data);
+            var res = data.data;
+            layer.msg(data['message']);
+            if(data['flag'] == "success"){
+                
+            }else if(data['flag'] == "error"){
+                
+            }
+        },"POST",true);
+
+        })
+
+       function logout(){
+            sessionStorage.removeItem("is_readonly");
+            window.location.href = "{:U('Index/loginout')}";
+       }
+    </script>
+
+
+</block>

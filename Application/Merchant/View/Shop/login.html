@@ -1,0 +1,109 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__bd">
+                <p>商家登录</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        
+       <div class="weui-cells bgfff outinput">
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    手机号
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input account" type="tel" placeholder="手机号"/>
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd mar15">
+                    密码
+                </div>
+
+                <div class="weui-cell__bd">
+                    <input class="weui-input password" type="password" placeholder="请输入密码"/>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="pad10">
+            <a href="{:U('Shop/register')}" class="colff0">注册</a>
+
+            <a href="{:U('Shop/getpass')}" class="fr colff0">忘记密码？</a>
+        </div>
+        
+        <div class="weui-btn-area">
+            <a class="weui-btn bgjb nobor loginbtn" href="javascript:">登录</a>
+        </div>
+        
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+    $(".loginbtn").on('click',function () {
+
+        var password = $(".password").val();
+        var account = $(".account").val();
+
+        if ( !password || !account ) {
+            layer.msg("用户名密码不能为空！");
+            return;
+        }
+
+        requestUrl("{:U('Api/Merchant/login')}",{account:account,password:password,is_wechat:1},function ( res ) {
+            layer.msg(res.message);
+            if ( res.flag == "success" ) {
+                if(res.data.is_readonly){
+                    if(res.data.is_readonly==1){
+                        sessionStorage.setItem("is_readonly",1);
+                    }
+                }
+                if ( res.data.status == 1 && res.data.sign_status == 0 ) {
+                    window.location.href = "{:U('Shop/htopen')}";
+                }else{
+                    setTimeout(function () {
+                        window.location.href = "{:U('Shop/index')}";
+                    },500);
+                } 
+            }
+        })
+    });
+
+
+    function setupWebViewJavascriptBridge(callback) {
+        if (window.WebViewJavascriptBridge) {
+            return callback(WebViewJavascriptBridge); }
+        if (window.WVJBCallbacks) {
+            return window.WVJBCallbacks.push(callback); }
+        if (!window.WebViewJavascriptBridge) {
+             document.addEventListener(
+            'WebViewJavascriptBridgeReady'
+            , function() {
+                callback(WebViewJavascriptBridge)
+            },
+            false
+        );
+        }
+        window.WVJBCallbacks = [callback];
+        var WVJBIframe = document.createElement('iframe');
+        WVJBIframe.style.display = 'none';
+        WVJBIframe.src = 'https://__bridge_loaded__';
+        document.documentElement.appendChild(WVJBIframe);
+        setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+        bridge.callHandler('signAction', {dhui:"出来了！"}, function(response) {
+            console.log("yes");
+        })
+    })
+    </script>
+</block>

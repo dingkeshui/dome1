@@ -1,0 +1,81 @@
+<extend name="Public:header"/>
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>转账</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        
+        <div class="texcen pad20-0">
+            <img class="limg head_pic" src="__WEBPUBLIC__/Wechat/img/headimg.png"/>
+            <div class="name">硕硕硕</div>
+            <div class="colbbb account">186****4906</div>
+        </div>
+
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd fs0-8">
+                    <div class="colccc">转账金额</div>
+                    <div class="fs2 disflex">
+                    <span>￥</span><input type="number" step="0.01" name="money" class="weui-input flex1 money"/></div>
+                    <div class="colccc show_wallet">可用余额￥0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-btn-area">
+            <a class="weui-btn bgjb nobor make_sure" href="javascript:">确认转账</a>
+            <input type="hidden" name="" id="shop_id" value="">
+        </div>
+    </div>
+
+</block>
+<block name="footerjs">
+    <script>
+        var account = "{:I('get.account')}";
+        var dataargs = {account:account,m_id:m_id};
+        requestUrl("{:U('Api/Member/transferShop')}",dataargs,function(data){
+            //console.log(data);
+            var res = data.data;
+            if(data['flag'] == "success"){
+                $(".name").text(res.name);
+                $(".account").text(res.account);
+                $(".head_pic").attr('src',''+res.head_pic+'');
+                $(".show_wallet").text("可用余额￥"+res.show_wallet);
+                $("#shop_id").val(res.shop_id);
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+            }
+            layer.closeAll();
+        },"GET",true);
+
+        $(".make_sure").click(function () {
+            var money = $(".money").val();
+            if(money <= 0){
+                layer.msg("请输入转账金额！");
+                return false;
+            }
+            var shop_id = $("#shop_id").val();
+            var price = $(".money").val();
+            var dataargs = {shop_id:shop_id,m_id:m_id,price:price};
+            requestUrl("{:U('Api/Member/transferShop')}",dataargs,function(data){
+                //console.log(data);
+                if(data['flag'] == "success"){
+                    layer.msg("转账成功！");
+                    setTimeout(function () {
+                        var url = "{:U('bill/billList')}";
+                        window.location.href = url;
+                    },1000);
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+            },"POST","");
+        })
+    </script>
+</block>

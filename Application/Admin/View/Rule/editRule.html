@@ -1,0 +1,48 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="{:U('Index/main')}">首页</a></li>
+        <li class="active"><a href="">积分规则管理</a></li>
+        <li class="active">积分规则列表</li>
+    </ul>
+
+    <div class="page-header page-header1 clearfix">
+        <h3>积分规则管理</h3>
+        <ul class="nav nav-tabs">
+            <li class="">
+                <a href="{:U('Rule/ruleList')}">积分规则列表</a>
+            </li>
+            <li class="">
+                <a href="{:U('Rule/addRule')}">添加积分规则</a>
+            </li>
+        </ul>
+    </div>
+        <!--表格内容-->
+        <div class="content-box-content">
+            <!--表单 start-->
+            <form action="{:U('Rule/editRule')}" method="post" class="form-horizontal form"  enctype="multipart/form-data">
+                <input type="hidden" name="r_id" value="{$res['r_id']}">
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label"><em class="prompt-red">*</em>积分规则名称：</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control Class"  name="name" placeholder="积分规则名称" value="{$res['name']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label"><em class="prompt-red">*</em>获取积分数：</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control Class"  name="price" placeholder="获取积分数" value="{$res['price']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-default btn-primary add-to-here">确认修改</button>
+                    </div>
+                </div>
+            </form>
+            <!--表单 end-->
+        </div>
+    </div>
+</div>
+<include file="Public:footer"/>

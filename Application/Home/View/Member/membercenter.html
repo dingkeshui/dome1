@@ -1,0 +1,378 @@
+<extend name="Public:header"/>
+
+<block name="main">
+
+    <div class="header-container colfff">
+        <div class="weui-cell ih30">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>众享通赢</p>
+            </div>
+            <div class="weui-cell__ft showcode colfff">
+                我的推荐码
+                <img class="simg fr" style="margin-left:10px;" src="Public/Wechat/img/showcode.png"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="xq_container">
+        <div class="weui-cell bgfff texovh">
+            <div class="weui-cell__hd cenimg" style="margin-right: 10px">
+                <img class="headimg head_pic">
+            </div>
+            <div class="weui-cell__bd fs0-8">
+                <div class="fs1">
+                    <span class="nick_name"></span>
+                </div>
+                <div class="colccc account"></div>
+                <div class="colccc texovh recommend"></div>
+            </div>
+            <div class="weui-cell__ft">
+                <div class="showmode signed">签到</div>
+            </div>
+        </div>
+
+        <div class="weui-tabbar bgfff post bor1p">
+            <!--<a href="javascript:;" class="weui-tabbar__item" linkto="{:U('Member/shares')}">
+                <img src="__WEBPUBLIC__/Wechat/img/gjpiao.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">我的股</p>
+            </a>-->
+            <a href="javascript:;" class="weui-tabbar__item message" linkto="{:U('Message/messageList')}">
+                <img src="__WEBPUBLIC__/Wechat/img/msg.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">消息</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item" linkto="{:U('Member/configMember')}">
+                <img src="__WEBPUBLIC__/Wechat/img/set.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">设置</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item" linkto="{:U('Member/collectList')}">
+                <img src="__WEBPUBLIC__/Wechat/img/collet.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">收藏夹</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item" linkto="{:U('Member/myappraise')}">
+                <img src="__WEBPUBLIC__/Wechat/img/appraise.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">评价</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item" linkto="{:U('Luckdraw/luckdraw')}">
+                <img src="__WEBPUBLIC__/Wechat/img/luck.png" alt="" class="weui-tabbar__icon">
+                <p class="weui-tabbar__label">抽奖</p>
+            </a>
+        </div>
+
+        <div class="weui-cells weui-cell">
+            <div class="weui-cell__bd">
+              <div class="fs1-2">
+                我的股数
+              </div>
+              <div>
+                 <span class="integral"></span>
+              </div>
+            </div>
+            <div class="weui-cell__ft">
+                <div><span class="fs1-4 colff0 d_piles"></span>股</div>
+                <div>还差<span class="colff0 d_remain"></span>麦穗到<span class="d_piles2"></span>股</div>
+            </div>
+        </div>
+
+        <div class="weui-cells fs0-8">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <div id="main" style="width:100%;height:250px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-cells fs0-8 ih50">
+            <div class="weui-flex" >
+                <div class="icon iconzd weui-flex__item" linkto="{:U('Bill/billlist')}">
+                    账单记录
+                </div>
+                <div class="icon iconsy weui-flex__item" linkto="{:U('Bill/myearnlist')}">
+                    我的收益
+                </div>
+            </div>
+            <div class="weui-flex">
+                <div class="icon icontj weui-flex__item" linkto="{:U('Member/recommend')}">
+                    我推荐的人
+                </div>
+                <div class="icon iconfl weui-flex__item" linkto="{:U('AboutUs/pattern')}">
+                    奖励模式介绍
+                </div>
+            </div>
+            <div class="weui-flex">
+                <div class="icon iconfk weui-flex__item" linkto="{:U('Feedback/feedback')}">
+                    反馈
+                </div>
+                <div class="icon icongy weui-flex__item" linkto="{:U('AboutUs/aboutus')}">
+                    关于我们
+                </div>
+            </div>
+            <div class="weui-flex">
+                <div class="icon iconyhq weui-flex__item" linkto="{:U('Coupon/coupon')}">
+                    我的优惠券
+                </div>
+                <div class="icon iconupu weui-flex__item" linkto="{:U('Member/upduserinfo')}">
+                    修改开户信息
+                </div>
+            </div>
+        </div>
+        <!--弹出二维码-->
+        <div class="disn texcen imgarea" style="padding: 30px 40px;">
+            <div>【推荐赢奖励】</div>
+            <img class="code" style="height: 150px;">
+            <div>长按保存下来吧</div>
+        </div>
+    </div>
+    <!-- 签到弹出层 -->
+    <div class="weui-dialog xq_model disn">
+        <div class="">
+         <img class="ggimg" src="__WEBPUBLIC__/Wechat/img/d_gg.png">
+         <div class="modeltop">
+           <div class="fr d_gg">广告</div>
+         </div>
+        </div>
+        <div class="weui-cell ih30 nobrfore">
+            <div class="weui-cell__hd">
+                <p class="fs0-8">共签到</p>
+                <p class="fs1-2 colff0 number"></p>
+            </div>
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                <img class="douziimg" src="__WEBPUBLIC__/Wechat/img/d_douzi.png">
+                 众享豆
+                <span class="colff0 price"></span>
+            </div>
+        </div>
+        <div class="d_ok sign_button bgccc">
+           确定领取
+        </div>
+    </div>
+
+</block>
+<block name="footerjs">
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.min.js"></script>
+<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.common.min.js"></script>
+    <script>
+        var dataargs = {m_id:m_id};
+        var code;
+        function showuserinfo() {
+        requestUrl("{:U('Api/Member/memberCenter')}",dataargs,function(data){
+            //console.log(data);
+            var res = data.data;
+            if(data['flag'] == "success"){
+                code = res.code;
+                if (code) {
+                    $(".code").attr("src",code);
+                }
+                $(".nick_name").text(res.nick_name);
+                $(".account").text(res.account);
+                $(".head_pic").attr('src',''+res.head_pic+'');
+                $(".d_piles").html(res.piles);
+                $(".d_piles2").html((+res.piles)+1);
+                $(".integral").text("麦穗"+res.integral);
+                $(".d_remain").html((res.remain*1). toFixed(2));
+                $(".recommend").html("我的众享豆："+"<span class='show_wallet'>"+res.wallet+"</span>");
+                /**如果这个用户不符合领取钱数的条件就不能显示按钮，减少服务器的压力*/
+                // if(res.is_true == 0){
+                //     $(".sign_button").removeClass("disn");
+                // }
+                /**判断这个用户是否今天已经签到了*/
+                if(res.is_sign == 0 && res.is_true == 0){
+                    $(".sign_button").removeClass("bgccc");
+                }else{
+                    $(".sign_button").off("click");
+                    $(".sign_button").addClass("bgccc");
+                    $(".sign_button").on('click',function () {
+                        layer.msg("您暂无签到权限,加油哦~");
+                    });
+                    $(".sign_button").removeClass("sign_button");
+                    $(".sign_button").text("已领取");
+                }
+            }else if(data['flag'] == "error"){
+                layer.msg(data['message']);
+            }
+            setTimeout(function () {
+                layer.closeAll();
+            },500);
+        },"GET",true);
+        }
+        showuserinfo();
+        /**判断用户是否有未读的消息*/
+
+        var dataargs_other = {m_id:m_id};
+        requestUrl("{:U('Api/Message/isRead')}",dataargs_other,function(data){
+            var res = data.data;
+            if(res > 0){
+                $(".message").addClass("is_read");
+            }
+        },"GET");
+
+
+        //根据经纬度查询，查询广告图
+
+        wx.ready(function(){
+            wx.getLocation({
+                type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                success: function (res) {
+                    var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                    var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                    getAdpic({type:1,mix_id:m_id,lat:latitude,lnt:longitude});
+                },
+                fail: function(res) {
+                    //console.log('未开启定位功能');
+                    //console.log(res);
+                    getAdpic({type:1,mix_id:m_id});
+                }
+            });
+        });
+
+
+
+        function getAdpic( args ) {
+            requestUrl("{:U('Api/AboutUs/showPic')}",args,function ( res ) {
+                if ( res.flag == "success" ) {
+                    $(".ggimg").attr({"src":res.data.pic,"linkto":res.data.url});
+                    $(".price").text(res.data.price);
+                    $(".number").text(res.data.number);
+                    top_linkto();
+                }else{
+                    layer.msg( res.message );
+                }
+            });
+        }
+
+
+        /**用户签到点击*/
+        $(".showmode").click(function () {
+            /**判断用户是否有未读的消息*/
+            var dataargs_other = {m_id:m_id};
+            layer.open({
+                type: 1,
+                title: false,
+                content: $(".xq_model"),
+                area: ["300px","auto"]
+            });
+            return;
+        });
+        
+        $(".sign_button").click(function () {
+            var dataargs_other = {m_id:m_id};
+            requestUrl("{:U('Api/Member/sign')}",dataargs_other,function(data){
+
+                if(data['flag'] == "success"){
+                    layer.msg(data['message']);
+                    $(".sign_button").off("click");
+                    showuserinfo();
+                    /**改变用户的余额钱数*/
+                    var show_wallet = $(".show_wallet").text();
+                    $(".show_wallet").text(Math.floor(((+show_wallet)+data.data)*100)/100);
+                }else if(data['flag'] == "error"){
+                    layer.msg(data['message']);
+                }
+                setTimeout(function () {
+                    layer.closeAll();
+                },500);
+            },"POST",true);
+        });
+
+        $(".showcode").on('click',function () {
+            if (code && code != "0" ) {
+               layer.open({
+                    "title":false,
+                    "type":1,
+                    "area":["250px","250px"],
+                    "content":$(".imgarea")
+                }); 
+               return;
+            }
+            requestUrl("{:U('Api/Roll/focusWechat')}",{m_id:m_id},function (res) {
+                if (res.flag == "success") {
+                    $(".code").attr("src",res.data);
+                    layer.open({
+                        "title":false,
+                        "type":1,
+                        "area":["250px","250px"],
+                        "content":$(".imgarea")
+                    });
+                }else{
+                    layer.msg(res.message);
+                }
+            });
+        });
+
+    </script>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        function showLine(date,line) {
+        var option = {
+            title: {
+                text: '股价曲线'
+            },
+            color: [
+                '#208de1', '#fec42c', '#80F1BE'
+            ],
+            tooltip: {},
+            legend: {
+                data:['股价']
+            },
+            xAxis: {
+                data: date,
+                name: '日'
+            },
+            yAxis: {
+                name: '豆'
+            },
+            series: [{
+                name: '股价',
+                type: 'line',
+                borderColor: '#208de1',
+                data: line
+            }]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+        }
+        requestUrl("{:U('Api/Member/income')}",{},function(res) {
+            if (res.flag == "success") {
+                var date = res.data.x_date;
+                var value = res.data.day_line;
+                showLine(date.split(","),value.split(","));
+            }else{
+                layer.msg(res.message);
+            }
+        })
+        
+//对接app
+        function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                 document.addEventListener(
+                'WebViewJavascriptBridgeReady'
+                , function() {
+                    callback(WebViewJavascriptBridge)
+                },
+                false
+            );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+        }
+
+        setupWebViewJavascriptBridge(function(bridge) {
+
+            bridge.callHandler('openUserAction', {}, function(response) {
+                console.log("yes");
+            })
+        })
+
+    </script>
+</block>

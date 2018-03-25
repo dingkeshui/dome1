@@ -1,0 +1,362 @@
+<extend name="Public:header"/>
+<block name="main">
+    <!-- 头部 -->
+    <div class="header-container bgfff z3">
+        <div class="weui-cell ih30 box">
+            <div class="weui-cell__hd">
+            </div>
+            <div class="weui-cell__bd searchimgbox">
+                <img class="searchimg" src="/Public/Wechat/shopimg/search.png">
+                <input class="searchinp" type="text" name="" placeholder="商品搜索">
+            </div>
+            <div class="weui-cell__ft">
+                <div class="searchbut">搜索</div>
+            </div>
+        </div>
+    </div>
+    <div class="flex managenav after fs0-8 z3">
+        <div class="flex1" state="1">
+            <div class="managenavitem on">
+                <span>出售中</span>
+                <span class="count_ing">(0)</span>
+            </div>
+        </div>
+        <div class="flex1" state="2">
+            <div class="managenavitem">
+                <span>已售罄</span>
+                <span class="count_end">(0)</span>
+            </div>
+        </div>
+        <div class="flex1" state="3">
+            <div class="managenavitem">
+                <span>仓库中</span>
+                <span class="count_ware">(0)</span>
+            </div>
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="xq_container padtop100">
+        <div class="manageList">
+            
+        </div>
+    </div>
+    <div class="managefoot">
+        <div class="managefootbut"><a class="w100 h100 inblock colfff" href="{:U('Shop/addnewshop')}">添加新品</a></div>
+    </div>
+</block>
+<block name="footerjs">
+<script>
+    var dataargs={
+        "shop_id":shop_id,
+        "p" : 1,
+        "state" : 1
+    };
+    //如果是ios添加返回
+    if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){ 
+        $('.header-container .weui-cell__hd').addClass('back');
+        backinput();
+    }
+    var haveisapp="";
+    if(isApp==1||isApp==2){
+        $('.managefoot').css('bottom','0px');
+    }else if(isA==1||isA==2){
+        $('.managefoot').css('bottom','0px');
+    };
+    if(isApp){
+        haveisapp=isApp;
+    }else if(isA){
+        haveisapp=isA;
+    }
+    sessionStorage.clear();
+    sessionStorage.setItem("isApp",haveisapp);
+    var flag= true;//防止ajax请求期间，对此触发请求数据      
+    function getJson(args) {
+        console.log(dataargs);
+        requestUrl("{:U('Api/Product/shopProList')}",dataargs,function(data){
+            layer.closeAll();
+            putGoods(data,args);
+        });
+    }
+
+    $(function(){
+        getJson("shouci");
+    });
+    //搜索商品
+    $('.searchbut').click(function(){
+        var title2=$('.searchinp').val();
+        dataargs.title=title2;
+        dataargs.p=1;
+        getJson("shouci");            
+    });
+    //添加商品到列表
+    function putGoods(data,args) {
+        console.log(data);
+        if(data.flag == 'success'){
+            var shops = data.data.list;
+            if ( args == "shouci" ) {
+                $(".count_ing").text("("+data.data.count_ing+")");
+                $(".count_end").text("("+data.data.count_end+")");
+                $(".count_ware").text("("+data.data.count_ware+")");
+            }
+            if((!shops || shops.length == 0 ) && args == "shouci"){
+               $(".manageList").html('');
+               $(".xq_container").addClass('wusj');
+            }else if((!shops || shops.length == 0 ) && args == "fenye"){
+                $(".manageList").append('<div class="texcen nulldata">没有更多了！</div>');
+            }else{
+                $(".xq_container").removeClass('wusj');
+                $(".nulldata").remove();
+                var str ="";
+                for(var index in shops){
+                    var shop = shops[index];
+                    //console.log(shop.cover_pic);
+                    str += '<div class="manageitem mgb10">'
+                        +'<div class="flex pad10 bgfff">'
+                            +'<div class="manageitemimgbox mgr5"><img class="w100" src="'+shop.cover_pic+'"></div>'
+                            +'<div class="flex1">'
+                                +'<div class="line2">'+shop.title+'</div>'
+                                +'<div class="flex fs0-8 ih25">'
+                                   +'<span class="flex1 colb3">库存:'+shop.stock+'</span>'
+                                    +'<span class="flex1 colb3">销量:'+shop.sales+'</span>'
+                                +'</div>'
+                                +'<div class="">'
+                                    +'<span class="colred fs0-8">￥<span class="fs1-2">'+shop.price+'</span></span>'
+                                    +'<span class="managebj fs14">编辑</span>'
+                                +'</div>'
+                            +'</div>'
+                        +'</div>'
+                        +'<div class="manageitemfoot none pad10 colfff fs0-8 flex" p_id="'+shop.p_id+'">'
+                            +'<a class="flex1 colfff editshop">'
+                                +'<div><img class="w30" src="__WEBPUBLIC__/Wechat/shopimg/bg2.png"></div>'
+                                +'<div>编辑</div>'
+                            +'</a>'
+                            +'<a class="flex1 colfff editSale" is_sale="'+shop.is_sale+'">'
+                                +'<div><img class="w30" src="'+ (shop.is_sale == 1 ? "__WEBPUBLIC__/Wechat/shopimg/xj.png" : "__WEBPUBLIC__/Wechat/shopimg/sj.png") +'"></div>'
+                                +'<div class="textarea">'+ (shop.is_sale == 1 ? "下架" : "上架") +'</div>'
+                            +'</a>'
+                            +'<a class="flex1 colfff delshop">'
+                                +'<div><img class="w30" src="__WEBPUBLIC__/Wechat/shopimg/sc.png"></div>'
+                                +'<div>删除</div>'
+                            +'</a>'
+                            +'<a class="flex1 colfff deving">'
+                                +'<div><img class="w30" src="__WEBPUBLIC__/Wechat/shopimg/tg.png"></div>'
+                                +'<div>推广</div>'
+                            +'</a>'
+                            +'<a class="flex1 colfff" href="{:U('Shop/commodityevaluation')}/p_id/'+shop.p_id+'">'
+                                +'<div><img class="w30" src="__WEBPUBLIC__/Wechat/shopimg/pj.png"></div>'
+                                +'<div>查看评论</div>'
+                            +'</a>'
+                        +'</div>'
+                    +'</div>';
+                }
+                if (args == "fenye") {
+                    $('.manageList').append(str);
+                }else{
+                    $('.manageList').html(str);
+                }
+                flag=true;
+                top_linkto();
+            }
+        }else{
+            layer.msg(data.message);
+        }
+        if (args == "shouci") {
+            fenye();
+        }
+    }
+    //修改商品上下架
+    $(".manageList").on('click','.editSale',function () {
+        var p_id = $(this).parent().attr("p_id");
+        var is_sale = $(this).attr("is_sale");
+        var area = "上架";
+        var src = "__WEBPUBLIC__/Wechat/shopimg/sj.png";
+        if ( is_sale == 1 ) {
+            is_sale = 0;
+        }else{
+            is_sale = 1;
+            area = "下架";
+            src = "__WEBPUBLIC__/Wechat/shopimg/xj.png";
+        }
+        requestUrl("{:U('Api/Product/editSale')}",{p_id:p_id,is_sale:is_sale},function ( res ) {
+            layer.msg(res.message);
+            if (res.flag=="success") {
+                $(this).attr("is_sale",is_sale);
+                $(this).find(".textarea").text( area );
+                $(this).find("img").attr("src",src);
+            }
+        }.bind(this));
+    });
+
+    function fenye(){
+        var $_zd = $(".manageitem").height();//获取每个单项的高度
+        var length = 3;//定义预加载的数量，提前三个加载数据
+        var $_par = $(".manageList");//获取包裹容器
+        var winheight = $(window).height();//获取窗口高度
+        var curpage = 1;//存储当前的页数v
+        $(function(){
+            $('.xq_container').on("scroll",function(e){
+                if(flag){
+                    var self = $(this);
+                    var scrtop = self.scrollTop() + winheight;
+                    var docheight = $_par.height();
+                    //console.log(scrtop + "=" + docheight + "=" + $_zd);
+                    if(scrtop > docheight - ( length * $_zd ) ){
+                        flag = false;
+                        dataargs.p = dataargs.p +1;
+                        getJson("fenye");
+                    }
+                }
+            });
+        });
+    }
+
+
+    $(".managenav .flex1").on("click",function () {
+        var istrue = $(this).find(".managenavitem").hasClass("on");
+        if ( !istrue ){
+            $(this).find(".managenavitem").addClass("on");
+            $(this).siblings().find(".managenavitem").removeClass("on");
+            dataargs.state = $(this).attr("state");
+            dataargs.p = 1;
+            getJson("shouci");
+        }
+    })
+    //删除商品，
+    $(".manageList").on('click','.delshop',function () {
+        var p_id = $(this).parent().attr("p_id");
+        var parentele = $(this).parents(".manageitem");
+        if ( p_id != "" && confirm("您确认要删除？") ) {
+            requestUrl("{:U('Api/Product/delProduct')}",{p_id:p_id},function ( res ) {
+                layer.msg(res.message);
+                if (res.flag=="success") {
+                    parentele.remove();
+                }
+            })
+        }
+    });
+
+    //推广 deving
+    $(".manageList").on('click','.deving',function () {
+        layer.msg("开发中！");
+    });
+    
+    //修改商品，数据准备
+    $(".manageList").on('click','.editshop',function () {
+        var p_id = $(this).parent().attr("p_id");
+        if (p_id != "") {
+            //window.location.href
+            requestUrl("{:U('Api/Product/editGoods')}",{p_id:p_id},function ( res ) {
+                if ( res.flag == "success" ) {
+                    good = res.data;
+                    var lunpic = [],class_id = [],prices = [];
+                    pics = good.pics;
+                    var parent_id = good.parent_id;
+                    var first_name = good.first_name;
+                    //商品所属分类
+                    if ( parent_id && first_name) {
+                        class_id.unshift({cate_id:parent_id,cate_name:first_name});
+                        var second_id = good.second_id;
+                        var second_name = good.second_name;
+                        if ( second_id && second_name) {
+                            class_id.unshift({cate_id:second_id,cate_name:second_name});
+                            var three_id = good.three_id;
+                            var three_name = good.three_name;
+                            if ( three_id && three_name ) {
+                                class_id.unshift({cate_id:three_id,cate_name:three_name});
+                            }
+                        }
+                    }
+                    if (good.pics) {
+                        for (var i = 0; i < pics.length; i++) {
+                            if(pics[i]){
+                                lunpic.push({pic_id:0,pic_name:pics[i]});
+                            }
+                        }
+                    }
+                    //商品选中价格
+                    var attr_value = good.attr_value;
+                    if (attr_value) {
+                        for (var i = 0; i < attr_value.length; i++) {
+                            var obj = attr_value[i];
+                            var attr = attr_value[i].attr.split("|");
+                            var valstr = [];
+                            for ( var j = 0; j < attr.length; j++ ) {
+                                var curstr = attr[j].split(",");
+                                valstr.push(curstr[1]);
+                            }
+                            prices.push({id:obj.id,attr:obj.attr_group,price:obj.price,stock:obj.stock,valstr:valstr.join("|")});
+                        }
+                    }
+                    sessionStorage.setItem( "toppic",JSON.stringify([{pic_id:0,pic_name:good.cover_pic}]));
+                    sessionStorage.setItem( "lunpic",JSON.stringify(lunpic));
+                    sessionStorage.setItem( "class_id",JSON.stringify(class_id));
+                    sessionStorage.setItem( "attrs",JSON.stringify(good.attr));
+                    sessionStorage.setItem( "prices",JSON.stringify(prices));
+                    sessionStorage.setItem( "type" , good.type );
+                    sessionStorage.setItem( "stock" , good.stock );
+                    sessionStorage.setItem( "price" , good.price );
+                    sessionStorage.setItem( "goods_attr" , good.goods_attr );
+                    sessionStorage.setItem( "title" , good.title );
+                    sessionStorage.setItem( "p_id" , good.p_id );
+                    sessionStorage.setItem( "content" , good.content );
+                    sessionStorage.setItem( "postage" , good.postage );
+                    window.location.href = "{:U('Shop/edishop')}";
+                }
+            },"GET",true);
+        }
+    });
+</script>
+<script type="text/javascript">
+    $('.xq_container').on('click','.managebj',function () {
+        if($(this).hasClass('on')){
+            $(this).removeClass('on');
+            $(this).html('编辑');
+            $(this).parents('.manageitem').find('.manageitemfoot').addClass('none');
+        }else{
+            $('.managebj.on').each(function(){
+                $(this).removeClass('on');
+                $(this).html('编辑');
+                $(this).parents('.manageitem').find('.manageitemfoot').addClass('none');
+            });
+            $(this).addClass('on');
+            $(this).html('取消');
+            $(this).parents('.manageitem').find('.manageitemfoot').removeClass('none');
+        }
+    });
+</script>
+<script type="text/javascript">
+    function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) {
+                return window.WVJBCallbacks.push(callback); }
+            if (!window.WebViewJavascriptBridge) {
+                document.addEventListener(
+                        'WebViewJavascriptBridgeReady'
+                        , function() {
+                            callback(WebViewJavascriptBridge)
+                        },
+                        false
+                );
+            }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'https://__bridge_loaded__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+        }
+
+    setupWebViewJavascriptBridge(function(bridge) {
+        if((isApp||isA)&&!!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)){
+            $('.back').off('click');
+            $('.back').on('click',function(){
+                bridge.callHandler('iosBack',{}, function(response) {
+                    //处理oc过来的回调
+                    layer.closeAll();
+                })
+            });
+        }
+    })
+</script>
+</block>

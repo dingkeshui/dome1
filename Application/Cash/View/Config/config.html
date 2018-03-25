@@ -1,0 +1,157 @@
+<include file="Public:header"/>
+<!--主页面-->
+<div id="main-content" class="content">
+    <ul class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active"><a href="">系统设置</a></li>
+        <li class="active">网站设置</li>
+    </ul>
+
+    <div class="page-header clearfix">
+        <h3>网站设置</h3>
+        <ul id="tabs" class="nav nav-tabs">    
+            <li class="active">
+                <a href="javascript:;">基本设置</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="tabs-content" class="content-box-content">
+        <div class="ul">
+            <form action="{:U('Config/config')}" method="post" class="form-horizontal" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title" class="col-sm-3 control-label">网站标题：</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" id="title" name="title" value="{$config['title']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="desc" class="col-sm-3 control-label">网站关键字：</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" id="desc" name="desc" value="{$config['desc']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="content" class="col-sm-3 control-label">网站描述：</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" id="content" name="content" value="{$config['content']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="site_ipc" class="col-sm-3 control-label">网站备案号：</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" id="site_ipc" name="site_ipc" value="{$config['site_ipc']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="copyright" class="col-sm-3 control-label">版权所有：</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" id="copyright" name="copyright" value="{$config['copyright']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="copyright" class="col-sm-3 control-label">满足分成消费的金额：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="meet_pay_price" name="meet_pay_price" value="{$config['meet_pay_price']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="service" class="col-sm-3 control-label">客服电话：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="service" name="service" value="{$config['service']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="full_price" class="col-sm-3 control-label">满足提现金额：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="full_price" name="full_price" value="{$config['full_price']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="full_price" class="col-sm-3 control-label">推荐人获得的积分(用户推荐用户)：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="inter" name="inter" value="{$config['inter']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="full_price" class="col-sm-3 control-label">推荐人获得的积分(用户推荐商家)：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="mem_shop_inter" name="mem_shop_inter" value="{$config['mem_shop_inter']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="full_price" class="col-sm-3 control-label">推荐人获得的积分(商家)：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="shop_inter" name="shop_inter" value="{$config['shop_inter']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="full_price" class="col-sm-3 control-label">用户提现手续费（%）：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="scale_mem" name="scale_mem" value="{$config['scale_mem']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="share_scale" class="col-sm-3 control-label">用户最多领取钱数：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="share_scale" name="share_scale" value="{$config['share_scale']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="share_scale" class="col-sm-3 control-label">用户最大消费股份钱数：</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="max_value" name="max_value" value="{$config['max_value']}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="about" class="col-sm-3 control-label"><em class="prompt-red">*</em>关于我们：</label>
+                    <div class="col-sm-9">
+                        <textarea name="about" class="form-control" id="about" style="width:auto;height:300px;visibility:hidden;" >{$config['about']}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="pattern" class="col-sm-3 control-label"><em class="prompt-red">*</em>返现模式介绍：</label>
+                    <div class="col-sm-9">
+                        <textarea name="pattern" class="form-control" id="pattern" style="width:auto;height:300px;visibility:hidden;" >{$config['pattern']}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="pattern" class="col-sm-3 control-label"><em class="prompt-red">*</em>用户注册的协议：</label>
+                    <div class="col-sm-9">
+                        <textarea name="user_protocol" class="form-control" id="user_protocol" style="width:auto;height:300px;visibility:hidden;" >{$config['user_protocol']}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                      <button type="submit" class="btn btn-default btn-primary">确认添加</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer"/>
+<!--富文本-->
+<script  src="__WEBPUBLIC__/Common/kindeditor/kindeditor-min.js"></script>
+<script  src="__WEBPUBLIC__/Common/kindeditor/lang/zh_CN.js"></script>
+<script>
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('textarea', {
+            resizeType : 1,
+            uploadJson : '__WEBPUBLIC__/Common/kindeditor/php/upload_json.php',
+            fileManagerJson :
+                    '__WEBPUBLIC__/Common/kindeditor/php/file_manager_json.php',
+            allowPreviewEmoticons : false,
+            items:[
+                'source', '|', 'undo', 'redo', '|', 'cut', 'copy','|', 'justifyleft',
+                'justifycenter', 'justifyright',
+                'justifyfull', 'clearhtml', 'selectall', '|', 'formatblock',
+                'fontname', 'fontsize', '|', 'forecolor',
+                'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough','image'
+            ],
+            afterBlur:function(){this.sync();}
+        });
+    });
+</script>
